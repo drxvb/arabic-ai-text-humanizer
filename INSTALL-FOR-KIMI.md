@@ -1,70 +1,41 @@
 # Arabic AI-Text Humanizer — Kimi CLI Installation Recipe
 
 A self-contained installer for [Kimi CLI](https://moonshotai.github.io/kimi-cli/)
-(or any agent CLI that reads markdown and writes files). Kimi does not import
+or any agent CLI that reads markdown and writes files. Kimi does not import
 `.skill` archives — this file is the equivalent: read the instructions below
 and recreate the skill directory tree on disk.
 
 **Version:** v2.1.1 (provider-agnostic universal release)
+**Skill name:** `arabic-ai-text-humanizer` (Arabic AI-text humanizer)
 
 ## Quick instructions for Kimi
 
-1. Pick a target directory — typically your skills folder (e.g.
-   `~/.kimi/skills/` or wherever your Kimi installation looks for skills).
-2. Create a sub-directory `ai-text-humanizer/` and the sub-sub-directories
+1. Pick a target directory (typically your skills folder).
+2. Create a sub-directory `arabic-ai-text-humanizer/` and the sub-sub-directories
    `references/`, `scripts/`, `evals/`, `corpus/` inside it.
 3. For each `### File: <path>` block below, write a file at that path with
    the *exact* contents shown in the immediately-following code block.
 4. Use UTF-8 encoding for every file. Preserve line breaks and indentation.
 5. After all files are written, verify with:
    ```
-   python ai-text-humanizer/evals/run_golden.py        # expect 20/20 PASS
-   python ai-text-humanizer/evals/test_known_fragility.py   # expect 12/12 PASS
+   python arabic-ai-text-humanizer/evals/run_golden.py
+   python arabic-ai-text-humanizer/evals/test_known_fragility.py
    ```
 
 ## How code-fence nesting works in this document
 
-Each file's content is wrapped in a **5-backtick** outer fence with a
-language hint (e.g. ` ` ` ` `python). Inner triple-backtick fences inside
-the content are part of the file and must be preserved verbatim. When you
-write the file, strip the outer 5-backtick wrappers only.
-
-## Total file count
-
-This installer recreates **30 files** across the
-skill's standard directory layout. After it's done, your tree will look
-like:
-
-```
-ai-text-humanizer/
-├── LICENSE
-├── .gitignore
-├── SKILL.md
-├── config.example.json
-├── references/
-│   └── 01-..16-*.md  (16 deep-dive files, one per humanness dimension)
-├── scripts/
-│   ├── analyze_deep.py
-│   ├── humanize_v2.py
-│   ├── llm_transform.py
-│   ├── mine_corpus.py
-│   ├── preflight_check.py
-│   └── score_humanness.py
-├── evals/
-│   ├── golden_cases.json
-│   ├── run_golden.py
-│   └── test_known_fragility.py
-└── corpus/
-    └── empirical-patterns.json   (pre-mined; ~19 KB; 1.31M sentences sampled)
-```
+Each file's content is wrapped in a **5-backtick** outer fence. Inner
+triple-backtick fences inside the content are part of the file and must
+be preserved verbatim. When you write the file, strip the outer 5-backtick
+wrappers only.
 
 ## Provider configuration after install
 
-This skill is provider-agnostic — it talks to any OpenAI-compatible
+The skill is provider-agnostic — it talks to any OpenAI-compatible
 chat-completions endpoint. Set three environment variables before running
-any LLM-augmented mode (`--mode +cognitive` / `+rhetorical` / `full`):
+any LLM-augmented mode (`--mode +cognitive`, `+rhetorical`, `full`):
 
-```bash
+```
 # Moonshot (Kimi):
 export LLM_API_URL=https://api.moonshot.cn/v1/chat/completions
 export LLM_API_KEY=<your-moonshot-key>
@@ -80,7 +51,7 @@ Deterministic modes (`--mode lex-only` and `--mode tighten`) need no API.
 
 # Files
 
-### File: ai-text-humanizer/LICENSE
+### File: arabic-ai-text-humanizer/LICENSE
 
 `````text
 MIT License
@@ -107,7 +78,7 @@ SOFTWARE.
 
 `````
 
-### File: ai-text-humanizer/.gitignore
+### File: arabic-ai-text-humanizer/.gitignore
 
 `````text
 # Never commit credentials or secrets
@@ -149,11 +120,11 @@ corpus/*.bak
 
 `````
 
-### File: ai-text-humanizer/SKILL.md
+### File: arabic-ai-text-humanizer/SKILL.md
 
 `````markdown
 ---
-name: ai-text-humanizer
+name: arabic-ai-text-humanizer
 description: Arabic-text humanizer scoring along 16 dimensions — cognitive structure, rhetorical figures, reader-respect, typography hygiene, and connector entropy. Six modes and four register policies gate which transformations fire; a pre-flight safety check flags factual/ethical/sourcing hazards. Scope is humanization, NOT localization — BCP47, ICU, SSML are out of scope. Provider-agnostic; works with any OpenAI-compatible LLM. Use when the user wants Arabic AI text rewritten with cognitive depth and classical-rhetoric awareness; also triggers on "humanize deep", "humanize cognitively", "humanizer v2", or "تحويل النص إلى أسلوب بشري عميق". Do NOT use for technical specs, code documentation, legal text, dialect-heavy/colloquial content, already-human text (run analyze-only instead), or English (Arabic-only).
 ---
 
@@ -438,7 +409,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/config.example.json
+### File: arabic-ai-text-humanizer/config.example.json
 
 `````json
 {
@@ -523,7 +494,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/references/01-cognitive-structure.md
+### File: arabic-ai-text-humanizer/references/01-cognitive-structure.md
 
 `````markdown
 # البنية المعرفية — Cognitive Structure (Deduction · Inference · Extraction · Scope)
@@ -618,7 +589,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/references/02-graduated-explanation.md
+### File: arabic-ai-text-humanizer/references/02-graduated-explanation.md
 
 `````markdown
 # التدرّج في الشرح من البساطة — Graduated Explanation
@@ -713,7 +684,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/references/03-idea-transitions.md
+### File: arabic-ai-text-humanizer/references/03-idea-transitions.md
 
 `````markdown
 # التنقّل في الأفكار — Idea Transitions (Linear · Spiral · Dialectic)
@@ -809,7 +780,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/references/04-axes-and-data-partitioning.md
+### File: arabic-ai-text-humanizer/references/04-axes-and-data-partitioning.md
 
 `````markdown
 # التقسيم للمحاور والمعطيات — Axes and Data Partitioning
@@ -934,7 +905,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/references/05-literary-art.md
+### File: arabic-ai-text-humanizer/references/05-literary-art.md
 
 `````markdown
 # الفنّ الأدبيّ — Literary Art
@@ -1060,7 +1031,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/references/06-historical-anchoring.md
+### File: arabic-ai-text-humanizer/references/06-historical-anchoring.md
 
 `````markdown
 # الاستدلال التاريخيّ بالأحداث — Historical and Event-Based Reasoning
@@ -1191,7 +1162,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/references/07-imagination-concretization.md
+### File: arabic-ai-text-humanizer/references/07-imagination-concretization.md
 
 `````markdown
 # التخيل وتوسيع الإدراك — Imagination & Perception Expansion (Dimension 11)
@@ -1320,7 +1291,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/references/08-rhetorical-figures.md
+### File: arabic-ai-text-humanizer/references/08-rhetorical-figures.md
 
 `````markdown
 # الفن البلاغي والنحوي والكتابي — Rhetorical, Grammatical & Writing Arts (Dimension 12)
@@ -1450,7 +1421,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/references/09-coherence-non-repetition.md
+### File: arabic-ai-text-humanizer/references/09-coherence-non-repetition.md
 
 `````markdown
 # التَّماسُك وعدمُ التَّكرار والاستدلال بما تَقدَّم — Coherence, Non-Repetition & Intra-Text Citation (Dimension 13)
@@ -1575,7 +1546,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/references/10-register-modulation.md
+### File: arabic-ai-text-humanizer/references/10-register-modulation.md
 
 `````markdown
 # تعديل المستوى اللغوي — Register Modulation across MSA Layers
@@ -1702,7 +1673,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/references/11-sentence-rhythm.md
+### File: arabic-ai-text-humanizer/references/11-sentence-rhythm.md
 
 `````markdown
 # إيقاع الجُملة وكَسر التوازي — Sentence Rhythm and Parallelism Breaks
@@ -1851,7 +1822,7 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 `````
 
-### File: ai-text-humanizer/references/12-corpus-findings.md
+### File: arabic-ai-text-humanizer/references/12-corpus-findings.md
 
 `````markdown
 # Corpus Findings — Empirical Statistics from the Reference Arabic Corpus
@@ -2084,7 +2055,7 @@ News is effectively undiacritized (0.2%). Classical and Qur'anic text is heavily
 
 `````
 
-### File: ai-text-humanizer/references/13-inherited-lexical-tables.md
+### File: arabic-ai-text-humanizer/references/13-inherited-lexical-tables.md
 
 `````markdown
 # Lexical Layer — Inherited Substitution Tables
@@ -2302,7 +2273,7 @@ v1 doesn't catch AI's stacked intensifiers: "في غاية الأهمية الب
 
 `````
 
-### File: ai-text-humanizer/references/14-reader-respect.md
+### File: arabic-ai-text-humanizer/references/14-reader-respect.md
 
 `````markdown
 # احترام عقل القارئ (Reader Respect / Reader-Intelligence Dimension)
@@ -2419,7 +2390,7 @@ v1 doesn't catch AI's stacked intensifiers: "في غاية الأهمية الب
 
 `````
 
-### File: ai-text-humanizer/references/15-typography-hygiene.md
+### File: arabic-ai-text-humanizer/references/15-typography-hygiene.md
 
 `````markdown
 # نظافة الصياغة العربية (Arabic Typography Hygiene)
@@ -2573,7 +2544,7 @@ v1 doesn't catch AI's stacked intensifiers: "في غاية الأهمية الب
 
 `````
 
-### File: ai-text-humanizer/references/16-fasl-wa-wasl.md
+### File: arabic-ai-text-humanizer/references/16-fasl-wa-wasl.md
 
 `````markdown
 # الفصل والوصل (Junction and Disjunction — Connector Distributional Discipline)
@@ -2676,7 +2647,7 @@ score = round(15 * diversity)
 
 `````
 
-### File: ai-text-humanizer/scripts/llm_transform.py
+### File: arabic-ai-text-humanizer/scripts/llm_transform.py
 
 `````python
 #!/usr/bin/env python3
@@ -2956,7 +2927,7 @@ if __name__ == "__main__":
 
 `````
 
-### File: ai-text-humanizer/scripts/preflight_check.py
+### File: arabic-ai-text-humanizer/scripts/preflight_check.py
 
 `````python
 #!/usr/bin/env python3
@@ -3182,7 +3153,7 @@ if __name__ == "__main__":
 
 `````
 
-### File: ai-text-humanizer/scripts/analyze_deep.py
+### File: arabic-ai-text-humanizer/scripts/analyze_deep.py
 
 `````python
 #!/usr/bin/env python3
@@ -3833,7 +3804,7 @@ if __name__ == "__main__":
 
 `````
 
-### File: ai-text-humanizer/scripts/score_humanness.py
+### File: arabic-ai-text-humanizer/scripts/score_humanness.py
 
 `````python
 #!/usr/bin/env python3
@@ -3929,7 +3900,7 @@ if __name__ == "__main__":
 
 `````
 
-### File: ai-text-humanizer/scripts/mine_corpus.py
+### File: arabic-ai-text-humanizer/scripts/mine_corpus.py
 
 `````python
 #!/usr/bin/env python3
@@ -4159,7 +4130,7 @@ if __name__ == "__main__":
 
 `````
 
-### File: ai-text-humanizer/scripts/humanize_v2.py
+### File: arabic-ai-text-humanizer/scripts/humanize_v2.py
 
 `````python
 #!/usr/bin/env python3
@@ -5139,7 +5110,7 @@ if __name__ == "__main__":
 
 `````
 
-### File: ai-text-humanizer/evals/golden_cases.json
+### File: arabic-ai-text-humanizer/evals/golden_cases.json
 
 `````json
 {
@@ -5329,7 +5300,7 @@ if __name__ == "__main__":
 
 `````
 
-### File: ai-text-humanizer/evals/run_golden.py
+### File: arabic-ai-text-humanizer/evals/run_golden.py
 
 `````python
 #!/usr/bin/env python3
@@ -5552,7 +5523,7 @@ if __name__ == "__main__":
 
 `````
 
-### File: ai-text-humanizer/evals/test_known_fragility.py
+### File: arabic-ai-text-humanizer/evals/test_known_fragility.py
 
 `````python
 #!/usr/bin/env python3
@@ -5720,7 +5691,7 @@ if __name__ == "__main__":
 
 `````
 
-### File: ai-text-humanizer/corpus/empirical-patterns.json
+### File: arabic-ai-text-humanizer/corpus/empirical-patterns.json
 
 `````json
 {
@@ -7049,41 +7020,28 @@ if __name__ == "__main__":
 
 # Post-install verification
 
-After all files exist, run:
-
-```bash
-cd <wherever-you-installed-ai-text-humanizer>/..
-python ai-text-humanizer/evals/run_golden.py
-python ai-text-humanizer/evals/test_known_fragility.py
+```
+python arabic-ai-text-humanizer/evals/run_golden.py
+python arabic-ai-text-humanizer/evals/test_known_fragility.py
 ```
 
 Expect **20/20 PASS** on the golden suite and **12/12 PASS** on the
-fragility suite. Both are dependency-free (Python 3 stdlib only — no
-`pip install` required).
-
-If a golden case fails, the most likely cause is line-ending corruption
-during file write. Re-write the offending file as UTF-8 with LF line
-endings. The skill itself is OS-agnostic but the lexical-pass regular
-expressions assume `
-` line breaks internally.
+fragility suite. Both Python 3 stdlib only — no `pip install`.
 
 # Optional — re-mine the corpus
 
 The skill ships with `corpus/empirical-patterns.json` already computed
-from a reference Arabic corpus (100K records / 1.31M sentences /
-71.28M tokens / ≈87s mining time across Qur'an, classical/modern,
-news, and lexicon registers). You only need to re-mine if you want to
-extend the empirical baseline with your own Arabic JSONL:
+(100K records / 1.31M sentences / 71.28M tokens / ≈87s mining time across
+Qur'an, classical/modern, news, and lexicon registers). To re-mine
+against your own Arabic JSONL:
 
-```bash
+```
 export ARABIC_CORPUS_PATH=/path/to/your-corpus.jsonl
-python ai-text-humanizer/scripts/mine_corpus.py
-# writes a new ai-text-humanizer/corpus/empirical-patterns.json
+python arabic-ai-text-humanizer/scripts/mine_corpus.py
 ```
 
-The JSONL schema is `{"text": "...", "metadata": {"category": "..."}}` —
-one record per line.
+JSONL schema: one record per line, shape `{"text": "...", "metadata": {"category": "..."}}`.
 
 # License
 
-MIT. See `ai-text-humanizer/LICENSE`.
+MIT. See `arabic-ai-text-humanizer/LICENSE`.

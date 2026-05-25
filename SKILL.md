@@ -1,5 +1,5 @@
 ---
-name: ai-text-humanizer
+name: arabic-ai-text-humanizer
 description: Arabic-text humanizer scoring along 16 dimensions — cognitive structure, rhetorical figures, reader-respect, typography hygiene, and connector entropy. Six modes and four register policies gate which transformations fire; a pre-flight safety check flags factual/ethical/sourcing hazards. Scope is humanization, NOT localization — BCP47, ICU, SSML are out of scope. Provider-agnostic; works with any OpenAI-compatible LLM. Use when the user wants Arabic AI text rewritten with cognitive depth and classical-rhetoric awareness; also triggers on "humanize deep", "humanize cognitively", "humanizer v2", or "تحويل النص إلى أسلوب بشري عميق". Do NOT use for technical specs, code documentation, legal text, dialect-heavy/colloquial content, already-human text (run analyze-only instead), or English (Arabic-only).
 ---
 
