@@ -12,6 +12,14 @@ Six transformation modes ranging from `lex-only` (deterministic, ~1s, no LLM) to
 
 **Scope:** humanization, **not** localization. BCP47 locale tags, ICU MessageFormat plurals, and SSML are out of scope by design.
 
+## Installation
+
+| Your environment | How to install |
+|---|---|
+| **Claude Code, Codex CLI, MiniMax CLI, or any agent CLI that imports `.skill` ZIPs** | Download the matching `.skill` bundle from [Releases](../../releases) and unpack into your CLI's skills directory. Provider-tuned variants are available for Moonshot/Kimi, MiniMax, and Anthropic Claude (via OpenAI-compatible proxy). |
+| **Kimi CLI** (does not import `.skill` archives) | Use **[`INSTALL-FOR-KIMI.md`](INSTALL-FOR-KIMI.md)** — a self-contained markdown installer. Hand the file to Kimi and ask it to recreate the skill tree. 30 file blocks embedded; 100% lossless round-trip verified. |
+| **Manual install / forking** | `git clone` this repo and drop the directory wherever your CLI expects skills. The repo content IS the skill. |
+
 ## Quickstart
 
 The skill is **provider-agnostic**. Configure any OpenAI-compatible chat-completions endpoint:
