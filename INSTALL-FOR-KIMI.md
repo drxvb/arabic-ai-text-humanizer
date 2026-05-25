@@ -431,7 +431,8 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 | Version | What changed |
 |---|---|
-| **v2.4.3** | **Parenthesis interior-spacing normalization.** Researched 4 more Arabic style guides (Albuthi, Alukah academic, proof-reading-service, Kaplan International — 13 total now). The new rule from Kaplan + proof-reading-service: "no spacing between brackets and content". `typography_paren_interior_spacing()` (1) strips space immediately after `(` when followed by Arabic letter, (2) strips space before `)` when preceded by Arabic letter, (3) strips space between `)` and following punctuation. Example: `هذه جملة ( مع تعليق ) ، ثم آخر` → `هذه جملة (مع تعليق)، ثم آخر`. Preserves existing Latin-content paren padding (for English-in-Arabic Bidi clarity). 5 new fragility sub-checks (T23–T24). Fragility now **56/56**. |
+| **v2.4.4** | **List-`و` insertion + register-gated guillemets.** Itwadi rule: insert `و` before list items 2..n when 3+ single-word Arabic tokens are comma-separated. Short-clause commas not treated as lists. Register-gated quotation: ASCII `"..."` → `«...»` ONLY in classical register. T25+T26 added (5 sub-checks). Fragility now **61/61**. |
+| v2.4.3 | **Parenthesis interior-spacing normalization.** Researched 4 more Arabic style guides (Albuthi, Alukah academic, proof-reading-service, Kaplan International — 13 total now). The new rule from Kaplan + proof-reading-service: "no spacing between brackets and content". `typography_paren_interior_spacing()` (1) strips space immediately after `(` when followed by Arabic letter, (2) strips space before `)` when preceded by Arabic letter, (3) strips space between `)` and following punctuation. Example: `هذه جملة ( مع تعليق ) ، ثم آخر` → `هذه جملة (مع تعليق)، ثم آخر`. Preserves existing Latin-content paren padding (for English-in-Arabic Bidi clarity). 5 new fragility sub-checks (T23–T24). Fragility now **56/56**. |
 | v2.4.2 | **Authoritative-source-based punctuation rules.** Researched 9 Arabic style guides (Al Jazeera Learning, Drasah, Loghate ×2, Mawdoo3, Mobt3ath, KSU College of Humanities, Itwadi, Shoair School). Implemented: (1) **No space before Arabic punctuation** (`،`، `؛`، `؟`، `:`، `!`، `.`) — the universal rule from all sources ("ملاصقة للكلمة التي قبلها"). (2) **Comma → semicolon before unambiguous causal connectors** (`لأن`، `لأنّ`، `لذلك`، `لذا`، `ومن ثَمَّ`) — semicolon is the correct mark before causal clauses per multiple sources; ambiguous connectors (`إذ`، `حيث`) skipped to avoid false conversions ("when"/"where" vs "because"). (3) Made existing Latin→Arabic punctuation rules explicit via T19-T21 tests (formerly inherited from v1, now fragility-guarded). Deferred to v2.4.3: list-conjunction `و` between Arabic list items (requires multi-pass context detection), LRM-Bidi handling (render-time concern). Fragility suite now **51/51**. |
 | v2.4.1 | **Typography fixes** — two AI-Arabic tells that v2.2.0–v2.4.0 didn't catch: (1) **Kashida (Arabic tatweel `ـ`, U+0640) stripped** from output per modern editorial convention — kashida is for display typography (logos, posters, justified-text rendering at typeset time), NEVER for encoded body text; AI translators sometimes inject it to "look more Arabic" which is the exact opposite of professional Arabic typography. Stripping is UNIVERSAL (all registers), not register-gated. (2) **Em-dash `—` converted to Arabic comma `،`** when surrounded by Arabic letters (e.g., `النص — التعليق` → `النص، التعليق`); preserved in English-context (e.g., `OpenAI — مؤسسة` keeps em-dash because `I` is Latin). 4 new fragility test sub-checks (T15–T17). Fragility suite now **35/35**. |
 | v2.4.0 | **Dictionary expansion — 93 → 338 entries (3.6×).** Adds process/workflow, agents/swarm/multi-agent (modern AI vocabulary not in v2.3.0), expanded database, DevOps/cloud-native, crypto/Web3, healthcare, climate, geopolitics. New domains: `tech-ai-agents` (35), `tech-crypto` (15), `climate` (15), `healthcare` (11). Expanded domains: `tech-software` (44, +35), `tech-infra` (36, +26), `news-journalism` (44, +28), `business` (43, +27), `tech-security` (31, +20). Built via Claude+Codex multi-LLM swarm on 361 seed terms (300 yielded responses; partial promoted to final because of CLI rate-limit stall on the tail batch); 151 `medium_consensus` entries reflect multi-LLM agreement strength. **Lex pass unchanged** — same `lex_apply_calque_dictionary()`, just more data. Fragility still 31/31. |
@@ -4769,6 +4770,72 @@ def lex_enrich(text: str, analyzer_result: dict, max_inserts: int = 3) -> tuple[
     return " ".join(s.strip() for s in sentences), applied
 
 
+def typography_arabic_list_conjunction(text: str) -> str:
+    """Per Itwadi.com Arabic style guide: Arabic lists retain `و` before
+    each item except the first — unlike English which uses 'and' only
+    before the last item.
+
+      English: "Arabic, Mathematics, and Chemistry"
+      Arabic:  "العربي، والرياضيات، والكيمياء"  (و before each item after first)
+
+    AI translators sometimes produce English-style lists in Arabic. This
+    pass inserts و before list items 2..n.
+
+    CONSERVATIVE detection — only fires when:
+      1. At least 3 comma-separated tokens (the standard "list" threshold)
+      2. ALL tokens are single Arabic words (no internal spaces, ≤20 chars)
+         — this prevents firing on short-clause commas like
+         "كنت سعيداً، رأيت صديقاً" which has multi-word phrases between commas
+      3. Items don't already start with و (preserve already-correct lists)
+
+    Known limitation: the LAST item of a list with a multi-word phrase
+    (e.g., "الأسد، النمر، الفهد، النمر الأسود" — last item is 2 words)
+    gets skipped because the pattern requires single-word items throughout.
+    Worth handling in v2.4.5.
+    """
+    # Pattern: 2+ short Arabic words followed by ،\s+, then one final short word
+    # The {2,} repetition + final token = 3+ items total
+    LIST_RE = re.compile(
+        r'(?:[؀-ۿ]{1,20}،\s+){2,}[؀-ۿ]{1,20}',
+        re.UNICODE,
+    )
+
+    def _add_waw(match: re.Match) -> str:
+        items = re.split(r'،\s+', match.group(0))
+        for i in range(1, len(items)):
+            if not items[i].startswith('و'):
+                items[i] = 'و' + items[i]
+        return '، '.join(items)
+
+    return LIST_RE.sub(_add_waw, text)
+
+
+def typography_quotes_to_arabic_guillemets(text: str, register: str = "news") -> str:
+    """In CLASSICAL register, convert ASCII straight quotes around Arabic
+    content to Arabic guillemets (« »). Per Mawdoo3 and classical academic
+    conventions, « » is the formal Arabic quotation mark; ASCII " " is the
+    modern/news form.
+
+    Register-gated — only fires for `classical`. News/opinion/technical
+    preserve the source's quotation style (modern convention).
+    """
+    if register != "classical":
+        return text
+
+    def _convert(m: re.Match) -> str:
+        content = m.group(1)
+        # Only convert if content contains at least one Arabic letter
+        if re.search(r"[؀-ۿ]", content):
+            return "«" + content + "»"
+        return m.group(0)
+
+    # ASCII straight double quotes
+    text = re.sub(r'"([^"]+)"', _convert, text)
+    # Smart/curly double quotes (U+201C / U+201D)
+    text = re.sub(r'“([^”]+)”', _convert, text)
+    return text
+
+
 def typography_paren_interior_spacing(text: str) -> str:
     """Per multiple Arabic style guides (Kaplan: "no spacing between brackets
     and content"; proof-reading-service; mawdoo3; albuthi):
@@ -4883,8 +4950,13 @@ def typography_em_dash_to_arabic_comma(text: str) -> str:
     return _EM_DASH_ARABIC_RE.sub(r"\1، ", text)
 
 
-def lex_dim15_typography(text: str) -> str:
-    """Dim 15: apply all typography rules with URL/code/decimal protection."""
+def lex_dim15_typography(text: str, register: str = "news") -> str:
+    """Dim 15: apply all typography rules with URL/code/decimal protection.
+
+    `register` parameter (added v2.4.4) determines register-gated behaviors:
+      - classical: enables guillemets conversion («...»)
+      - news/opinion/technical: preserves ASCII quotation marks
+    """
     text, protected = _protect_spans(text)
     text = typography_ar_en_spacing(text)
     text = typography_latin_punct_to_arabic(text)
@@ -4905,6 +4977,11 @@ def lex_dim15_typography(text: str) -> str:
     # (per Kaplan + proof-reading-service: "no spacing between brackets
     # and content"). Strips Arabic interior padding; preserves Latin.
     text = typography_paren_interior_spacing(text)
+    # v2.4.4 additions: list-conjunction و insertion (per Itwadi) and
+    # register-gated ASCII-quotes → Arabic guillemets « » (per Mawdoo3 +
+    # classical academic conventions).
+    text = typography_arabic_list_conjunction(text)
+    text = typography_quotes_to_arabic_guillemets(text, register=register)
     # Collapse any double-spaces introduced
     text = re.sub(r'  +', ' ', text)
     text = _restore_spans(text, protected)
@@ -5070,7 +5147,7 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         # Tashkeel reduction (news/opinion only)
         text = lex_reduce_tashkeel(text, register=register)
         # Apply typography normalization LAST (after enrichment)
-        text = lex_dim15_typography(text)
+        text = lex_dim15_typography(text, register=register)
         # Store the enrichment log in module-level for the caller to retrieve
         lex_pass._enrichments_applied = applied
         return text
@@ -5097,7 +5174,7 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         text = re.sub(r'\s+', ' ', text).strip()
         # Tashkeel reduction (news/opinion only; classical/technical preserve)
         text = lex_reduce_tashkeel(text, register=register)
-        text = lex_dim15_typography(text)             # Typography hygiene LAST
+        text = lex_dim15_typography(text, register=register)             # Typography hygiene LAST
         return text
 
     # ── Standard pipeline with register gating ─────────────────────────────
@@ -5150,7 +5227,7 @@ def lex_pass(text: str, intensity: float, register: str = "news",
     # diacritics. Register-gated — classical preserves traditional tashkeel.
     text = lex_reduce_tashkeel(text, register=register)
     # Dim 15 typography ALWAYS last — safe for every register.
-    text = lex_dim15_typography(text)
+    text = lex_dim15_typography(text, register=register)
     return text
 
 
@@ -6347,6 +6424,53 @@ def main():
     r.check("T24c.no_space_between_close_paren_and_semicolon",
             ") ؛" not in out,
             f"space between ) and ؛ survived: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T25 — list `و` insertion before items 2..n (per Itwadi) (v2.4.4)")
+    print("=" * 60)
+    # Per Itwadi: 'العربي، الرياضيات، الكيمياء' → 'العربي، والرياضيات، والكيمياء'
+    out = run_humanize(
+        "في الفصل الأول درسنا: العربي، الرياضيات، الكيمياء. ثم في الفصل الثاني تناولنا الجغرافيا.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T25a.waw_inserted_before_second_item",
+            "والرياضيات" in out,
+            f"و not inserted before second list item: {out!r}")
+    r.check("T25b.waw_inserted_before_third_item",
+            "والكيمياء" in out,
+            f"و not inserted before third list item: {out!r}")
+
+    # Negative case: short clauses should NOT get و prepended
+    out_clauses = run_humanize(
+        "كنت سعيداً، رأيت صديقاً، كنا مرتاحَين.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T25c.short_clauses_not_treated_as_list",
+            "ورأيت" not in out_clauses and "وكنا" not in out_clauses,
+            f"clause-separator commas incorrectly treated as list: {out_clauses!r}")
+
+    print()
+    print("=" * 60)
+    print("  T26 — ASCII quotes → Arabic guillemets in classical register only (v2.4.4)")
+    print("=" * 60)
+    # Classical register: \"...\" with Arabic content → «...»
+    out_cl = run_humanize(
+        'قال المؤلف "العلم نور" في كتابه الشهير.',
+        "--mode", "tighten", "--register", "classical",
+    )
+    r.check("T26a.classical_converts_to_guillemets",
+            "«العلم نور»" in out_cl or "«" in out_cl,
+            f"classical didn't convert ASCII quotes: {out_cl!r}")
+
+    # News register: \"...\" with Arabic content → unchanged (modern convention)
+    out_news = run_humanize(
+        'قال المؤلف "العلم نور" في كتابه الشهير.',
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T26b.news_preserves_ascii_quotes",
+            '"العلم نور"' in out_news or '"' in out_news,
+            f"news incorrectly converted to guillemets: {out_news!r}")
 
     print()
     print("=" * 60)

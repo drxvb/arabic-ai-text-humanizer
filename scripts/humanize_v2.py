@@ -585,6 +585,72 @@ def lex_enrich(text: str, analyzer_result: dict, max_inserts: int = 3) -> tuple[
     return " ".join(s.strip() for s in sentences), applied
 
 
+def typography_arabic_list_conjunction(text: str) -> str:
+    """Per Itwadi.com Arabic style guide: Arabic lists retain `و` before
+    each item except the first — unlike English which uses 'and' only
+    before the last item.
+
+      English: "Arabic, Mathematics, and Chemistry"
+      Arabic:  "العربي، والرياضيات، والكيمياء"  (و before each item after first)
+
+    AI translators sometimes produce English-style lists in Arabic. This
+    pass inserts و before list items 2..n.
+
+    CONSERVATIVE detection — only fires when:
+      1. At least 3 comma-separated tokens (the standard "list" threshold)
+      2. ALL tokens are single Arabic words (no internal spaces, ≤20 chars)
+         — this prevents firing on short-clause commas like
+         "كنت سعيداً، رأيت صديقاً" which has multi-word phrases between commas
+      3. Items don't already start with و (preserve already-correct lists)
+
+    Known limitation: the LAST item of a list with a multi-word phrase
+    (e.g., "الأسد، النمر، الفهد، النمر الأسود" — last item is 2 words)
+    gets skipped because the pattern requires single-word items throughout.
+    Worth handling in v2.4.5.
+    """
+    # Pattern: 2+ short Arabic words followed by ،\s+, then one final short word
+    # The {2,} repetition + final token = 3+ items total
+    LIST_RE = re.compile(
+        r'(?:[؀-ۿ]{1,20}،\s+){2,}[؀-ۿ]{1,20}',
+        re.UNICODE,
+    )
+
+    def _add_waw(match: re.Match) -> str:
+        items = re.split(r'،\s+', match.group(0))
+        for i in range(1, len(items)):
+            if not items[i].startswith('و'):
+                items[i] = 'و' + items[i]
+        return '، '.join(items)
+
+    return LIST_RE.sub(_add_waw, text)
+
+
+def typography_quotes_to_arabic_guillemets(text: str, register: str = "news") -> str:
+    """In CLASSICAL register, convert ASCII straight quotes around Arabic
+    content to Arabic guillemets (« »). Per Mawdoo3 and classical academic
+    conventions, « » is the formal Arabic quotation mark; ASCII " " is the
+    modern/news form.
+
+    Register-gated — only fires for `classical`. News/opinion/technical
+    preserve the source's quotation style (modern convention).
+    """
+    if register != "classical":
+        return text
+
+    def _convert(m: re.Match) -> str:
+        content = m.group(1)
+        # Only convert if content contains at least one Arabic letter
+        if re.search(r"[؀-ۿ]", content):
+            return "«" + content + "»"
+        return m.group(0)
+
+    # ASCII straight double quotes
+    text = re.sub(r'"([^"]+)"', _convert, text)
+    # Smart/curly double quotes (U+201C / U+201D)
+    text = re.sub(r'“([^”]+)”', _convert, text)
+    return text
+
+
 def typography_paren_interior_spacing(text: str) -> str:
     """Per multiple Arabic style guides (Kaplan: "no spacing between brackets
     and content"; proof-reading-service; mawdoo3; albuthi):
@@ -699,8 +765,13 @@ def typography_em_dash_to_arabic_comma(text: str) -> str:
     return _EM_DASH_ARABIC_RE.sub(r"\1، ", text)
 
 
-def lex_dim15_typography(text: str) -> str:
-    """Dim 15: apply all typography rules with URL/code/decimal protection."""
+def lex_dim15_typography(text: str, register: str = "news") -> str:
+    """Dim 15: apply all typography rules with URL/code/decimal protection.
+
+    `register` parameter (added v2.4.4) determines register-gated behaviors:
+      - classical: enables guillemets conversion («...»)
+      - news/opinion/technical: preserves ASCII quotation marks
+    """
     text, protected = _protect_spans(text)
     text = typography_ar_en_spacing(text)
     text = typography_latin_punct_to_arabic(text)
@@ -721,6 +792,11 @@ def lex_dim15_typography(text: str) -> str:
     # (per Kaplan + proof-reading-service: "no spacing between brackets
     # and content"). Strips Arabic interior padding; preserves Latin.
     text = typography_paren_interior_spacing(text)
+    # v2.4.4 additions: list-conjunction و insertion (per Itwadi) and
+    # register-gated ASCII-quotes → Arabic guillemets « » (per Mawdoo3 +
+    # classical academic conventions).
+    text = typography_arabic_list_conjunction(text)
+    text = typography_quotes_to_arabic_guillemets(text, register=register)
     # Collapse any double-spaces introduced
     text = re.sub(r'  +', ' ', text)
     text = _restore_spans(text, protected)
@@ -886,7 +962,7 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         # Tashkeel reduction (news/opinion only)
         text = lex_reduce_tashkeel(text, register=register)
         # Apply typography normalization LAST (after enrichment)
-        text = lex_dim15_typography(text)
+        text = lex_dim15_typography(text, register=register)
         # Store the enrichment log in module-level for the caller to retrieve
         lex_pass._enrichments_applied = applied
         return text
@@ -913,7 +989,7 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         text = re.sub(r'\s+', ' ', text).strip()
         # Tashkeel reduction (news/opinion only; classical/technical preserve)
         text = lex_reduce_tashkeel(text, register=register)
-        text = lex_dim15_typography(text)             # Typography hygiene LAST
+        text = lex_dim15_typography(text, register=register)             # Typography hygiene LAST
         return text
 
     # ── Standard pipeline with register gating ─────────────────────────────
@@ -966,7 +1042,7 @@ def lex_pass(text: str, intensity: float, register: str = "news",
     # diacritics. Register-gated — classical preserves traditional tashkeel.
     text = lex_reduce_tashkeel(text, register=register)
     # Dim 15 typography ALWAYS last — safe for every register.
-    text = lex_dim15_typography(text)
+    text = lex_dim15_typography(text, register=register)
     return text
 
 

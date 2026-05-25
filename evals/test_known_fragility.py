@@ -476,6 +476,53 @@ def main():
 
     print()
     print("=" * 60)
+    print("  T25 — list `و` insertion before items 2..n (per Itwadi) (v2.4.4)")
+    print("=" * 60)
+    # Per Itwadi: 'العربي، الرياضيات، الكيمياء' → 'العربي، والرياضيات، والكيمياء'
+    out = run_humanize(
+        "في الفصل الأول درسنا: العربي، الرياضيات، الكيمياء. ثم في الفصل الثاني تناولنا الجغرافيا.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T25a.waw_inserted_before_second_item",
+            "والرياضيات" in out,
+            f"و not inserted before second list item: {out!r}")
+    r.check("T25b.waw_inserted_before_third_item",
+            "والكيمياء" in out,
+            f"و not inserted before third list item: {out!r}")
+
+    # Negative case: short clauses should NOT get و prepended
+    out_clauses = run_humanize(
+        "كنت سعيداً، رأيت صديقاً، كنا مرتاحَين.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T25c.short_clauses_not_treated_as_list",
+            "ورأيت" not in out_clauses and "وكنا" not in out_clauses,
+            f"clause-separator commas incorrectly treated as list: {out_clauses!r}")
+
+    print()
+    print("=" * 60)
+    print("  T26 — ASCII quotes → Arabic guillemets in classical register only (v2.4.4)")
+    print("=" * 60)
+    # Classical register: \"...\" with Arabic content → «...»
+    out_cl = run_humanize(
+        'قال المؤلف "العلم نور" في كتابه الشهير.',
+        "--mode", "tighten", "--register", "classical",
+    )
+    r.check("T26a.classical_converts_to_guillemets",
+            "«العلم نور»" in out_cl or "«" in out_cl,
+            f"classical didn't convert ASCII quotes: {out_cl!r}")
+
+    # News register: \"...\" with Arabic content → unchanged (modern convention)
+    out_news = run_humanize(
+        'قال المؤلف "العلم نور" في كتابه الشهير.',
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T26b.news_preserves_ascii_quotes",
+            '"العلم نور"' in out_news or '"' in out_news,
+            f"news incorrectly converted to guillemets: {out_news!r}")
+
+    print()
+    print("=" * 60)
     print(f"  Total: {r.passed + r.failed}  |  PASS: {r.passed}  |  FAIL: {r.failed}")
     print("=" * 60)
     sys.exit(0 if r.failed == 0 else 1)
