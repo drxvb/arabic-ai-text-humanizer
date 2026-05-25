@@ -585,14 +585,51 @@ def lex_enrich(text: str, analyzer_result: dict, max_inserts: int = 3) -> tuple[
     return " ".join(s.strip() for s in sentences), applied
 
 
+def typography_strip_kashida(text: str) -> str:
+    """Strip Arabic kashida/tatweel (U+0640) — modern editorial convention
+    for encoded body text. Kashida is for display typography (logos,
+    posters, justified-text rendering at typeset time), NOT for encoded
+    data. See https://shoairschool.com/basics-of-kashida-in-design/ —
+    rule: 'kashida functions primarily in display settings'.
+
+    Also: in encoded text, kashida fragments search/TTS/accessibility
+    (e.g., 'نظام' vs 'نـظام' are different strings to a search engine).
+    AI translators sometimes inject kashida to 'look more Arabic' — this
+    is the exact opposite of professional Arabic typography.
+    """
+    return text.replace("ـ", "")
+
+
+# Em-dash converter: replace `—` with `، ` when surrounded by Arabic on the
+# left side, otherwise preserve. This catches AI-Arabic where the model
+# carried English em-dashes into Arabic prose, while preserving legitimate
+# Arabic-English mixed contexts (e.g., "OpenAI — مؤسسة" keeps em-dash).
+_EM_DASH_ARABIC_RE = re.compile(r'([؀-ۿ])\s*—\s*')
+
+
+def typography_em_dash_to_arabic_comma(text: str) -> str:
+    """Convert em-dash (U+2014) to Arabic comma (U+060C) when preceded by
+    Arabic letters. Preserves em-dashes in English-context spans.
+
+    Examples:
+      "النص — التعليق"     → "النص، التعليق"     (Arabic context)
+      "OpenAI — مؤسسة"     → "OpenAI — مؤسسة"   (English context preserved)
+      "fast — and reliable" → "fast — and reliable" (no Arabic, preserved)
+    """
+    return _EM_DASH_ARABIC_RE.sub(r"\1، ", text)
+
+
 def lex_dim15_typography(text: str) -> str:
-    """Dim 15: apply all five typography rules with URL/code/decimal protection."""
+    """Dim 15: apply all typography rules with URL/code/decimal protection."""
     text, protected = _protect_spans(text)
     text = typography_ar_en_spacing(text)
     text = typography_latin_punct_to_arabic(text)
     text = typography_punct_spacing(text)
     text = typography_paren_spacing(text)
     text = typography_normalize_numbering(text)
+    # v2.4.1 additions:
+    text = typography_strip_kashida(text)
+    text = typography_em_dash_to_arabic_comma(text)
     # Collapse any double-spaces introduced
     text = re.sub(r'  +', ' ', text)
     text = _restore_spans(text, protected)

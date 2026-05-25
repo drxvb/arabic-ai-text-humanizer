@@ -6,7 +6,24 @@ A multi-pass Arabic-text humanizer that reduces AI fingerprints across **16 dime
 
 The full specification, transformation protocol, dimension definitions, anti-patterns, and worked example all live in **[`SKILL.md`](SKILL.md)**. This README is a one-screen overview.
 
-## What's new in v2.4.0 (current)
+## What's new in v2.4.1 (current)
+
+Two Arabic-typography fixes targeting AI tells that v2.4.0 didn't catch:
+
+**1. Kashida (`ـ` Arabic tatweel, U+0640) stripped from output.** Per the [Shoair School design guide](https://shoairschool.com/basics-of-kashida-in-design/), kashida is for *display typography* (logos, posters, justified-prose typesetting) — **never** for encoded body text in machine-readable digital documents. AI translators sometimes inject it to "look more Arabic"; this is the opposite of professional convention. Stripping is universal across all registers. Example: `الكشيـدة الممـدودة` → `الكشيدة الممدودة`.
+
+**2. Em-dash (`—`) → Arabic comma (`،`) in Arabic-context.** The em-dash is a Western-typography import; modern Arabic uses `،` for clause separation. Conversion is **context-aware** — only fires when an Arabic letter precedes the em-dash. English-context em-dashes are preserved.
+
+| Input | Output | Why |
+|---|---|---|
+| `النص — التعليق` | `النص، التعليق` | Arabic on both sides → convert |
+| `العملاء — تقنية حديثة` | `العملاء، تقنية حديثة` | Arabic on both sides → convert |
+| `OpenAI — مؤسسة` | `OpenAI — مؤسسة` | Latin precedes em-dash → preserve |
+| `fast — and reliable` | `fast — and reliable` | No Arabic → preserve |
+
+**Fragility suite now 35/35** (12 original + 15 v2.2.x + 6 v2.3.0 + 4 v2.4.1 — added T15 for kashida strip + T16/T17 for em-dash context-awareness).
+
+## What's new in v2.4.0
 
 **Dictionary expansion — 93 → 338 entries (3.6× growth).** Adds process / workflow vocabulary, multi-agent / swarm / autonomous-agent terminology (modern AI vocabulary that emerged post-2023), expanded database / DevOps / security, plus new domains: crypto/Web3, climate, healthcare, geopolitics.
 

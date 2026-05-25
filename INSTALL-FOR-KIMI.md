@@ -431,7 +431,8 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 | Version | What changed |
 |---|---|
-| **v2.4.0** | **Dictionary expansion — 93 → 338 entries (3.6×).** Adds process/workflow, agents/swarm/multi-agent (modern AI vocabulary not in v2.3.0), expanded database, DevOps/cloud-native, crypto/Web3, healthcare, climate, geopolitics. New domains: `tech-ai-agents` (35), `tech-crypto` (15), `climate` (15), `healthcare` (11). Expanded domains: `tech-software` (44, +35), `tech-infra` (36, +26), `news-journalism` (44, +28), `business` (43, +27), `tech-security` (31, +20). Built via Claude+Codex multi-LLM swarm on 361 seed terms (300 yielded responses; partial promoted to final because of CLI rate-limit stall on the tail batch); 151 `medium_consensus` entries reflect multi-LLM agreement strength. **Lex pass unchanged** — same `lex_apply_calque_dictionary()`, just more data. Fragility still 31/31. |
+| **v2.4.1** | **Typography fixes** — two AI-Arabic tells that v2.2.0–v2.4.0 didn't catch: (1) **Kashida (Arabic tatweel `ـ`, U+0640) stripped** from output per modern editorial convention — kashida is for display typography (logos, posters, justified-text rendering at typeset time), NEVER for encoded body text; AI translators sometimes inject it to "look more Arabic" which is the exact opposite of professional Arabic typography. Stripping is UNIVERSAL (all registers), not register-gated. (2) **Em-dash `—` converted to Arabic comma `،`** when surrounded by Arabic letters (e.g., `النص — التعليق` → `النص، التعليق`); preserved in English-context (e.g., `OpenAI — مؤسسة` keeps em-dash because `I` is Latin). 4 new fragility test sub-checks (T15–T17). Fragility suite now **35/35**. |
+| v2.4.0 | **Dictionary expansion — 93 → 338 entries (3.6×).** Adds process/workflow, agents/swarm/multi-agent (modern AI vocabulary not in v2.3.0), expanded database, DevOps/cloud-native, crypto/Web3, healthcare, climate, geopolitics. New domains: `tech-ai-agents` (35), `tech-crypto` (15), `climate` (15), `healthcare` (11). Expanded domains: `tech-software` (44, +35), `tech-infra` (36, +26), `news-journalism` (44, +28), `business` (43, +27), `tech-security` (31, +20). Built via Claude+Codex multi-LLM swarm on 361 seed terms (300 yielded responses; partial promoted to final because of CLI rate-limit stall on the tail batch); 151 `medium_consensus` entries reflect multi-LLM agreement strength. **Lex pass unchanged** — same `lex_apply_calque_dictionary()`, just more data. Fragility still 31/31. |
 | v2.3.0 | **Calque-translation dictionary** — initial release. `corpus/calque-dictionary.json` (93 entries, 9 domains, 27 high-confidence + 66 medium). Built via multi-LLM swarm (Claude Sonnet) on 181 seed English terms, validated against an 8,850-article Arabic tech-news corpus (AITNews; 2.88M tokens). New `lex_apply_calque_dictionary()` runs in news/opinion registers (classical/technical preserve source). Double-ال handling for substitutions where input has definite article but key/natural don't agree on prefix. 3 new fragility test classes (T12–T14): dictionary-load verification, multi-domain calque catches, register-gating. Fragility suite now 31/31. |
 | v2.2.0 | `lex_reduce_tashkeel()` added — strips 9 canonical combining diacritics in news/opinion (classical/technical preserve). Hamza-safe (preserves أ إ آ ء ؤ ئ ى) and digit-safe (preserves ٠–٩). Pipeline-calque `خط أنابيب` → `مسار عمل` / `مسار العمل` / `تسلسل العمل` added to `AI_PHRASES_AR`. Five new fragility test classes (T7–T11): hamza preservation, madda preservation, digit preservation, calque substitution, register-gated tashkeel policy. |
 | v2.1.3 | Arabic editorial pass on documentation: replaced English-calque "pipeline" with "مسار عمل" in README.ar.md; reduced ~96% of tashkeel marks in prose; preserved classical-Arabic quotations within `«»` / `""` brackets. |
@@ -4766,14 +4767,51 @@ def lex_enrich(text: str, analyzer_result: dict, max_inserts: int = 3) -> tuple[
     return " ".join(s.strip() for s in sentences), applied
 
 
+def typography_strip_kashida(text: str) -> str:
+    """Strip Arabic kashida/tatweel (U+0640) — modern editorial convention
+    for encoded body text. Kashida is for display typography (logos,
+    posters, justified-text rendering at typeset time), NOT for encoded
+    data. See https://shoairschool.com/basics-of-kashida-in-design/ —
+    rule: 'kashida functions primarily in display settings'.
+
+    Also: in encoded text, kashida fragments search/TTS/accessibility
+    (e.g., 'نظام' vs 'نـظام' are different strings to a search engine).
+    AI translators sometimes inject kashida to 'look more Arabic' — this
+    is the exact opposite of professional Arabic typography.
+    """
+    return text.replace("ـ", "")
+
+
+# Em-dash converter: replace `—` with `، ` when surrounded by Arabic on the
+# left side, otherwise preserve. This catches AI-Arabic where the model
+# carried English em-dashes into Arabic prose, while preserving legitimate
+# Arabic-English mixed contexts (e.g., "OpenAI — مؤسسة" keeps em-dash).
+_EM_DASH_ARABIC_RE = re.compile(r'([؀-ۿ])\s*—\s*')
+
+
+def typography_em_dash_to_arabic_comma(text: str) -> str:
+    """Convert em-dash (U+2014) to Arabic comma (U+060C) when preceded by
+    Arabic letters. Preserves em-dashes in English-context spans.
+
+    Examples:
+      "النص — التعليق"     → "النص، التعليق"     (Arabic context)
+      "OpenAI — مؤسسة"     → "OpenAI — مؤسسة"   (English context preserved)
+      "fast — and reliable" → "fast — and reliable" (no Arabic, preserved)
+    """
+    return _EM_DASH_ARABIC_RE.sub(r"\1، ", text)
+
+
 def lex_dim15_typography(text: str) -> str:
-    """Dim 15: apply all five typography rules with URL/code/decimal protection."""
+    """Dim 15: apply all typography rules with URL/code/decimal protection."""
     text, protected = _protect_spans(text)
     text = typography_ar_en_spacing(text)
     text = typography_latin_punct_to_arabic(text)
     text = typography_punct_spacing(text)
     text = typography_paren_spacing(text)
     text = typography_normalize_numbering(text)
+    # v2.4.1 additions:
+    text = typography_strip_kashida(text)
+    text = typography_em_dash_to_arabic_comma(text)
     # Collapse any double-spaces introduced
     text = re.sub(r'  +', ' ', text)
     text = _restore_spans(text, protected)
@@ -6017,6 +6055,60 @@ def main():
     r.check("T14.technical_preserves_calque",
             "مونيتورينغ" in out_tech,
             f"technical register substituted: {out_tech[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T15 — kashida (Arabic tatweel ـ) stripped from output (v2.4.1)")
+    print("=" * 60)
+    # AI-Arabic sometimes injects kashida to 'look more Arabic'. Modern editorial
+    # convention treats kashida in encoded body text as wrong (it's for display
+    # typography only). The typography pass must strip every U+0640.
+    out = run_humanize(
+        "هذا اختبار للتحقق من إزالة الكشيـدة من النص العـربي المـتدفق.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T15.kashida_stripped_news",
+            "ـ" not in out,
+            f"kashida (U+0640) survived in output: {out!r}")
+    # Verify universal (not just news): classical should also strip per universal
+    # editorial convention. (Future: if classical opts to preserve, change here.)
+    out_cl = run_humanize(
+        "هذا اختبار للتحقق من إزالة الكشيـدة من النص العـربي المـتدفق.",
+        "--mode", "tighten", "--register", "classical",
+    )
+    r.check("T15.kashida_stripped_classical_too",
+            "ـ" not in out_cl,
+            f"kashida survived in classical register: {out_cl!r}")
+
+    print()
+    print("=" * 60)
+    print("  T16 — em-dash → Arabic comma when surrounded by Arabic (v2.4.1)")
+    print("=" * 60)
+    # Em-dash between Arabic clauses is a Western-typography import; modern
+    # Arabic style uses Arabic comma. Pattern: <Arabic> — <text> becomes
+    # <Arabic>، <text>
+    out = run_humanize(
+        "الذكاء الاصطناعي — تقنية حديثة — يغير الصناعات.",
+        "--mode", "tighten", "--register", "news",
+    )
+    # Both em-dashes are between Arabic, so both should become Arabic commas
+    r.check("T16.arabic_em_dash_converted",
+            "—" not in out and "،" in out,
+            f"em-dash not converted: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T17 — em-dash preserved when adjacent to Latin (v2.4.1)")
+    print("=" * 60)
+    # When em-dash is between English content, preserve it — it's legitimate
+    # English-context typography that happens to live in Arabic prose.
+    out = run_humanize(
+        "OpenAI — a company — released GPT-4 last year.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T17.english_em_dash_preserved",
+            "—" in out,
+            f"em-dash incorrectly stripped from English context: {out!r}")
 
     print()
     print("=" * 60)

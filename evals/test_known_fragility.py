@@ -277,6 +277,60 @@ def main():
 
     print()
     print("=" * 60)
+    print("  T15 — kashida (Arabic tatweel ـ) stripped from output (v2.4.1)")
+    print("=" * 60)
+    # AI-Arabic sometimes injects kashida to 'look more Arabic'. Modern editorial
+    # convention treats kashida in encoded body text as wrong (it's for display
+    # typography only). The typography pass must strip every U+0640.
+    out = run_humanize(
+        "هذا اختبار للتحقق من إزالة الكشيـدة من النص العـربي المـتدفق.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T15.kashida_stripped_news",
+            "ـ" not in out,
+            f"kashida (U+0640) survived in output: {out!r}")
+    # Verify universal (not just news): classical should also strip per universal
+    # editorial convention. (Future: if classical opts to preserve, change here.)
+    out_cl = run_humanize(
+        "هذا اختبار للتحقق من إزالة الكشيـدة من النص العـربي المـتدفق.",
+        "--mode", "tighten", "--register", "classical",
+    )
+    r.check("T15.kashida_stripped_classical_too",
+            "ـ" not in out_cl,
+            f"kashida survived in classical register: {out_cl!r}")
+
+    print()
+    print("=" * 60)
+    print("  T16 — em-dash → Arabic comma when surrounded by Arabic (v2.4.1)")
+    print("=" * 60)
+    # Em-dash between Arabic clauses is a Western-typography import; modern
+    # Arabic style uses Arabic comma. Pattern: <Arabic> — <text> becomes
+    # <Arabic>، <text>
+    out = run_humanize(
+        "الذكاء الاصطناعي — تقنية حديثة — يغير الصناعات.",
+        "--mode", "tighten", "--register", "news",
+    )
+    # Both em-dashes are between Arabic, so both should become Arabic commas
+    r.check("T16.arabic_em_dash_converted",
+            "—" not in out and "،" in out,
+            f"em-dash not converted: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T17 — em-dash preserved when adjacent to Latin (v2.4.1)")
+    print("=" * 60)
+    # When em-dash is between English content, preserve it — it's legitimate
+    # English-context typography that happens to live in Arabic prose.
+    out = run_humanize(
+        "OpenAI — a company — released GPT-4 last year.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T17.english_em_dash_preserved",
+            "—" in out,
+            f"em-dash incorrectly stripped from English context: {out!r}")
+
+    print()
+    print("=" * 60)
     print(f"  Total: {r.passed + r.failed}  |  PASS: {r.passed}  |  FAIL: {r.failed}")
     print("=" * 60)
     sys.exit(0 if r.failed == 0 else 1)
