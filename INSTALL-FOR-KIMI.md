@@ -130,6 +130,17 @@ description: Arabic-text humanizer scoring along 16 dimensions — cognitive str
 
 # Arabic AI-Text Humanizer — Cognitive + Rhetorical + Reader-Respect Layer
 
+## Languages supported
+
+| Language | Status |
+|---|---|
+| **Modern Standard Arabic (MSA), classical-leaning** | ✅ Primary target — all 16 dimensions calibrated for this register |
+| Arabic dialects (Egyptian, Levantine, Khaleeji, Maghrebi, etc.) | ❌ Not supported — lexical tables and dimensions assume MSA |
+| Code-switched Arabic + English | ❌ Untested — English spans may be misprocessed |
+| English | ❌ Out of scope — use a separate English-targeted humanizer |
+| Right-to-left + left-to-right Bidi-mixed text | ⚠️ Plain text only; Bidi marks not preserved |
+| Quranic recitation marks (U+06D6–U+06ED) | ⚠️ Preserved verbatim but not generated |
+
 ## Scope: Humanizer ≠ Localizer (per cross-LLM critique)
 
 **This skill is a `Humanizer`, not a `Localizer`.** Load-bearing distinction:
@@ -188,13 +199,34 @@ python scripts/humanize_v2.py --input <file> --mode lex-only [--intensity 0.5]
 ```
 
 Applies the deterministic lexical pipeline:
-- Phrase substitution from `references/13-inherited-lexical-tables.md`
-- Connector swap
-- Sentence-starter diversification
-- Structural pattern breaking
-- Rhythm variance (sentence-length variation)
+- Phrase substitution from `references/13-inherited-lexical-tables.md`, including:
+  - AI-formulaic hedge deletion (`في الواقع`, `بكل تأكيد`, etc. — pro-drop where possible)
+  - Clause-preserving formulaic-opener substitution (`أن`-bearing patterns)
+  - **English-calque → native Arabic** (v2.2.0) — `خط أنابيب` → `مسار عمل` / `مسار العمل`
+- Connector swap (breaks the و-monoculture flagged by Dim 16 الفصل والوصل)
+- Quote-verb rotation (env-gated only: `HUMANIZER_ALLOW_QUOTE_ROTATION=1`)
+- Intensifier de-stacking
+- Dim 14 anti-redundancy passes
+- Pronoun diversification (register-gated: opinion/classical only)
+- Sentence-length variance (register-gated: classical/opinion when intensity > 0.3)
+- **Tashkeel reduction** (v2.2.0, register-gated: news/opinion strip; classical/technical preserve)
+- Dim 15 typography hygiene (always last)
 
 Deterministic with `--seed`. Reproducible. No LLM call. ~1s runtime.
+
+#### Register × lex-pass gating
+
+| Pass | classical | news | opinion | technical |
+|---|:-:|:-:|:-:|:-:|
+| Phrase substitution + connector swap | ✓ | ✓ | ✓ | ✓ |
+| Pipeline-calque → workflow (v2.2.0) | ✓ | ✓ | ✓ | ✓ |
+| Structural opener rewrites | ✓ | ✓ | ✓ | — |
+| Quote-verb rotation (env-gated `=1`) | ✓ | — | ✓ | — |
+| Pronoun diversification | ✓ | — | ✓ | — |
+| Sentence-length variance | ✓ | — | ✓ | — |
+| **Tashkeel reduction (v2.2.0)** | — | ✓ | ✓ | — |
+| Dim 14 anti-redundancy | ✓ | ✓ | ✓ | ✓ |
+| Dim 15 typography hygiene | ✓ | ✓ | ✓ | ✓ |
 
 ### Stage 2 — Cognitive pass (LLM-augmented)
 
@@ -393,6 +425,17 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 - `scripts/mine_corpus.py` — One-time corpus miner (produces empirical-patterns.json)
 - `scripts/score_humanness.py` — 13-dimension scoring rubric
 - `scripts/llm_transform.py` — LLM-call wrapper with OpenAI-compatible-API + local-Ollama routing
+
+## Version history
+
+| Version | What changed |
+|---|---|
+| **v2.2.0** | `lex_reduce_tashkeel()` added — strips 9 canonical combining diacritics in news/opinion (classical/technical preserve). Hamza-safe (preserves أ إ آ ء ؤ ئ ى) and digit-safe (preserves ٠–٩). Pipeline-calque `خط أنابيب` → `مسار عمل` / `مسار العمل` / `تسلسل العمل` added to `AI_PHRASES_AR`. Five new fragility test classes (T7–T11): hamza preservation, madda preservation, digit preservation, calque substitution, register-gated tashkeel policy. |
+| v2.1.3 | Arabic editorial pass on documentation: replaced English-calque "pipeline" with "مسار عمل" in README.ar.md; reduced ~96% of tashkeel marks in prose; preserved classical-Arabic quotations within `«»` / `""` brackets. |
+| v2.1.2 | `examples/` directory added — 6 byte-deterministic worked examples covering register × mode combinations. README + README.ar.md gained source-size + effort disclosure. |
+| v2.1.1 | Corpus-stats refactor: replaced `8.5 GB classical-Arabic dataset` wording with lexicon-level statistics (1.31M sentences / 71.28M tokens / 4 register categories / ~87s mining time). Multi-LLM CLI security audit (regex + Claude Sonnet + Codex). Hardcoded path leak in `corpus/empirical-patterns.json` redacted. |
+| v2.1.0 | Provider-agnostic refactor. `BACKENDS` dict collapsed from `kimi`/`minimax`/`local` to `api`/`local`. Universal env vars `LLM_API_URL` / `LLM_API_KEY` / `LLM_MODEL`. CLI overrides `--backend-url`/`--auth-token`/`--model`. `INSTALL-FOR-KIMI.md` added (markdown installer for Kimi CLI which doesn't import .skill ZIPs). |
+| v2.0.0 | Initial public release. 16-dimension humanness framework, 6 modes, 4 register policies, cross-LLM-critique-informed lexical layer, pre-flight safety check, 20 golden tests + 12 fragility assertions. |
 
 ## Anti-Patterns (NEVER do)
 
@@ -4863,6 +4906,9 @@ def lex_pass(text: str, intensity: float, register: str = "news",
     # Caps at 3 insertions per text. Targets dims 1, 4, 5, 6, 7, 8, 13.
     # Dims 10, 11, 12 (historical/imagination/rhetoric) need LLM — skipped here.
     if mode == "enrich":
+        # Early tashkeel reduction (news/opinion) ensures pattern matching in
+        # lex_replace_phrases sees normalized text. No-op for classical/technical.
+        text = lex_reduce_tashkeel(text, register=register)
         # First: full lex pass (deletions + phrase swaps etc.)
         text = lex_replace_phrases(text)
         text = lex_replace_connectors(text)
@@ -4900,6 +4946,9 @@ def lex_pass(text: str, intensity: float, register: str = "news",
     # voice), sentence-length variance (changes pyramid structure), connector
     # swaps (changes argument flow).
     if mode == "tighten":
+        # Early tashkeel reduction (news/opinion only) so phrase matching
+        # sees normalized text. Classical/technical pass through unchanged.
+        text = lex_reduce_tashkeel(text, register=register)
         text = lex_replace_phrases(text)              # Remove AI signature phrases
         text = lex_destack_intensifiers(text)         # Collapse "صعب ومعقّد" etc.
         text = lex_dim14_anti_tautology(text)         # "مؤكَّد وحقيقي وثابت" → "مؤكَّد"
@@ -4914,6 +4963,9 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         return text
 
     # ── Standard pipeline with register gating ─────────────────────────────
+    # Early tashkeel reduction (news/opinion) ensures phrase patterns match
+    # normalized text. Classical/technical passes through unchanged.
+    text = lex_reduce_tashkeel(text, register=register)
     text = lex_replace_phrases(text)             # Gap A: safe for all registers
     text = lex_replace_connectors(text)          # Gap B: safe for all registers
 

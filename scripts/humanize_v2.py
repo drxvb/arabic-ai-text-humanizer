@@ -728,6 +728,9 @@ def lex_pass(text: str, intensity: float, register: str = "news",
     # Caps at 3 insertions per text. Targets dims 1, 4, 5, 6, 7, 8, 13.
     # Dims 10, 11, 12 (historical/imagination/rhetoric) need LLM — skipped here.
     if mode == "enrich":
+        # Early tashkeel reduction (news/opinion) ensures pattern matching in
+        # lex_replace_phrases sees normalized text. No-op for classical/technical.
+        text = lex_reduce_tashkeel(text, register=register)
         # First: full lex pass (deletions + phrase swaps etc.)
         text = lex_replace_phrases(text)
         text = lex_replace_connectors(text)
@@ -765,6 +768,9 @@ def lex_pass(text: str, intensity: float, register: str = "news",
     # voice), sentence-length variance (changes pyramid structure), connector
     # swaps (changes argument flow).
     if mode == "tighten":
+        # Early tashkeel reduction (news/opinion only) so phrase matching
+        # sees normalized text. Classical/technical pass through unchanged.
+        text = lex_reduce_tashkeel(text, register=register)
         text = lex_replace_phrases(text)              # Remove AI signature phrases
         text = lex_destack_intensifiers(text)         # Collapse "صعب ومعقّد" etc.
         text = lex_dim14_anti_tautology(text)         # "مؤكَّد وحقيقي وثابت" → "مؤكَّد"
@@ -779,6 +785,9 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         return text
 
     # ── Standard pipeline with register gating ─────────────────────────────
+    # Early tashkeel reduction (news/opinion) ensures phrase patterns match
+    # normalized text. Classical/technical passes through unchanged.
+    text = lex_reduce_tashkeel(text, register=register)
     text = lex_replace_phrases(text)             # Gap A: safe for all registers
     text = lex_replace_connectors(text)          # Gap B: safe for all registers
 

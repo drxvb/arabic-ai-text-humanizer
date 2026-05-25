@@ -10,6 +10,7 @@ All examples here are **byte-deterministic** — they use `--mode lex-only` or `
 | 04 | [Classical × lex-only — connector diversification](04-classical-lex-only-connector-diversification.md) | lex-only | classical | و-monoculture broken with alternating classical connectors |
 | 05 | [Diagnostic — 16-dim scorecard](05-diagnostic-only-analyze.md) | — | — | `analyze_deep` produces a dimension-by-dimension report without transforming |
 | 06 | [Pre-flight — flagging hazards](06-preflight-flagging-unsourced-stat.md) | — | — | `preflight_check` flags unsourced stats, anonymous sources, hostile attribution verbs |
+| 07 | [v2.2.0 — tashkeel + calque](07-v2.2.0-tashkeel-and-calque.md) | tighten | news | **New in v2.2.0:** `خط أنابيب` → `مسار العمل`, tashkeel reduction (news/opinion only), hamza/digit preservation |
 
 ## LLM-augmented modes — why they're NOT in the canonical examples
 

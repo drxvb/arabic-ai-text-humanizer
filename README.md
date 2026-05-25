@@ -6,6 +6,15 @@ A multi-pass Arabic-text humanizer that reduces AI fingerprints across **16 dime
 
 The full specification, transformation protocol, dimension definitions, anti-patterns, and worked example all live in **[`SKILL.md`](SKILL.md)**. This README is a one-screen overview.
 
+## What's new in v2.2.0 (current)
+
+The lex pipeline now applies two editorial passes that previous versions did only in documentation:
+
+1. **Pipeline-calque → native Arabic.** `خط أنابيب` (the English "pipeline" calque, literally "line of pipes") is automatically replaced with `مسار عمل` / `مسار العمل` / `تسلسل العمل`. The skill catches this AI-translation tell on every lex pass.
+2. **Hamza-safe tashkeel reduction.** Excessive diacritics in `--register news` / `opinion` are stripped per modern editorial convention. Hamza letter forms (`أ`, `إ`, `آ`, `ء`, `ؤ`, `ئ`, `ى`) and Arabic-Indic digits (`٠–٩`) are **always preserved** — they're distinct lexemes, not stylistic markers. `--register classical` / `technical` preserve all tashkeel.
+
+Five new fragility tests guard these behaviors (T7–T11): hamza preservation (`إن` ≠ `أن`, `إما` ≠ `أما`), madda preservation (`قرآن`, `آلام`, `أحصنة`), Arabic-digit preservation, calque substitution, and register-gated tashkeel policy. See [Version history](#version-history) below for the full v2.0 → v2.2 progression.
+
 ## What it does
 
 Rewrites AI-generated Arabic prose to be less mechanical at the *style* and *cognitive-structure* layer — adding visible reasoning steps, classical-rhetorical figures (when register allows), graduated explanation, scope markers, and reader-respect restraint. Includes a pre-flight safety check for factual/ethical/sourcing hazards.
@@ -13,6 +22,63 @@ Rewrites AI-generated Arabic prose to be less mechanical at the *style* and *cog
 Six transformation modes ranging from `lex-only` (deterministic, ~1s, no LLM) to `full` (4-pass cognitive + rhetorical + coherence). Four register policies (`classical / news / opinion / technical`) gate which transformations fire.
 
 **Scope:** humanization, **not** localization. BCP47 locale tags, ICU MessageFormat plurals, and SSML are out of scope by design.
+
+## Languages supported
+
+| Language | Status |
+|---|---|
+| **Modern Standard Arabic (MSA), classical-leaning** | ✅ Primary target. All 16 dimensions calibrated for this register. |
+| Arabic dialects (Egyptian, Levantine, Khaleeji, Maghrebi, …) | ❌ Not supported — lexical tables assume MSA |
+| Code-switched Arabic + English | ❌ Untested |
+| English | ❌ Out of scope — use a separate English-targeted humanizer |
+| Bidi-mixed text (RTL + LTR runs) | ⚠️ Plain text only; Bidi marks not preserved |
+| Quranic recitation marks | ⚠️ Preserved verbatim but not generated |
+
+**Scope:** humanization (style cleaner), **NOT** localization. BCP47 locale tags, ICU MessageFormat plurals, and SSML are deliberately out of scope (see `SKILL.md`'s Scope section).
+
+## Workflow
+
+```
+Input text (Arabic, MSA / classical-leaning)
+    │
+    ├── [optional] Pre-flight check (preflight_check.py)
+    │     └── flags unsourced stats, anonymous sources, hostile attribution verbs
+    │         (exit code 2 with --strict-preflight if HIGH-severity finding)
+    │
+    ▼
+[Stage 0] Diagnostic (analyze_deep.py) — 16-dimension scorecard, no transform
+    │
+    ▼
+[Stage 1] Lexical pass — DETERMINISTIC, no LLM, ~1s, register-aware
+    ├── (news/opinion only) Tashkeel reduction — strip non-disambiguating diacritics
+    ├── Phrase substitution    incl. pipeline-calque → workflow phrasing (v2.2.0)
+    ├── Connector swap         breaks the و-monoculture (Dim 16)
+    ├── Structural opener rewrites    skipped for technical register
+    ├── Quote-verb rotation    env-gated (HUMANIZER_ALLOW_QUOTE_ROTATION=1) only
+    ├── Intensifier de-stacking
+    ├── Dim 14 anti-redundancy (anti-tautology, anti-re-explanation, …)
+    ├── Pronoun diversification     opinion/classical only
+    ├── Sentence-length variance    classical/opinion + intensity > 0.3
+    ├── (news/opinion only) Tashkeel reduction — late-pass cleanup
+    └── Dim 15 typography hygiene — always last (Arabic-English spacing, etc.)
+    │
+    ▼
+[Stage 2] Cognitive pass — LLM, optional (dims 1–8: deduction, inference, …)
+    │
+    ▼
+[Stage 3] Rhetorical pass — LLM, optional (dims 9–13: literary art, historical, …)
+    │
+    ▼
+[Stage 4] Coherence pass — LLM, optional (final polish)
+    │
+    ▼
+[optional] Score (score_humanness.py) — before/after delta, dim-by-dim
+    │
+    ▼
+Output: humanized Arabic text  +  diagnostic report
+```
+
+Stages 0, the pre-flight check, and the lex stage need no API key. Stages 2–4 need `LLM_API_URL` / `LLM_API_KEY` / `LLM_MODEL` set.
 
 ## Installation
 
@@ -83,17 +149,31 @@ Both suites are dependency-free Python 3 stdlib — no `pip install` required.
 
 | Metric | Value |
 |---|---|
-| Total source lines | **6,728** (2,806 Python + 2,340 Markdown + 1,582 JSON) |
-| Files in the skill | **31** (16 references + 6 scripts + 2 evals + 1 corpus stats + LICENSE + SKILL.md + .gitignore + config.example.json + README + INSTALL-FOR-KIMI + 1 examples README) |
+| Total source lines | **7,138** (2,952 Python + 2,604 Markdown + 1,582 JSON) |
+| Files in the skill | **49** counting all .input/.output/.report fixtures (16 references + 6 scripts + 2 evals + 1 corpus stats + LICENSE + SKILL.md + .gitignore + config.example.json + README + README.ar.md + INSTALL-FOR-KIMI + 7 example narratives + 14 example fixtures) |
 | 16-dimension framework documentation | 16 deep-dive reference files, ~2,000 lines of Arabic+English explanatory text |
 | Empirical corpus mining | **100,000 records sampled** → **1,310,649 sentences**, **71,278,688 tokens** across 4 register categories (Qur'an, classical/modern, news, lexicon). Mining time: **≈87 seconds**. Tracked: 50 connector types + 50 sentence-initial-token types. |
-| Regression coverage | 20 golden cases + 12 fragility assertions = **32 deterministic tests**, all passing, dependency-free (Python 3 stdlib only) |
+| Test runtime | Both suites finish in under 60 seconds total, Python 3 stdlib only, no `pip install` |
 | Cross-LLM critique iterations | **4 independent perspectives** (cognitive-structure, rhetorical decomposition, transitions/literary-art, historical/coherence) folded into the 16-dimension framework |
-| Worked examples shipped | **6 byte-deterministic examples** covering `news/tighten`, `opinion/tighten`, `technical/tighten`, `classical/lex-only`, plus diagnostic-only and pre-flight-only |
+| Worked examples shipped | **7 byte-deterministic examples** covering the four `register × mode` combinations, the read-only `analyze_deep` diagnostic, the read-only `preflight_check`, and (v2.2.0) the combined tashkeel-reduction + calque-substitution demonstration |
+| Regression coverage | 20 golden cases + **27 fragility sub-checks** = 47 deterministic assertions, all passing |
 | Distributable variants | **5 release assets** — 1 universal `.skill` bundle + 3 provider-tuned `.skill` bundles (Moonshot/Kimi, MiniMax, Anthropic-via-proxy) + 1 markdown installer for Kimi CLI |
 | Provider-agnostic | Any OpenAI-compatible chat-completions endpoint (OpenAI, Moonshot, MiniMax, Together, Groq, DeepSeek, local Ollama, …) |
 
-This is what shipped publicly at v2.1.1. Effort across multiple iterations spanning the v1 → v2.0 → v2.1 → v2.1.1 lineage (cognitive-framework design, cross-LLM critique synthesis, portability refactor, security audit, public-release packaging).
+This is what shipped publicly at v2.2.0. Effort across multiple iterations spanning the lineage below (cognitive-framework design, cross-LLM critique synthesis, portability refactor, security audit, Arabic editorial polish, runtime tashkeel reducer).
+
+## Version history
+
+| Tag | Highlight |
+|---|---|
+| **v2.2.0** | `lex_reduce_tashkeel()` added to the lex pipeline — hamza-safe + digit-safe, register-gated. Pipeline-calque `خط أنابيب` → `مسار عمل` substitution. Fragility tests T7–T11 (27 sub-checks total). |
+| v2.1.3 | Arabic editorial pass on documentation: pipeline-calque rename, ~96% tashkeel reduction in prose, classical-Arabic quotations preserved within bracket pairs. |
+| v2.1.2 | `examples/` directory with 6 byte-deterministic worked examples. README localization. |
+| v2.1.1 | Corpus-stats refactor (replaced "8.5 GB" wording with lexicon stats). Multi-LLM CLI security audit. Hardcoded path leak in `empirical-patterns.json` redacted. |
+| v2.1.0 | Provider-agnostic refactor — `BACKENDS` collapsed to `api`/`local`, universal `LLM_*` env vars. INSTALL-FOR-KIMI.md markdown installer added. |
+| v2.0.0 | Initial public release — 16-dimension framework, 6 modes, 4 register policies, cross-LLM-critique-informed lexical layer. |
+
+Full release notes per tag: [GitHub Releases](../../releases).
 
 ## License
 
