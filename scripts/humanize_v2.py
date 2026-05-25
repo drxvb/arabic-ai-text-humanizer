@@ -585,6 +585,31 @@ def lex_enrich(text: str, analyzer_result: dict, max_inserts: int = 3) -> tuple[
     return " ".join(s.strip() for s in sentences), applied
 
 
+def typography_paren_interior_spacing(text: str) -> str:
+    """Per multiple Arabic style guides (Kaplan: "no spacing between brackets
+    and content"; proof-reading-service; mawdoo3; albuthi):
+    parentheses should NOT have spacing immediately inside their boundaries
+    when wrapping Arabic content.
+
+    Also: closing paren followed by punctuation should have the punctuation
+    attached (per the universal no-pre-space rule from v2.4.2).
+
+    Examples:
+      '( محتوى )'    → '(محتوى)'    (Arabic interior spaces removed)
+      'النص (الإيضاح) .'  → 'النص (الإيضاح).'   (space before . after ) removed)
+
+    PRESERVES Latin content paren padding (already added by
+    typography_paren_spacing for Latin-in-Arabic Bidi clarity).
+    """
+    # Strip space AFTER opening paren when followed by Arabic letter
+    text = re.sub(r'\(\s+(?=[؀-ۿ])', '(', text)
+    # Strip space BEFORE closing paren when preceded by Arabic letter
+    text = re.sub(r'(?<=[؀-ۿ])\s+\)', ')', text)
+    # Strip space between closing paren and any following punctuation
+    text = re.sub(r'\)\s+([،؛؟:!.])', r')\1', text)
+    return text
+
+
 def typography_comma_to_semicolon_before_causal(text: str) -> str:
     """Per multiple authoritative Arabic style guides (Al Jazeera Learning,
     Loghate, Drasah, KSU, Mawdoo3, Mobt3ath), the Arabic SEMICOLON (؛) — not
@@ -692,6 +717,10 @@ def lex_dim15_typography(text: str) -> str:
     # typography_comma_to_semicolon_before_causal docstrings)
     text = typography_no_space_before_arabic_punct(text)
     text = typography_comma_to_semicolon_before_causal(text)
+    # v2.4.3 addition: parenthesis interior-spacing normalization
+    # (per Kaplan + proof-reading-service: "no spacing between brackets
+    # and content"). Strips Arabic interior padding; preserves Latin.
+    text = typography_paren_interior_spacing(text)
     # Collapse any double-spaces introduced
     text = re.sub(r'  +', ' ', text)
     text = _restore_spans(text, protected)

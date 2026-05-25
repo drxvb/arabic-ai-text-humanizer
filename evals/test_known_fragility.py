@@ -440,6 +440,42 @@ def main():
 
     print()
     print("=" * 60)
+    print("  T23 — parenthesis interior spacing: Arabic content padded → unpadded (v2.4.3)")
+    print("=" * 60)
+    # Universal rule from Kaplan + proof-reading-service: no spacing inside
+    # parens when wrapping Arabic content.
+    out = run_humanize(
+        "هذه جملة ( مع تعليق ) ثم نقطة.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T23a.no_space_after_open_paren_arabic",
+            "( " not in out or "(م" in out,
+            f"space after ( with Arabic content survived: {out!r}")
+    r.check("T23b.no_space_before_close_paren_arabic",
+            " )" not in out or "ق)" in out,
+            f"space before ) with Arabic content survived: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T24 — closing paren attached to following punctuation (v2.4.3)")
+    print("=" * 60)
+    out = run_humanize(
+        "النص (الإيضاح) . ثم جملة (أخرى) ، وآخر (ثالث) ؛ نهاية.",
+        "--mode", "tighten", "--register", "news",
+    )
+    # Closing paren + space + punctuation should become closing paren + punctuation
+    r.check("T24a.no_space_between_close_paren_and_period",
+            ") ." not in out,
+            f"space between ) and . survived: {out!r}")
+    r.check("T24b.no_space_between_close_paren_and_comma",
+            ") ،" not in out,
+            f"space between ) and ، survived: {out!r}")
+    r.check("T24c.no_space_between_close_paren_and_semicolon",
+            ") ؛" not in out,
+            f"space between ) and ؛ survived: {out!r}")
+
+    print()
+    print("=" * 60)
     print(f"  Total: {r.passed + r.failed}  |  PASS: {r.passed}  |  FAIL: {r.failed}")
     print("=" * 60)
     sys.exit(0 if r.failed == 0 else 1)

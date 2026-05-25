@@ -431,7 +431,8 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 | Version | What changed |
 |---|---|
-| **v2.4.2** | **Authoritative-source-based punctuation rules.** Researched 9 Arabic style guides (Al Jazeera Learning, Drasah, Loghate ×2, Mawdoo3, Mobt3ath, KSU College of Humanities, Itwadi, Shoair School). Implemented: (1) **No space before Arabic punctuation** (`،`، `؛`، `؟`، `:`، `!`، `.`) — the universal rule from all sources ("ملاصقة للكلمة التي قبلها"). (2) **Comma → semicolon before unambiguous causal connectors** (`لأن`، `لأنّ`، `لذلك`، `لذا`، `ومن ثَمَّ`) — semicolon is the correct mark before causal clauses per multiple sources; ambiguous connectors (`إذ`، `حيث`) skipped to avoid false conversions ("when"/"where" vs "because"). (3) Made existing Latin→Arabic punctuation rules explicit via T19-T21 tests (formerly inherited from v1, now fragility-guarded). Deferred to v2.4.3: list-conjunction `و` between Arabic list items (requires multi-pass context detection), LRM-Bidi handling (render-time concern). Fragility suite now **51/51**. |
+| **v2.4.3** | **Parenthesis interior-spacing normalization.** Researched 4 more Arabic style guides (Albuthi, Alukah academic, proof-reading-service, Kaplan International — 13 total now). The new rule from Kaplan + proof-reading-service: "no spacing between brackets and content". `typography_paren_interior_spacing()` (1) strips space immediately after `(` when followed by Arabic letter, (2) strips space before `)` when preceded by Arabic letter, (3) strips space between `)` and following punctuation. Example: `هذه جملة ( مع تعليق ) ، ثم آخر` → `هذه جملة (مع تعليق)، ثم آخر`. Preserves existing Latin-content paren padding (for English-in-Arabic Bidi clarity). 5 new fragility sub-checks (T23–T24). Fragility now **56/56**. |
+| v2.4.2 | **Authoritative-source-based punctuation rules.** Researched 9 Arabic style guides (Al Jazeera Learning, Drasah, Loghate ×2, Mawdoo3, Mobt3ath, KSU College of Humanities, Itwadi, Shoair School). Implemented: (1) **No space before Arabic punctuation** (`،`، `؛`، `؟`، `:`، `!`، `.`) — the universal rule from all sources ("ملاصقة للكلمة التي قبلها"). (2) **Comma → semicolon before unambiguous causal connectors** (`لأن`، `لأنّ`، `لذلك`، `لذا`، `ومن ثَمَّ`) — semicolon is the correct mark before causal clauses per multiple sources; ambiguous connectors (`إذ`، `حيث`) skipped to avoid false conversions ("when"/"where" vs "because"). (3) Made existing Latin→Arabic punctuation rules explicit via T19-T21 tests (formerly inherited from v1, now fragility-guarded). Deferred to v2.4.3: list-conjunction `و` between Arabic list items (requires multi-pass context detection), LRM-Bidi handling (render-time concern). Fragility suite now **51/51**. |
 | v2.4.1 | **Typography fixes** — two AI-Arabic tells that v2.2.0–v2.4.0 didn't catch: (1) **Kashida (Arabic tatweel `ـ`, U+0640) stripped** from output per modern editorial convention — kashida is for display typography (logos, posters, justified-text rendering at typeset time), NEVER for encoded body text; AI translators sometimes inject it to "look more Arabic" which is the exact opposite of professional Arabic typography. Stripping is UNIVERSAL (all registers), not register-gated. (2) **Em-dash `—` converted to Arabic comma `،`** when surrounded by Arabic letters (e.g., `النص — التعليق` → `النص، التعليق`); preserved in English-context (e.g., `OpenAI — مؤسسة` keeps em-dash because `I` is Latin). 4 new fragility test sub-checks (T15–T17). Fragility suite now **35/35**. |
 | v2.4.0 | **Dictionary expansion — 93 → 338 entries (3.6×).** Adds process/workflow, agents/swarm/multi-agent (modern AI vocabulary not in v2.3.0), expanded database, DevOps/cloud-native, crypto/Web3, healthcare, climate, geopolitics. New domains: `tech-ai-agents` (35), `tech-crypto` (15), `climate` (15), `healthcare` (11). Expanded domains: `tech-software` (44, +35), `tech-infra` (36, +26), `news-journalism` (44, +28), `business` (43, +27), `tech-security` (31, +20). Built via Claude+Codex multi-LLM swarm on 361 seed terms (300 yielded responses; partial promoted to final because of CLI rate-limit stall on the tail batch); 151 `medium_consensus` entries reflect multi-LLM agreement strength. **Lex pass unchanged** — same `lex_apply_calque_dictionary()`, just more data. Fragility still 31/31. |
 | v2.3.0 | **Calque-translation dictionary** — initial release. `corpus/calque-dictionary.json` (93 entries, 9 domains, 27 high-confidence + 66 medium). Built via multi-LLM swarm (Claude Sonnet) on 181 seed English terms, validated against an 8,850-article Arabic tech-news corpus (AITNews; 2.88M tokens). New `lex_apply_calque_dictionary()` runs in news/opinion registers (classical/technical preserve source). Double-ال handling for substitutions where input has definite article but key/natural don't agree on prefix. 3 new fragility test classes (T12–T14): dictionary-load verification, multi-domain calque catches, register-gating. Fragility suite now 31/31. |
@@ -4768,6 +4769,31 @@ def lex_enrich(text: str, analyzer_result: dict, max_inserts: int = 3) -> tuple[
     return " ".join(s.strip() for s in sentences), applied
 
 
+def typography_paren_interior_spacing(text: str) -> str:
+    """Per multiple Arabic style guides (Kaplan: "no spacing between brackets
+    and content"; proof-reading-service; mawdoo3; albuthi):
+    parentheses should NOT have spacing immediately inside their boundaries
+    when wrapping Arabic content.
+
+    Also: closing paren followed by punctuation should have the punctuation
+    attached (per the universal no-pre-space rule from v2.4.2).
+
+    Examples:
+      '( محتوى )'    → '(محتوى)'    (Arabic interior spaces removed)
+      'النص (الإيضاح) .'  → 'النص (الإيضاح).'   (space before . after ) removed)
+
+    PRESERVES Latin content paren padding (already added by
+    typography_paren_spacing for Latin-in-Arabic Bidi clarity).
+    """
+    # Strip space AFTER opening paren when followed by Arabic letter
+    text = re.sub(r'\(\s+(?=[؀-ۿ])', '(', text)
+    # Strip space BEFORE closing paren when preceded by Arabic letter
+    text = re.sub(r'(?<=[؀-ۿ])\s+\)', ')', text)
+    # Strip space between closing paren and any following punctuation
+    text = re.sub(r'\)\s+([،؛؟:!.])', r')\1', text)
+    return text
+
+
 def typography_comma_to_semicolon_before_causal(text: str) -> str:
     """Per multiple authoritative Arabic style guides (Al Jazeera Learning,
     Loghate, Drasah, KSU, Mawdoo3, Mobt3ath), the Arabic SEMICOLON (؛) — not
@@ -4875,6 +4901,10 @@ def lex_dim15_typography(text: str) -> str:
     # typography_comma_to_semicolon_before_causal docstrings)
     text = typography_no_space_before_arabic_punct(text)
     text = typography_comma_to_semicolon_before_causal(text)
+    # v2.4.3 addition: parenthesis interior-spacing normalization
+    # (per Kaplan + proof-reading-service: "no spacing between brackets
+    # and content"). Strips Arabic interior padding; preserves Latin.
+    text = typography_paren_interior_spacing(text)
     # Collapse any double-spaces introduced
     text = re.sub(r'  +', ' ', text)
     text = _restore_spans(text, protected)
@@ -6281,6 +6311,42 @@ def main():
     r.check("T22e.haythu_NOT_converted",
             "، حيث" in out_ambig or "؛ حيث" not in out_ambig,
             f"، حيث incorrectly converted (ambiguous): {out_ambig!r}")
+
+    print()
+    print("=" * 60)
+    print("  T23 — parenthesis interior spacing: Arabic content padded → unpadded (v2.4.3)")
+    print("=" * 60)
+    # Universal rule from Kaplan + proof-reading-service: no spacing inside
+    # parens when wrapping Arabic content.
+    out = run_humanize(
+        "هذه جملة ( مع تعليق ) ثم نقطة.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T23a.no_space_after_open_paren_arabic",
+            "( " not in out or "(م" in out,
+            f"space after ( with Arabic content survived: {out!r}")
+    r.check("T23b.no_space_before_close_paren_arabic",
+            " )" not in out or "ق)" in out,
+            f"space before ) with Arabic content survived: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T24 — closing paren attached to following punctuation (v2.4.3)")
+    print("=" * 60)
+    out = run_humanize(
+        "النص (الإيضاح) . ثم جملة (أخرى) ، وآخر (ثالث) ؛ نهاية.",
+        "--mode", "tighten", "--register", "news",
+    )
+    # Closing paren + space + punctuation should become closing paren + punctuation
+    r.check("T24a.no_space_between_close_paren_and_period",
+            ") ." not in out,
+            f"space between ) and . survived: {out!r}")
+    r.check("T24b.no_space_between_close_paren_and_comma",
+            ") ،" not in out,
+            f"space between ) and ، survived: {out!r}")
+    r.check("T24c.no_space_between_close_paren_and_semicolon",
+            ") ؛" not in out,
+            f"space between ) and ؛ survived: {out!r}")
 
     print()
     print("=" * 60)

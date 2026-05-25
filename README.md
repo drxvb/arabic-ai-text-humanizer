@@ -6,7 +6,28 @@ A multi-pass Arabic-text humanizer that reduces AI fingerprints across **16 dime
 
 The full specification, transformation protocol, dimension definitions, anti-patterns, and worked example all live in **[`SKILL.md`](SKILL.md)**. This README is a one-screen overview.
 
-## What's new in v2.4.2 (current)
+## What's new in v2.4.3 (current)
+
+**Parenthesis interior-spacing normalization.** Researched 4 more Arabic style guides (Albuthi, Alukah academic, proof-reading-service, Kaplan International) — **13 sources total** consulted across v2.4.x.
+
+The new rule from Kaplan + proof-reading-service: *"no spacing between brackets and content"*. Implemented via `typography_paren_interior_spacing()`:
+
+| Input | Output |
+|---|---|
+| `هذه جملة ( مع تعليق ) ثم نقطة` | `هذه جملة (مع تعليق) ثم نقطة` |
+| `النص (الإيضاح) .` | `النص (الإيضاح).` |
+| `كلمة (محتوى) ،` | `كلمة (محتوى)،` |
+
+Three sub-rules:
+1. Strip space *after* `(` when followed by Arabic letter
+2. Strip space *before* `)` when preceded by Arabic letter
+3. Strip space between `)` and following punctuation (`،` `؛` `؟` `:` `!` `.`)
+
+**Latin paren padding preserved** — when parens wrap English content inside Arabic (for Bidi clarity), the existing `typography_paren_spacing` adds appropriate Latin-content padding; v2.4.3 doesn't touch that.
+
+Fragility suite: **56/56** (5 new T23–T24 sub-checks).
+
+## What's new in v2.4.2
 
 **Authoritative-source-based punctuation rules.** Researched **9 Arabic style guides** (Al Jazeera Learning, Drasah, Loghate ×2, Mawdoo3, Mobt3ath, KSU College of Humanities, Itwadi, Shoair School) and implemented the rules where they universally agree.
 
