@@ -1,27 +1,34 @@
 {
-  "$schema_version": "1.0",
+  "$schema_version": "1.1",
   "$generated_at": "",
   "$source_corpus": "Y:/Linguistics/News/Technology/AITNews",
   "$llms_consulted": [
+    "codex",
     "claude"
   ],
-  "$n_entries": 93,
+  "$n_entries": 338,
   "$by_confidence": {
-    "medium": 66,
-    "high": 27
+    "medium": 142,
+    "medium_consensus": 151,
+    "high": 45
   },
   "$by_domain": {
-    "business": 16,
-    "news-journalism": 16,
+    "business": 43,
+    "climate": 15,
+    "healthcare": 11,
+    "news-journalism": 44,
     "politics": 4,
+    "tech-ai-agents": 35,
     "tech-ai-ml": 9,
-    "tech-consumer": 10,
-    "tech-data": 8,
-    "tech-infra": 10,
-    "tech-security": 11,
-    "tech-software": 9
+    "tech-consumer": 29,
+    "tech-crypto": 15,
+    "tech-data": 22,
+    "tech-infra": 36,
+    "tech-security": 31,
+    "tech-software": 44
   },
-  "$description": "Calque-translation dictionary for the Arabic AI-Text Humanizer. Each entry maps an English term to: (a) the AI-default calque that naive translators produce, (b) the natural Arabic form that native tech/news writers use. Validated against AITNews corpus frequencies.",
+  "$description": "Calque-translation dictionary for the Arabic AI-Text Humanizer. Each entry maps an English term to: (a) the AI-default calque that naive translators produce, (b) the natural Arabic form that native tech/news writers use. v2.4.0 expansion adds process/workflow, agents/swarm/multi-agent, expanded database, DevOps, crypto/Web3, healthcare, climate, and geopolitics.",
+  "$curation_notes": "Excluded entries with semantic sense errors or risky calque-keys that have legitimate non-calque meanings: ['demonstration', 'equity', 'logging', 'policy'].",
   "entries": [
     {
       "en": "Series A",
@@ -39,6 +46,28 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "accelerator",
+      "ai_default_calque": "جهاز التسريع",
+      "natural_arabic": "مسرع",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "مسرع",
+          "naive": "مسرع"
+        },
+        "claude": {
+          "natural": "مسرع",
+          "naive": "جهاز التسريع"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "acquisition",
@@ -75,6 +104,28 @@
       "safety": "safe"
     },
     {
+      "en": "balance sheet",
+      "ai_default_calque": "ورقة التوازن",
+      "natural_arabic": "الميزانية العمومية",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "الميزانية العمومية",
+          "naive": "ورقة التوازن"
+        },
+        "claude": {
+          "natural": "الميزانية العمومية",
+          "naive": "ورقة الرصيد"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "board of directors",
       "ai_default_calque": "لجنة المديرين",
       "natural_arabic": "مجلس الإدارة",
@@ -107,6 +158,28 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "cash flow",
+      "ai_default_calque": "تدفق النقد",
+      "natural_arabic": "التدفق النقدي",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "التدفق النقدي",
+          "naive": "تدفق النقد"
+        },
+        "claude": {
+          "natural": "التدفق النقدي",
+          "naive": "تدفق الكاش"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "chief executive officer",
@@ -143,6 +216,320 @@
       "safety": "safe"
     },
     {
+      "en": "churn rate",
+      "ai_default_calque": "معدل الدوران",
+      "natural_arabic": "معدل فقدان العملاء",
+      "alternatives": [
+        "معدل التسرب"
+      ],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 395,
+      "llm_votes": {
+        "codex": {
+          "natural": "معدل فقدان العملاء",
+          "naive": "معدل الدوران"
+        },
+        "claude": {
+          "natural": "معدل التسرب",
+          "naive": "معدل الاضطراب"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "click-through rate",
+      "ai_default_calque": "معدل النقر خلال",
+      "natural_arabic": "معدل النقر",
+      "alternatives": [
+        "نسبة النقر إلى الظهور"
+      ],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 324,
+      "llm_votes": {
+        "claude": {
+          "natural": "معدل النقر",
+          "naive": "معدل النقر خلال"
+        },
+        "codex": {
+          "natural": "نسبة النقر إلى الظهور",
+          "naive": "معدل النقر من خلال"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "co-founder",
+      "ai_default_calque": "مؤسس مشترك",
+      "natural_arabic": "مؤسس مشارك",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 168,
+      "llm_votes": {
+        "codex": {
+          "natural": "مؤسس مشارك",
+          "naive": "مؤسس مشارك"
+        },
+        "claude": {
+          "natural": "مؤسس مشارك",
+          "naive": "مؤسس مشترك"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "conversion rate",
+      "ai_default_calque": "نسبة التحول",
+      "natural_arabic": "معدل التحويل",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 260,
+      "llm_votes": {
+        "codex": {
+          "natural": "معدل التحويل",
+          "naive": "معدل التحويل"
+        },
+        "claude": {
+          "natural": "معدل التحويل",
+          "naive": "نسبة التحول"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "customer acquisition cost",
+      "ai_default_calque": "تكلفة حيازة الزبون",
+      "natural_arabic": "تكلفة اكتساب العملاء",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 273,
+      "llm_votes": {
+        "codex": {
+          "natural": "تكلفة اكتساب العملاء",
+          "naive": "تكلفة اكتساب العملاء"
+        },
+        "claude": {
+          "natural": "تكلفة اكتساب العملاء",
+          "naive": "تكلفة حيازة الزبون"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "daily active users",
+      "ai_default_calque": "المستخدمون النشطون اليوميون",
+      "natural_arabic": "المستخدمون النشطون يوميا",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 325,
+      "llm_votes": {
+        "codex": {
+          "natural": "المستخدمون النشطون يوميا",
+          "naive": "المستخدمون النشطون اليوميون"
+        },
+        "claude": {
+          "natural": "المستخدمون النشطون يوميا",
+          "naive": "المستخدمون الفاعلون اليوميون"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "due diligence",
+      "ai_default_calque": "الاجتهاد المستحق",
+      "natural_arabic": "العناية الواجبة",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "العناية الواجبة",
+          "naive": "الاجتهاد المستحق"
+        },
+        "claude": {
+          "natural": "العناية الواجبة",
+          "naive": "الاجتهاد المستحق"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "earnings report",
+      "ai_default_calque": "تقرير الكسب",
+      "natural_arabic": "تقرير الأرباح",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 1282,
+      "llm_votes": {
+        "claude": {
+          "natural": "تقرير الأرباح",
+          "naive": "تقرير الكسب"
+        },
+        "codex": {
+          "natural": "تقرير الأرباح",
+          "naive": "تقرير الأرباح"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "exit strategy",
+      "ai_default_calque": "خطة المخرج",
+      "natural_arabic": "استراتيجية الخروج",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 116,
+      "llm_votes": {
+        "claude": {
+          "natural": "استراتيجية الخروج",
+          "naive": "خطة المخرج"
+        },
+        "codex": {
+          "natural": "استراتيجية الخروج",
+          "naive": "استراتيجية الخروج"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "fiscal year",
+      "ai_default_calque": "السنة الضريبية",
+      "natural_arabic": "السنة المالية",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 384,
+      "llm_votes": {
+        "codex": {
+          "natural": "السنة المالية",
+          "naive": "السنة المالية"
+        },
+        "claude": {
+          "natural": "السنة المالية",
+          "naive": "السنة الضريبية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "fundraising",
+      "ai_default_calque": "جمع الأموال",
+      "natural_arabic": "جمع التبرعات",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 85,
+      "llm_votes": {
+        "codex": {
+          "natural": "جمع التبرعات",
+          "naive": "جمع الأموال"
+        },
+        "claude": {
+          "natural": "جمع التبرعات",
+          "naive": "رفع الأموال"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "go to market",
+      "ai_default_calque": "الذهاب إلى السوق",
+      "natural_arabic": "طرح المنتج في السوق",
+      "alternatives": [
+        "طرح في السوق"
+      ],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 771,
+      "llm_votes": {
+        "claude": {
+          "natural": "طرح المنتج في السوق",
+          "naive": "الذهاب إلى السوق"
+        },
+        "codex": {
+          "natural": "طرح في السوق",
+          "naive": "الذهاب إلى السوق"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "growth hacking",
+      "ai_default_calque": "قرصنة النمو",
+      "natural_arabic": "اختراق النمو",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 471,
+      "llm_votes": {
+        "codex": {
+          "natural": "اختراق النمو",
+          "naive": "قرصنة النمو"
+        },
+        "claude": {
+          "natural": "اختراق النمو",
+          "naive": "قرصنة النمو"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "income statement",
+      "ai_default_calque": "بيان الدخل",
+      "natural_arabic": "قائمة الدخل",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 652,
+      "llm_votes": {
+        "codex": {
+          "natural": "قائمة الدخل",
+          "naive": "بيان الدخل"
+        },
+        "claude": {
+          "natural": "قائمة الدخل",
+          "naive": "بيان الدخل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "initial public offering",
       "ai_default_calque": "عرض عام أولي ابتدائي",
       "natural_arabic": "طرح عام أولي",
@@ -160,6 +547,52 @@
       "safety": "safe"
     },
     {
+      "en": "key performance indicator",
+      "ai_default_calque": "مؤشر الأداء المفتاح",
+      "natural_arabic": "مؤشر الأداء الرئيسي",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 323,
+      "llm_votes": {
+        "codex": {
+          "natural": "مؤشر الأداء الرئيسي",
+          "naive": "مؤشر الأداء المفتاح"
+        },
+        "claude": {
+          "natural": "مؤشر الأداء الرئيسي",
+          "naive": "مؤشر الأداء المفتاحي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "lifetime value",
+      "ai_default_calque": "قيمة مدى الحياة",
+      "natural_arabic": "القيمة الدائمة للعميل",
+      "alternatives": [
+        "قيمة العميل مدى الحياة"
+      ],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 59,
+      "llm_votes": {
+        "codex": {
+          "natural": "القيمة الدائمة للعميل",
+          "naive": "قيمة مدى الحياة"
+        },
+        "claude": {
+          "natural": "قيمة العميل مدى الحياة",
+          "naive": "قيمة مدة الحياة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "market share",
       "ai_default_calque": "مشاركة السوق",
       "natural_arabic": "حصة السوق",
@@ -175,6 +608,166 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "minimum viable product",
+      "ai_default_calque": "منتج الحد الأدنى القابل للحياة",
+      "natural_arabic": "الحد الأدنى من المنتج القابل للتطبيق",
+      "alternatives": [
+        "المنتج القابل للتطبيق بالحد الأدنى"
+      ],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 127,
+      "llm_votes": {
+        "claude": {
+          "natural": "الحد الأدنى من المنتج القابل للتطبيق",
+          "naive": "منتج الحد الأدنى القابل للحياة"
+        },
+        "codex": {
+          "natural": "المنتج القابل للتطبيق بالحد الأدنى",
+          "naive": "المنتج الأدنى القابل للحياة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "monthly active users",
+      "ai_default_calque": "المستخدمون الفاعلون الشهريون",
+      "natural_arabic": "المستخدمون النشطون شهريا",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 238,
+      "llm_votes": {
+        "claude": {
+          "natural": "المستخدمون النشطون شهريا",
+          "naive": "المستخدمون الفاعلون الشهريون"
+        },
+        "codex": {
+          "natural": "المستخدمون النشطون شهريا",
+          "naive": "المستخدمون النشطون الشهريون"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "pivot",
+      "ai_default_calque": "محور",
+      "natural_arabic": "تحول",
+      "alternatives": [
+        "محور"
+      ],
+      "domain": "business",
+      "confidence": "high",
+      "corpus_hits": 255,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "تحول",
+          "naive": "محور"
+        },
+        "claude": {
+          "natural": "محور",
+          "naive": "نقطة ارتكاز"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "product-market fit",
+      "ai_default_calque": "ملاءمة المنتج والسوق",
+      "natural_arabic": "ملاءمة المنتج للسوق",
+      "alternatives": [
+        "الملاءمة بين المنتج والسوق"
+      ],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 86,
+      "llm_votes": {
+        "codex": {
+          "natural": "ملاءمة المنتج للسوق",
+          "naive": "ملاءمة المنتج والسوق"
+        },
+        "claude": {
+          "natural": "الملاءمة بين المنتج والسوق",
+          "naive": "ملاءمة المنتج للسوق"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "quarterly revenue",
+      "ai_default_calque": "الإيرادات الربع سنوية",
+      "natural_arabic": "الإيرادات الفصلية",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 50,
+      "llm_votes": {
+        "codex": {
+          "natural": "الإيرادات الفصلية",
+          "naive": "الإيرادات الربع سنوية"
+        },
+        "claude": {
+          "natural": "الإيرادات الفصلية",
+          "naive": "الإيرادات الربع سنوية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "retention rate",
+      "ai_default_calque": "نسبة الاحتفاظ",
+      "natural_arabic": "معدل الاحتفاظ",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 228,
+      "llm_votes": {
+        "codex": {
+          "natural": "معدل الاحتفاظ",
+          "naive": "معدل الاحتفاظ"
+        },
+        "claude": {
+          "natural": "معدل الاحتفاظ",
+          "naive": "نسبة الاحتفاظ"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "return on investment",
+      "ai_default_calque": "العودة على الاستثمار",
+      "natural_arabic": "العائد على الاستثمار",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 59,
+      "llm_votes": {
+        "codex": {
+          "natural": "العائد على الاستثمار",
+          "naive": "العودة على الاستثمار"
+        },
+        "claude": {
+          "natural": "العائد على الاستثمار",
+          "naive": "عودة على الاستثمار"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "scale-up",
@@ -206,23 +799,6 @@
         "claude": {
           "natural": "تمويل بذري",
           "naive": "تمويل البذور"
-        }
-      },
-      "safety": "safe"
-    },
-    {
-      "en": "stakeholder",
-      "ai_default_calque": "حاملو الحصص",
-      "natural_arabic": "أصحاب المصلحة",
-      "alternatives": [],
-      "domain": "business",
-      "confidence": "medium",
-      "corpus_hits": 0,
-      "partial_hits": 152,
-      "llm_votes": {
-        "claude": {
-          "natural": "أصحاب المصلحة",
-          "naive": "حاملو الحصص"
         }
       },
       "safety": "safe"
@@ -262,6 +838,54 @@
       "safety": "safe"
     },
     {
+      "en": "unicorn",
+      "ai_default_calque": "وحيد القرن",
+      "natural_arabic": "شركة يونيكورن",
+      "alternatives": [
+        "يونيكورن"
+      ],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 6508,
+      "llm_votes": {
+        "codex": {
+          "natural": "شركة يونيكورن",
+          "naive": "وحيد القرن"
+        },
+        "claude": {
+          "natural": "يونيكورن",
+          "naive": "وحيد القرن"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "user engagement",
+      "ai_default_calque": "مشاركة المستخدم",
+      "natural_arabic": "تفاعل المستخدمين",
+      "alternatives": [
+        "تفاعل المستخدم"
+      ],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 2152,
+      "llm_votes": {
+        "codex": {
+          "natural": "تفاعل المستخدمين",
+          "naive": "مشاركة المستخدم"
+        },
+        "claude": {
+          "natural": "تفاعل المستخدم",
+          "naive": "انخراط المستخدم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "valuation",
       "ai_default_calque": "تقدير القيمة",
       "natural_arabic": "تقييم",
@@ -296,6 +920,650 @@
       "safety": "safe"
     },
     {
+      "en": "biodiversity",
+      "ai_default_calque": "تنوع الحياة",
+      "natural_arabic": "التنوع البيولوجي",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "claude": {
+          "natural": "التنوع البيولوجي",
+          "naive": "تنوع الحياة"
+        },
+        "codex": {
+          "natural": "التنوع البيولوجي",
+          "naive": "التنوع البيولوجي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "carbon footprint",
+      "ai_default_calque": "أثر الكربون",
+      "natural_arabic": "البصمة الكربونية",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 74,
+      "llm_votes": {
+        "codex": {
+          "natural": "البصمة الكربونية",
+          "naive": "البصمة الكربونية"
+        },
+        "claude": {
+          "natural": "البصمة الكربونية",
+          "naive": "أثر الكربون"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "carbon offset",
+      "ai_default_calque": "إزاحة الكربون",
+      "natural_arabic": "تعويض الكربون",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "تعويض الكربون",
+          "naive": "إزاحة الكربون"
+        },
+        "claude": {
+          "natural": "تعويض الكربون",
+          "naive": "إزاحة الكربون"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "climate change",
+      "ai_default_calque": "تغيير الطقس",
+      "natural_arabic": "تغير المناخ",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 94,
+      "llm_votes": {
+        "codex": {
+          "natural": "تغير المناخ",
+          "naive": "تغير المناخ"
+        },
+        "claude": {
+          "natural": "تغير المناخ",
+          "naive": "تغيير الطقس"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "deforestation",
+      "ai_default_calque": "إزالة تشجير الغابات",
+      "natural_arabic": "إزالة الغابات",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 124,
+      "llm_votes": {
+        "codex": {
+          "natural": "إزالة الغابات",
+          "naive": "إزالة الغابات"
+        },
+        "claude": {
+          "natural": "إزالة الغابات",
+          "naive": "إزالة تشجير الغابات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "ecosystem collapse",
+      "ai_default_calque": "انهيار النظام الإيكولوجي",
+      "natural_arabic": "انهيار النظام البيئي",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 455,
+      "llm_votes": {
+        "codex": {
+          "natural": "انهيار النظام البيئي",
+          "naive": "انهيار النظام البيئي"
+        },
+        "claude": {
+          "natural": "انهيار النظام البيئي",
+          "naive": "انهيار النظام الإيكولوجي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "electric vehicle",
+      "ai_default_calque": "مركبة كهربية",
+      "natural_arabic": "مركبة كهربائية",
+      "alternatives": [
+        "سيارة كهربائية"
+      ],
+      "domain": "climate",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 63,
+      "llm_votes": {
+        "codex": {
+          "natural": "مركبة كهربائية",
+          "naive": "مركبة كهربائية"
+        },
+        "claude": {
+          "natural": "سيارة كهربائية",
+          "naive": "مركبة كهربية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "environmental impact",
+      "ai_default_calque": "التأثير البيئي",
+      "natural_arabic": "الأثر البيئي",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "الأثر البيئي",
+          "naive": "التأثير البيئي"
+        },
+        "claude": {
+          "natural": "الأثر البيئي",
+          "naive": "التأثير البيئي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "fossil fuel",
+      "ai_default_calque": "وقود الحفريات",
+      "natural_arabic": "الوقود الأحفوري",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "الوقود الأحفوري",
+          "naive": "الوقود الأحفوري"
+        },
+        "claude": {
+          "natural": "الوقود الأحفوري",
+          "naive": "وقود الحفريات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "global warming",
+      "ai_default_calque": "الاحترار العالمي",
+      "natural_arabic": "الاحتباس الحراري",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "الاحتباس الحراري",
+          "naive": "الاحترار العالمي"
+        },
+        "claude": {
+          "natural": "الاحتباس الحراري",
+          "naive": "الاحترار العالمي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "reforestation",
+      "ai_default_calque": "إعادة تحريج الغابات",
+      "natural_arabic": "إعادة التشجير",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 375,
+      "llm_votes": {
+        "claude": {
+          "natural": "إعادة التشجير",
+          "naive": "إعادة تحريج الغابات"
+        },
+        "codex": {
+          "natural": "إعادة التشجير",
+          "naive": "إعادة الغابات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "renewable energy",
+      "ai_default_calque": "الطاقة القابلة للتجديد",
+      "natural_arabic": "الطاقة المتجددة",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 263,
+      "llm_votes": {
+        "codex": {
+          "natural": "الطاقة المتجددة",
+          "naive": "الطاقة القابلة للتجديد"
+        },
+        "claude": {
+          "natural": "الطاقة المتجددة",
+          "naive": "الطاقة القابلة للتجديد"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "solar power",
+      "ai_default_calque": "القوة الشمسية",
+      "natural_arabic": "الطاقة الشمسية",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 263,
+      "llm_votes": {
+        "codex": {
+          "natural": "الطاقة الشمسية",
+          "naive": "القوة الشمسية"
+        },
+        "claude": {
+          "natural": "الطاقة الشمسية",
+          "naive": "القوة الشمسية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "sustainability",
+      "ai_default_calque": "قابلية الاستمرار",
+      "natural_arabic": "الاستدامة",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "الاستدامة",
+          "naive": "الاستدامة"
+        },
+        "claude": {
+          "natural": "الاستدامة",
+          "naive": "قابلية الاستمرار"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "wind energy",
+      "ai_default_calque": "طاقة الريح",
+      "natural_arabic": "طاقة الرياح",
+      "alternatives": [],
+      "domain": "climate",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 59,
+      "llm_votes": {
+        "codex": {
+          "natural": "طاقة الرياح",
+          "naive": "طاقة الرياح"
+        },
+        "claude": {
+          "natural": "طاقة الرياح",
+          "naive": "طاقة الريح"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "clinical trial",
+      "ai_default_calque": "محاكمة طبية",
+      "natural_arabic": "تجربة سريرية",
+      "alternatives": [],
+      "domain": "healthcare",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 495,
+      "llm_votes": {
+        "codex": {
+          "natural": "تجربة سريرية",
+          "naive": "تجربة سريرية"
+        },
+        "claude": {
+          "natural": "تجربة سريرية",
+          "naive": "محاكمة طبية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "drug approval",
+      "ai_default_calque": "موافقة الدواء",
+      "natural_arabic": "الموافقة على الدواء",
+      "alternatives": [
+        "اعتماد الدواء"
+      ],
+      "domain": "healthcare",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 25,
+      "llm_votes": {
+        "codex": {
+          "natural": "الموافقة على الدواء",
+          "naive": "موافقة الدواء"
+        },
+        "claude": {
+          "natural": "اعتماد الدواء",
+          "naive": "موافقة العقار"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "electronic health record",
+      "ai_default_calque": "تسجيل صحي إلكتروني",
+      "natural_arabic": "السجل الصحي الإلكتروني",
+      "alternatives": [],
+      "domain": "healthcare",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 634,
+      "llm_votes": {
+        "claude": {
+          "natural": "السجل الصحي الإلكتروني",
+          "naive": "تسجيل صحي إلكتروني"
+        },
+        "codex": {
+          "natural": "السجل الصحي الإلكتروني",
+          "naive": "السجل الصحي الإلكتروني"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "epidemic",
+      "ai_default_calque": "مرض منتشر على نطاق واسع",
+      "natural_arabic": "وباء",
+      "alternatives": [],
+      "domain": "healthcare",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "وباء",
+          "naive": "وباء"
+        },
+        "claude": {
+          "natural": "وباء",
+          "naive": "مرض منتشر على نطاق واسع"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "evidence-based medicine",
+      "ai_default_calque": "الطب المبني على الدليل",
+      "natural_arabic": "الطب المبني على الأدلة",
+      "alternatives": [],
+      "domain": "healthcare",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "الطب المبني على الأدلة",
+          "naive": "الطب المبني على الدليل"
+        },
+        "claude": {
+          "natural": "الطب المبني على الأدلة",
+          "naive": "الطب القائم على الإثباتات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "intensive care unit",
+      "ai_default_calque": "وحدة الرعاية المكثفة",
+      "natural_arabic": "وحدة العناية المركزة",
+      "alternatives": [],
+      "domain": "healthcare",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 248,
+      "llm_votes": {
+        "codex": {
+          "natural": "وحدة العناية المركزة",
+          "naive": "وحدة الرعاية المكثفة"
+        },
+        "claude": {
+          "natural": "وحدة العناية المركزة",
+          "naive": "وحدة الرعاية المكثفة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "mental health",
+      "ai_default_calque": "الصحة العقلية",
+      "natural_arabic": "الصحة النفسية",
+      "alternatives": [],
+      "domain": "healthcare",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 42,
+      "llm_votes": {
+        "codex": {
+          "natural": "الصحة النفسية",
+          "naive": "الصحة العقلية"
+        },
+        "claude": {
+          "natural": "الصحة النفسية",
+          "naive": "الصحة العقلية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "pandemic",
+      "ai_default_calque": "وباء عالمي",
+      "natural_arabic": "جائحة",
+      "alternatives": [],
+      "domain": "healthcare",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "جائحة",
+          "naive": "وباء عالمي"
+        },
+        "claude": {
+          "natural": "جائحة",
+          "naive": "مرض منتشر على نطاق واسع"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "public health",
+      "ai_default_calque": "صحة الجمهور",
+      "natural_arabic": "الصحة العامة",
+      "alternatives": [],
+      "domain": "healthcare",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 205,
+      "llm_votes": {
+        "codex": {
+          "natural": "الصحة العامة",
+          "naive": "الصحة العامة"
+        },
+        "claude": {
+          "natural": "الصحة العامة",
+          "naive": "صحة الجمهور"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "side effect",
+      "ai_default_calque": "تأثير جانبي",
+      "natural_arabic": "أثر جانبي",
+      "alternatives": [],
+      "domain": "healthcare",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 37,
+      "llm_votes": {
+        "codex": {
+          "natural": "أثر جانبي",
+          "naive": "تأثير جانبي"
+        },
+        "claude": {
+          "natural": "أثر جانبي",
+          "naive": "تأثير جانبي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "vaccine",
+      "ai_default_calque": "حقنة مضادة",
+      "natural_arabic": "لقاح",
+      "alternatives": [],
+      "domain": "healthcare",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "لقاح",
+          "naive": "لقاح"
+        },
+        "claude": {
+          "natural": "لقاح",
+          "naive": "حقنة مضادة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "ambassador",
+      "ai_default_calque": "مبعوث رسمي",
+      "natural_arabic": "سفير",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "سفير",
+          "naive": "سفير"
+        },
+        "claude": {
+          "natural": "سفير",
+          "naive": "مبعوث رسمي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "asylum seeker",
+      "ai_default_calque": "باحث عن ملجأ",
+      "natural_arabic": "طالب لجوء",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 31,
+      "llm_votes": {
+        "codex": {
+          "natural": "طالب لجوء",
+          "naive": "باحث عن ملجأ"
+        },
+        "claude": {
+          "natural": "طالب لجوء",
+          "naive": "باحث عن ملجأ"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "background briefing",
+      "ai_default_calque": "إحاطة الخلفية",
+      "natural_arabic": "إحاطة خلفية",
+      "alternatives": [
+        "إحاطة إعلامية غير رسمية"
+      ],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 282,
+      "llm_votes": {
+        "claude": {
+          "natural": "إحاطة خلفية",
+          "naive": "إحاطة الخلفية"
+        },
+        "codex": {
+          "natural": "إحاطة إعلامية غير رسمية",
+          "naive": "إحاطة خلفية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "backlash",
       "ai_default_calque": "رد الفعل العكسي",
       "natural_arabic": "ردود فعل غاضبة",
@@ -313,6 +1581,30 @@
       "safety": "safe"
     },
     {
+      "en": "bilateral agreement",
+      "ai_default_calque": "اتفاق بين طرفين",
+      "natural_arabic": "اتفاق ثنائي",
+      "alternatives": [
+        "اتفاقية ثنائية"
+      ],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 207,
+      "llm_votes": {
+        "codex": {
+          "natural": "اتفاق ثنائي",
+          "naive": "اتفاق ثنائي"
+        },
+        "claude": {
+          "natural": "اتفاقية ثنائية",
+          "naive": "اتفاق بين طرفين"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "breaking news",
       "ai_default_calque": "أخبار عاجلة",
       "natural_arabic": "عاجل",
@@ -328,6 +1620,28 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "breakthrough",
+      "ai_default_calque": "كسر من خلال",
+      "natural_arabic": "اختراق",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "high",
+      "corpus_hits": 613,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "اختراق",
+          "naive": "كسر من خلال"
+        },
+        "claude": {
+          "natural": "اختراق",
+          "naive": "كسر الحاجز"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "ceasefire",
@@ -364,6 +1678,118 @@
       "safety": "safe"
     },
     {
+      "en": "curfew",
+      "ai_default_calque": "منع ساعة",
+      "natural_arabic": "حظر تجول",
+      "alternatives": [
+        "حظر التجول"
+      ],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 128,
+      "llm_votes": {
+        "codex": {
+          "natural": "حظر تجول",
+          "naive": "حظر تجول"
+        },
+        "claude": {
+          "natural": "حظر التجول",
+          "naive": "منع ساعة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "diplomatic immunity",
+      "ai_default_calque": "المناعة الدبلوماسية",
+      "natural_arabic": "الحصانة الدبلوماسية",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "الحصانة الدبلوماسية",
+          "naive": "الحصانة الدبلوماسية"
+        },
+        "claude": {
+          "natural": "الحصانة الدبلوماسية",
+          "naive": "المناعة الدبلوماسية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "disinformation",
+      "ai_default_calque": "المعلومات المضللة",
+      "natural_arabic": "التضليل الإعلامي",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 31,
+      "llm_votes": {
+        "codex": {
+          "natural": "التضليل الإعلامي",
+          "naive": "المعلومات المضللة"
+        },
+        "claude": {
+          "natural": "التضليل الإعلامي",
+          "naive": "معلومات مضللة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "displaced person",
+      "ai_default_calque": "شخص مشرد",
+      "natural_arabic": "نازح",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "نازح",
+          "naive": "شخص مشرد"
+        },
+        "claude": {
+          "natural": "نازح",
+          "naive": "شخص مهجر"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "echo chamber",
+      "ai_default_calque": "حجرة الصدى",
+      "natural_arabic": "غرفة الصدى",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 46,
+      "llm_votes": {
+        "codex": {
+          "natural": "غرفة الصدى",
+          "naive": "غرفة الصدى"
+        },
+        "claude": {
+          "natural": "غرفة الصدى",
+          "naive": "حجرة الصدى"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "embargo",
       "ai_default_calque": "إمبارغو",
       "natural_arabic": "حظر",
@@ -379,6 +1805,28 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "evacuation",
+      "ai_default_calque": "إفراغ",
+      "natural_arabic": "إخلاء",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "إخلاء",
+          "naive": "إخلاء"
+        },
+        "claude": {
+          "natural": "إخلاء",
+          "naive": "إفراغ"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "exclusive interview",
@@ -398,6 +1846,54 @@
       "safety": "safe"
     },
     {
+      "en": "fake news",
+      "ai_default_calque": "الأخبار المزيفة",
+      "natural_arabic": "الأخبار الزائفة",
+      "alternatives": [
+        "أخبار مزيفة"
+      ],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 643,
+      "llm_votes": {
+        "codex": {
+          "natural": "الأخبار الزائفة",
+          "naive": "الأخبار المزيفة"
+        },
+        "claude": {
+          "natural": "أخبار مزيفة",
+          "naive": "أخبار كاذبة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "filter bubble",
+      "ai_default_calque": "فقاعة الفلتر",
+      "natural_arabic": "فقاعة المعلومات",
+      "alternatives": [
+        "فقاعة التصفية"
+      ],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1411,
+      "llm_votes": {
+        "claude": {
+          "natural": "فقاعة المعلومات",
+          "naive": "فقاعة الفلتر"
+        },
+        "codex": {
+          "natural": "فقاعة التصفية",
+          "naive": "فقاعة المرشح"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "foreign policy",
       "ai_default_calque": "السياسة الأجنبية",
       "natural_arabic": "السياسة الخارجية",
@@ -415,6 +1911,28 @@
       "safety": "safe"
     },
     {
+      "en": "genocide",
+      "ai_default_calque": "قتل الجنس",
+      "natural_arabic": "إبادة جماعية",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "إبادة جماعية",
+          "naive": "إبادة جماعية"
+        },
+        "claude": {
+          "natural": "إبادة جماعية",
+          "naive": "قتل الجنس"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "grassroots movement",
       "ai_default_calque": "حركة جذور العشب",
       "natural_arabic": "حركة شعبية",
@@ -430,6 +1948,162 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "hard power",
+      "ai_default_calque": "القوة الصعبة",
+      "natural_arabic": "القوة الصلبة",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 113,
+      "llm_votes": {
+        "codex": {
+          "natural": "القوة الصلبة",
+          "naive": "القوة الصعبة"
+        },
+        "claude": {
+          "natural": "القوة الصلبة",
+          "naive": "القوة الصعبة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "investigative journalism",
+      "ai_default_calque": "الصحافة التحقيقية",
+      "natural_arabic": "الصحافة الاستقصائية",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "الصحافة الاستقصائية",
+          "naive": "الصحافة التحقيقية"
+        },
+        "claude": {
+          "natural": "الصحافة الاستقصائية",
+          "naive": "صحافة التحقيق"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "leaked documents",
+      "ai_default_calque": "مستندات مسربة",
+      "natural_arabic": "وثائق مسربة",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 115,
+      "llm_votes": {
+        "codex": {
+          "natural": "وثائق مسربة",
+          "naive": "وثائق مسربة"
+        },
+        "claude": {
+          "natural": "وثائق مسربة",
+          "naive": "مستندات مسربة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "martial law",
+      "ai_default_calque": "القانون العسكري",
+      "natural_arabic": "الأحكام العرفية",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "الأحكام العرفية",
+          "naive": "القانون العسكري"
+        },
+        "claude": {
+          "natural": "الأحكام العرفية",
+          "naive": "القانون العسكري"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "misinformation",
+      "ai_default_calque": "معلومات خاطئة",
+      "natural_arabic": "معلومات مضللة",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 587,
+      "llm_votes": {
+        "codex": {
+          "natural": "معلومات مضللة",
+          "naive": "معلومات خاطئة"
+        },
+        "claude": {
+          "natural": "معلومات مضللة",
+          "naive": "معلومات خاطئة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "multilateral talks",
+      "ai_default_calque": "محادثات متعددة الجانبات",
+      "natural_arabic": "محادثات متعددة الأطراف",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 254,
+      "llm_votes": {
+        "codex": {
+          "natural": "محادثات متعددة الأطراف",
+          "naive": "محادثات متعددة الأطراف"
+        },
+        "claude": {
+          "natural": "محادثات متعددة الأطراف",
+          "naive": "محادثات متعددة الجانبات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "off the record",
+      "ai_default_calque": "خارج السجل",
+      "natural_arabic": "غير قابل للنشر",
+      "alternatives": [
+        "بشكل غير رسمي"
+      ],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 80,
+      "llm_votes": {
+        "codex": {
+          "natural": "غير قابل للنشر",
+          "naive": "خارج السجل"
+        },
+        "claude": {
+          "natural": "بشكل غير رسمي",
+          "naive": "خارج السجل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
     },
     {
       "en": "press conference",
@@ -466,6 +2140,28 @@
       "safety": "safe"
     },
     {
+      "en": "proxy war",
+      "ai_default_calque": "حرب الوكيل",
+      "natural_arabic": "حرب بالوكالة",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 47,
+      "llm_votes": {
+        "codex": {
+          "natural": "حرب بالوكالة",
+          "naive": "حرب الوكيل"
+        },
+        "claude": {
+          "natural": "حرب بالوكالة",
+          "naive": "حرب الوكيل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "public outcry",
       "ai_default_calque": "صرخة عامة",
       "natural_arabic": "موجة غضب شعبي",
@@ -483,6 +2179,28 @@
       "safety": "safe"
     },
     {
+      "en": "refugee",
+      "ai_default_calque": "هارب من الوطن",
+      "natural_arabic": "لاجئ",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "لاجئ",
+          "naive": "لاجئ"
+        },
+        "claude": {
+          "natural": "لاجئ",
+          "naive": "هارب من الوطن"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "regime change",
       "ai_default_calque": "تغيير الريجيم",
       "natural_arabic": "تغيير النظام",
@@ -498,6 +2216,52 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "soft power",
+      "ai_default_calque": "القوة الرخوة",
+      "natural_arabic": "القوة الناعمة",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 31,
+      "llm_votes": {
+        "codex": {
+          "natural": "القوة الناعمة",
+          "naive": "القوة الناعمة"
+        },
+        "claude": {
+          "natural": "القوة الناعمة",
+          "naive": "القوة الرخوة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "sphere of influence",
+      "ai_default_calque": "مجال التأثير",
+      "natural_arabic": "منطقة نفوذ",
+      "alternatives": [
+        "دائرة النفوذ"
+      ],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 330,
+      "llm_votes": {
+        "codex": {
+          "natural": "منطقة نفوذ",
+          "naive": "مجال التأثير"
+        },
+        "claude": {
+          "natural": "دائرة النفوذ",
+          "naive": "كرة التأثير"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
     },
     {
       "en": "spokesperson",
@@ -534,6 +2298,30 @@
       "safety": "safe"
     },
     {
+      "en": "stalemate",
+      "ai_default_calque": "وقفة ملك",
+      "natural_arabic": "طريق مسدود",
+      "alternatives": [
+        "جمود"
+      ],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 812,
+      "llm_votes": {
+        "claude": {
+          "natural": "طريق مسدود",
+          "naive": "وقفة ملك"
+        },
+        "codex": {
+          "natural": "جمود",
+          "naive": "رفيق قديم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "think tank",
       "ai_default_calque": "خزان تفكير",
       "natural_arabic": "مركز أبحاث",
@@ -549,6 +2337,50 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "war crime",
+      "ai_default_calque": "جريمة الحرب",
+      "natural_arabic": "جريمة حرب",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 47,
+      "llm_votes": {
+        "codex": {
+          "natural": "جريمة حرب",
+          "naive": "جريمة حرب"
+        },
+        "claude": {
+          "natural": "جريمة حرب",
+          "naive": "جريمة الحرب"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "watchdog",
+      "ai_default_calque": "كلب حراسة",
+      "natural_arabic": "جهة رقابية",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 111,
+      "llm_votes": {
+        "codex": {
+          "natural": "جهة رقابية",
+          "naive": "كلب حراسة"
+        },
+        "claude": {
+          "natural": "جهة رقابية",
+          "naive": "كلب الحراسة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "whistleblower",
@@ -634,6 +2466,752 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "RAG",
+      "ai_default_calque": "الجيل المعزز بالاسترجاع",
+      "natural_arabic": "التوليد المعزز بالاسترجاع",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 35,
+      "llm_votes": {
+        "codex": {
+          "natural": "التوليد المعزز بالاسترجاع",
+          "naive": "الجيل المعزز بالاسترجاع"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "RLHF",
+      "ai_default_calque": "التعلم المعزز من ردود الفعل البشرية",
+      "natural_arabic": "التعلم المعزز بالتغذية الراجعة البشرية",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 62,
+      "llm_votes": {
+        "codex": {
+          "natural": "التعلم المعزز بالتغذية الراجعة البشرية",
+          "naive": "التعلم المعزز من ردود الفعل البشرية"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "agent",
+      "ai_default_calque": "عميل",
+      "natural_arabic": "وكيل",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "claude": {
+          "natural": "وكيل",
+          "naive": "عميل"
+        },
+        "codex": {
+          "natural": "وكيل",
+          "naive": "وكيل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "agent harness",
+      "ai_default_calque": "حزام الوكيل",
+      "natural_arabic": "إطار عمل الوكيل",
+      "alternatives": [
+        "إطار تشغيل الوكيل"
+      ],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 423,
+      "llm_votes": {
+        "codex": {
+          "natural": "إطار عمل الوكيل",
+          "naive": "حزام الوكيل"
+        },
+        "claude": {
+          "natural": "إطار تشغيل الوكيل",
+          "naive": "سخافة الوكيل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "agent loop",
+      "ai_default_calque": "حلقة الوكيل",
+      "natural_arabic": "دورة عمل الوكيل",
+      "alternatives": [
+        "حلقة الوكيل"
+      ],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 361,
+      "llm_votes": {
+        "codex": {
+          "natural": "دورة عمل الوكيل",
+          "naive": "حلقة الوكيل"
+        },
+        "claude": {
+          "natural": "حلقة الوكيل",
+          "naive": "حلقة العميل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "agent memory",
+      "ai_default_calque": "ذاكرة العميل",
+      "natural_arabic": "ذاكرة الوكيل",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 465,
+      "llm_votes": {
+        "codex": {
+          "natural": "ذاكرة الوكيل",
+          "naive": "ذاكرة الوكيل"
+        },
+        "claude": {
+          "natural": "ذاكرة الوكيل",
+          "naive": "ذاكرة العميل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "agent runtime",
+      "ai_default_calque": "وقت تشغيل الوكيل",
+      "natural_arabic": "بيئة تشغيل الوكيل",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 1053,
+      "llm_votes": {
+        "codex": {
+          "natural": "بيئة تشغيل الوكيل",
+          "naive": "وقت تشغيل الوكيل"
+        },
+        "claude": {
+          "natural": "بيئة تشغيل الوكيل",
+          "naive": "وقت تشغيل العميل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "agent skill",
+      "ai_default_calque": "مهارة العميل",
+      "natural_arabic": "مهارة الوكيل",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "claude": {
+          "natural": "مهارة الوكيل",
+          "naive": "مهارة العميل"
+        },
+        "codex": {
+          "natural": "مهارة الوكيل",
+          "naive": "مهارة الوكيل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "autonomous agent",
+      "ai_default_calque": "عميل مستقل",
+      "natural_arabic": "وكيل ذكي",
+      "alternatives": [
+        "وكيل مستقل"
+      ],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 410,
+      "llm_votes": {
+        "claude": {
+          "natural": "وكيل ذكي",
+          "naive": "عميل مستقل"
+        },
+        "codex": {
+          "natural": "وكيل مستقل",
+          "naive": "وكيل ذاتي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "chain of thought",
+      "ai_default_calque": "سلسلة الفكر",
+      "natural_arabic": "سلسلة التفكير",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 697,
+      "llm_votes": {
+        "codex": {
+          "natural": "سلسلة التفكير",
+          "naive": "سلسلة الفكر"
+        },
+        "claude": {
+          "natural": "سلسلة التفكير",
+          "naive": "سلسلة الفكر"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "context window",
+      "ai_default_calque": "نافذة المحتوى",
+      "natural_arabic": "نافذة السياق",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 199,
+      "llm_votes": {
+        "codex": {
+          "natural": "نافذة السياق",
+          "naive": "نافذة السياق"
+        },
+        "claude": {
+          "natural": "نافذة السياق",
+          "naive": "نافذة المحتوى"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "few-shot learning",
+      "ai_default_calque": "التعلم القليل-الطلقات",
+      "natural_arabic": "التعلم بأمثلة قليلة",
+      "alternatives": [
+        "التعلم من أمثلة قليلة"
+      ],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 99,
+      "llm_votes": {
+        "claude": {
+          "natural": "التعلم بأمثلة قليلة",
+          "naive": "التعلم القليل-الطلقات"
+        },
+        "codex": {
+          "natural": "التعلم من أمثلة قليلة",
+          "naive": "التعلم قليل اللقطات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "foundation model",
+      "ai_default_calque": "نموذج الأساس",
+      "natural_arabic": "النموذج التأسيسي",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 55,
+      "llm_votes": {
+        "codex": {
+          "natural": "النموذج التأسيسي",
+          "naive": "نموذج الأساس"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "function calling",
+      "ai_default_calque": "استدعاء الوظيفة",
+      "natural_arabic": "استدعاء الدوال",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "استدعاء الدوال",
+          "naive": "استدعاء الوظيفة"
+        },
+        "claude": {
+          "natural": "استدعاء الدوال",
+          "naive": "استدعاء الوظيفة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "in-context learning",
+      "ai_default_calque": "التعلم داخل السياق",
+      "natural_arabic": "التعلم السياقي",
+      "alternatives": [
+        "التعلم في السياق"
+      ],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 58,
+      "llm_votes": {
+        "claude": {
+          "natural": "التعلم السياقي",
+          "naive": "التعلم داخل السياق"
+        },
+        "codex": {
+          "natural": "التعلم في السياق",
+          "naive": "التعلم داخل السياق"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "jailbreak",
+      "ai_default_calque": "الهروب من السجن",
+      "natural_arabic": "كسر الحماية",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 285,
+      "llm_votes": {
+        "codex": {
+          "natural": "كسر الحماية",
+          "naive": "الهروب من السجن"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "knowledge cutoff",
+      "ai_default_calque": "قطع المعرفة",
+      "natural_arabic": "تاريخ انتهاء المعرفة",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 162,
+      "llm_votes": {
+        "codex": {
+          "natural": "تاريخ انتهاء المعرفة",
+          "naive": "قطع المعرفة"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "knowledge graph",
+      "ai_default_calque": "رسم المعرفة البياني",
+      "natural_arabic": "الرسم البياني المعرفي",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 30,
+      "llm_votes": {
+        "codex": {
+          "natural": "الرسم البياني المعرفي",
+          "naive": "رسم المعرفة البياني"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "large language model",
+      "ai_default_calque": "نموذج لغة كبير",
+      "natural_arabic": "نموذج لغوي كبير",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 490,
+      "llm_votes": {
+        "codex": {
+          "natural": "نموذج لغوي كبير",
+          "naive": "نموذج لغة كبير"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "mixture of experts",
+      "ai_default_calque": "خليط من الخبراء",
+      "natural_arabic": "مزيج الخبراء",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 149,
+      "llm_votes": {
+        "codex": {
+          "natural": "مزيج الخبراء",
+          "naive": "خليط من الخبراء"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "model card",
+      "ai_default_calque": "بطاقة موديل",
+      "natural_arabic": "بطاقة النموذج",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 350,
+      "llm_votes": {
+        "claude": {
+          "natural": "بطاقة النموذج",
+          "naive": "بطاقة موديل"
+        },
+        "codex": {
+          "natural": "بطاقة النموذج",
+          "naive": "بطاقة النموذج"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "multi-agent",
+      "ai_default_calque": "مولتي-أيجنت",
+      "natural_arabic": "متعدد الوكلاء",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 41,
+      "llm_votes": {
+        "codex": {
+          "natural": "متعدد الوكلاء",
+          "naive": "متعدد الوكلاء"
+        },
+        "claude": {
+          "natural": "متعدد الوكلاء",
+          "naive": "مولتي-أيجنت"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "multi-agent system",
+      "ai_default_calque": "نظام متعدد العملاء",
+      "natural_arabic": "نظام متعدد الوكلاء",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 2218,
+      "llm_votes": {
+        "codex": {
+          "natural": "نظام متعدد الوكلاء",
+          "naive": "نظام متعدد الوكلاء"
+        },
+        "claude": {
+          "natural": "نظام متعدد الوكلاء",
+          "naive": "نظام متعدد العملاء"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "prompt injection",
+      "ai_default_calque": "حقن المطالبات",
+      "natural_arabic": "حقن الأوامر",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 122,
+      "llm_votes": {
+        "codex": {
+          "natural": "حقن الأوامر",
+          "naive": "حقن المطالبات"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "reasoning",
+      "ai_default_calque": "التفكير المنطقي",
+      "natural_arabic": "الاستدلال",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "الاستدلال",
+          "naive": "التفكير المنطقي"
+        },
+        "claude": {
+          "natural": "الاستدلال",
+          "naive": "التفكير"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "retrieval augmented generation",
+      "ai_default_calque": "توليد معزز باسترجاع",
+      "natural_arabic": "التوليد المعزز بالاسترجاع",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 35,
+      "llm_votes": {
+        "claude": {
+          "natural": "التوليد المعزز بالاسترجاع",
+          "naive": "توليد معزز باسترجاع"
+        },
+        "codex": {
+          "natural": "التوليد المعزز بالاسترجاع",
+          "naive": "توليد معزز بالاسترجاع"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "scratchpad",
+      "ai_default_calque": "لوحة الخدش",
+      "natural_arabic": "مسودة",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "مسودة",
+          "naive": "لوحة الخدش"
+        },
+        "claude": {
+          "natural": "مسودة",
+          "naive": "لوح الخربشة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "self-correction",
+      "ai_default_calque": "تصحيح الذات",
+      "natural_arabic": "التصحيح الذاتي",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "التصحيح الذاتي",
+          "naive": "التصحيح الذاتي"
+        },
+        "claude": {
+          "natural": "التصحيح الذاتي",
+          "naive": "تصحيح الذات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "small language model",
+      "ai_default_calque": "نموذج لغة صغير",
+      "natural_arabic": "نموذج لغوي صغير",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 181,
+      "llm_votes": {
+        "codex": {
+          "natural": "نموذج لغوي صغير",
+          "naive": "نموذج لغة صغير"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "swarm intelligence",
+      "ai_default_calque": "ذكاء السرب",
+      "natural_arabic": "ذكاء الأسراب",
+      "alternatives": [
+        "ذكاء السرب"
+      ],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 188,
+      "llm_votes": {
+        "claude": {
+          "natural": "ذكاء الأسراب",
+          "naive": "ذكاء السرب"
+        },
+        "codex": {
+          "natural": "ذكاء السرب",
+          "naive": "ذكاء السرب"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "system prompt",
+      "ai_default_calque": "مطالبة النظام",
+      "natural_arabic": "موجه النظام",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 741,
+      "llm_votes": {
+        "codex": {
+          "natural": "موجه النظام",
+          "naive": "مطالبة النظام"
+        },
+        "claude": {
+          "natural": "موجه النظام",
+          "naive": "نص نظام الموجه"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "tool use",
+      "ai_default_calque": "استعمال الأداة",
+      "natural_arabic": "استخدام الأدوات",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 1956,
+      "llm_votes": {
+        "claude": {
+          "natural": "استخدام الأدوات",
+          "naive": "استعمال الأداة"
+        },
+        "codex": {
+          "natural": "استخدام الأدوات",
+          "naive": "استخدام الأداة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "tool-augmented",
+      "ai_default_calque": "معزز بالأدوات",
+      "natural_arabic": "مدعوم بالأدوات",
+      "alternatives": [
+        "معزز بالأدوات"
+      ],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 30,
+      "llm_votes": {
+        "codex": {
+          "natural": "مدعوم بالأدوات",
+          "naive": "معزز بالأدوات"
+        },
+        "claude": {
+          "natural": "معزز بالأدوات",
+          "naive": "معزز بالأداة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "user prompt",
+      "ai_default_calque": "موجه المستخدم",
+      "natural_arabic": "مدخل المستخدم",
+      "alternatives": [
+        "الأمر النصي للمستخدم"
+      ],
+      "domain": "tech-ai-agents",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 3136,
+      "llm_votes": {
+        "claude": {
+          "natural": "مدخل المستخدم",
+          "naive": "موجه المستخدم"
+        },
+        "codex": {
+          "natural": "الأمر النصي للمستخدم",
+          "naive": "مطالبة المستخدم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "zero-shot",
+      "ai_default_calque": "صفر لقطة",
+      "natural_arabic": "بدون أمثلة",
+      "alternatives": [],
+      "domain": "tech-ai-agents",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 231,
+      "llm_votes": {
+        "claude": {
+          "natural": "بدون أمثلة",
+          "naive": "صفر لقطة"
+        },
+        "codex": {
+          "natural": "بدون أمثلة",
+          "naive": "صفر طلقة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "alignment",
@@ -789,6 +3367,96 @@
       "safety": "safe"
     },
     {
+      "en": "augmented reality",
+      "ai_default_calque": "الواقع المضخم",
+      "natural_arabic": "الواقع المعزز",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "high",
+      "corpus_hits": 83,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "الواقع المعزز",
+          "naive": "الواقع المعزز"
+        },
+        "claude": {
+          "natural": "الواقع المعزز",
+          "naive": "الواقع المضخم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "dark mode",
+      "ai_default_calque": "الوضع المظلم",
+      "natural_arabic": "الوضع الداكن",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 107,
+      "llm_votes": {
+        "codex": {
+          "natural": "الوضع الداكن",
+          "naive": "الوضع المظلم"
+        },
+        "claude": {
+          "natural": "الوضع الداكن",
+          "naive": "النمط المظلم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "digital wallet",
+      "ai_default_calque": "محفظة رقمية",
+      "natural_arabic": "المحفظة الرقمية",
+      "alternatives": [
+        "محفظة رقمية"
+      ],
+      "domain": "tech-consumer",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 420,
+      "llm_votes": {
+        "codex": {
+          "natural": "المحفظة الرقمية",
+          "naive": "المحفظة الرقمية"
+        },
+        "claude": {
+          "natural": "محفظة رقمية",
+          "naive": "محفظة رقمية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "in-app messaging",
+      "ai_default_calque": "المراسلة داخل التطبيق",
+      "natural_arabic": "الرسائل داخل التطبيق",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 1503,
+      "llm_votes": {
+        "codex": {
+          "natural": "الرسائل داخل التطبيق",
+          "naive": "المراسلة داخل التطبيق"
+        },
+        "claude": {
+          "natural": "الرسائل داخل التطبيق",
+          "naive": "المراسلة في التطبيق"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "in-app purchase",
       "ai_default_calque": "شراء داخل-التطبيق",
       "natural_arabic": "شراء داخل التطبيق",
@@ -823,6 +3491,50 @@
       "safety": "safe"
     },
     {
+      "en": "live chat",
+      "ai_default_calque": "الدردشة الحية",
+      "natural_arabic": "الدردشة المباشرة",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 231,
+      "llm_votes": {
+        "codex": {
+          "natural": "الدردشة المباشرة",
+          "naive": "الدردشة الحية"
+        },
+        "claude": {
+          "natural": "الدردشة المباشرة",
+          "naive": "المحادثة الحية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "live streaming",
+      "ai_default_calque": "التدفق الحي",
+      "natural_arabic": "البث المباشر",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "high",
+      "corpus_hits": 99,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "البث المباشر",
+          "naive": "التدفق الحي"
+        },
+        "claude": {
+          "natural": "البث المباشر",
+          "naive": "البث الحي المتدفق"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "mobile app",
       "ai_default_calque": "تطبيق المحمول",
       "natural_arabic": "تطبيق الجوال",
@@ -838,6 +3550,186 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "mobile payment",
+      "ai_default_calque": "الدفع المحمول",
+      "natural_arabic": "الدفع عبر الهاتف المحمول",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 3243,
+      "llm_votes": {
+        "codex": {
+          "natural": "الدفع عبر الهاتف المحمول",
+          "naive": "الدفع المحمول"
+        },
+        "claude": {
+          "natural": "الدفع عبر الهاتف المحمول",
+          "naive": "دفع متنقل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "onboarding",
+      "ai_default_calque": "الصعود على متن الطائرة",
+      "natural_arabic": "إعداد المستخدمين الجدد",
+      "alternatives": [
+        "تأهيل"
+      ],
+      "domain": "tech-consumer",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1491,
+      "llm_votes": {
+        "codex": {
+          "natural": "إعداد المستخدمين الجدد",
+          "naive": "الصعود على متن الطائرة"
+        },
+        "claude": {
+          "natural": "تأهيل",
+          "naive": "الصعود على متن"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "paywall",
+      "ai_default_calque": "جدار الدفع",
+      "natural_arabic": "حاجز الاشتراك",
+      "alternatives": [
+        "جدار الدفع"
+      ],
+      "domain": "tech-consumer",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 193,
+      "llm_votes": {
+        "claude": {
+          "natural": "حاجز الاشتراك",
+          "naive": "جدار الدفع"
+        },
+        "codex": {
+          "natural": "جدار الدفع",
+          "naive": "جدار الدفع"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "personalization",
+      "ai_default_calque": "الشخصنة",
+      "natural_arabic": "التخصيص",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "التخصيص",
+          "naive": "الشخصنة"
+        },
+        "claude": {
+          "natural": "التخصيص",
+          "naive": "الشخصنة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "podcast",
+      "ai_default_calque": "بث صوتي",
+      "natural_arabic": "بودكاست",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "بودكاست",
+          "naive": "بث صوتي"
+        },
+        "claude": {
+          "natural": "بودكاست",
+          "naive": "بث صوتي متاح للتحميل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "push notification",
+      "ai_default_calque": "إشعار دفع",
+      "natural_arabic": "إشعار فوري",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 47,
+      "llm_votes": {
+        "codex": {
+          "natural": "إشعار فوري",
+          "naive": "إشعار دفع"
+        },
+        "claude": {
+          "natural": "إشعار فوري",
+          "naive": "إشعار دفع"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "quick response code",
+      "ai_default_calque": "رمز الرد السريع",
+      "natural_arabic": "رمز الاستجابة السريعة",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 131,
+      "llm_votes": {
+        "claude": {
+          "natural": "رمز الاستجابة السريعة",
+          "naive": "رمز الرد السريع"
+        },
+        "codex": {
+          "natural": "رمز الاستجابة السريعة",
+          "naive": "رمز الاستجابة السريعة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "recommendation engine",
+      "ai_default_calque": "محرك التوصية",
+      "natural_arabic": "محرك التوصيات",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 458,
+      "llm_votes": {
+        "codex": {
+          "natural": "محرك التوصيات",
+          "naive": "محرك التوصية"
+        },
+        "claude": {
+          "natural": "محرك التوصيات",
+          "naive": "آلة التوصية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "responsive design",
@@ -925,6 +3817,28 @@
       "safety": "safe"
     },
     {
+      "en": "trending topic",
+      "ai_default_calque": "موضوع متجه",
+      "natural_arabic": "موضوع رائج",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 78,
+      "llm_votes": {
+        "codex": {
+          "natural": "موضوع رائج",
+          "naive": "موضوع متجه"
+        },
+        "claude": {
+          "natural": "موضوع رائج",
+          "naive": "موضوع متداول في الاتجاه"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "user experience",
       "ai_default_calque": "خبرة المستعمل",
       "natural_arabic": "تجربة المستخدم",
@@ -942,6 +3856,98 @@
       "safety": "safe"
     },
     {
+      "en": "user feedback",
+      "ai_default_calque": "تغذية راجعة المستخدم",
+      "natural_arabic": "ملاحظات المستخدمين",
+      "alternatives": [
+        "تغذية راجعة من المستخدمين"
+      ],
+      "domain": "tech-consumer",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 2099,
+      "llm_votes": {
+        "codex": {
+          "natural": "ملاحظات المستخدمين",
+          "naive": "تغذية راجعة المستخدم"
+        },
+        "claude": {
+          "natural": "تغذية راجعة من المستخدمين",
+          "naive": "ردود فعل المستخدم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "user retention",
+      "ai_default_calque": "احتفاظ المستخدم",
+      "natural_arabic": "الاحتفاظ بالمستخدمين",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 34,
+      "llm_votes": {
+        "codex": {
+          "natural": "الاحتفاظ بالمستخدمين",
+          "naive": "احتفاظ المستخدم"
+        },
+        "claude": {
+          "natural": "الاحتفاظ بالمستخدمين",
+          "naive": "استبقاء المستخدم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "user-generated content",
+      "ai_default_calque": "المحتوى المولد من قبل المستخدمين",
+      "natural_arabic": "المحتوى الذي ينشئه المستخدمون",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 324,
+      "llm_votes": {
+        "codex": {
+          "natural": "المحتوى الذي ينشئه المستخدمون",
+          "naive": "المحتوى المولد من قبل المستخدمين"
+        },
+        "claude": {
+          "natural": "المحتوى الذي ينشئه المستخدمون",
+          "naive": "المحتوى المولد من المستخدم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "viral content",
+      "ai_default_calque": "محتوى فيروسي",
+      "natural_arabic": "محتوى واسع الانتشار",
+      "alternatives": [
+        "محتوى متداول"
+      ],
+      "domain": "tech-consumer",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 233,
+      "llm_votes": {
+        "codex": {
+          "natural": "محتوى واسع الانتشار",
+          "naive": "محتوى فيروسي"
+        },
+        "claude": {
+          "natural": "محتوى متداول",
+          "naive": "محتوى فيروسي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "wearable technology",
       "ai_default_calque": "تقنية قابلة للارتداء",
       "natural_arabic": "التقنية القابلة للارتداء",
@@ -957,6 +3963,366 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "consensus mechanism",
+      "ai_default_calque": "آلية الإجماع",
+      "natural_arabic": "آلية التوافق",
+      "alternatives": [
+        "آلية الإجماع"
+      ],
+      "domain": "tech-crypto",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 99,
+      "llm_votes": {
+        "codex": {
+          "natural": "آلية التوافق",
+          "naive": "آلية الإجماع"
+        },
+        "claude": {
+          "natural": "آلية الإجماع",
+          "naive": "آلية التوافق"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "crypto exchange",
+      "ai_default_calque": "تبادل العملات المشفرة",
+      "natural_arabic": "منصة تداول العملات المشفرة",
+      "alternatives": [],
+      "domain": "tech-crypto",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 511,
+      "llm_votes": {
+        "codex": {
+          "natural": "منصة تداول العملات المشفرة",
+          "naive": "تبادل العملات المشفرة"
+        },
+        "claude": {
+          "natural": "منصة تداول العملات المشفرة",
+          "naive": "تبادل التشفير"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "crypto wallet",
+      "ai_default_calque": "محفظة تشفير",
+      "natural_arabic": "محفظة العملات المشفرة",
+      "alternatives": [
+        "محفظة رقمية"
+      ],
+      "domain": "tech-crypto",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 121,
+      "llm_votes": {
+        "codex": {
+          "natural": "محفظة العملات المشفرة",
+          "naive": "محفظة تشفير"
+        },
+        "claude": {
+          "natural": "محفظة رقمية",
+          "naive": "محفظة كريبتو"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "cryptocurrency",
+      "ai_default_calque": "عملة التشفير",
+      "natural_arabic": "العملة المشفرة",
+      "alternatives": [],
+      "domain": "tech-crypto",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 93,
+      "llm_votes": {
+        "codex": {
+          "natural": "العملة المشفرة",
+          "naive": "العملة المشفرة"
+        },
+        "claude": {
+          "natural": "العملة المشفرة",
+          "naive": "عملة التشفير"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "decentralized application",
+      "ai_default_calque": "تطبيق غير مركزي",
+      "natural_arabic": "تطبيق لامركزي",
+      "alternatives": [],
+      "domain": "tech-crypto",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 3746,
+      "llm_votes": {
+        "codex": {
+          "natural": "تطبيق لامركزي",
+          "naive": "تطبيق غير مركزي"
+        },
+        "claude": {
+          "natural": "تطبيق لامركزي",
+          "naive": "تطبيق غير مركزي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "decentralized autonomous organization",
+      "ai_default_calque": "منظمة ذاتية الحكم لامركزية",
+      "natural_arabic": "منظمة لامركزية مستقلة",
+      "alternatives": [
+        "منظمة مستقلة لامركزية"
+      ],
+      "domain": "tech-crypto",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 77,
+      "llm_votes": {
+        "claude": {
+          "natural": "منظمة لامركزية مستقلة",
+          "naive": "منظمة ذاتية الحكم لامركزية"
+        },
+        "codex": {
+          "natural": "منظمة مستقلة لامركزية",
+          "naive": "منظمة لامركزية ذاتية الحكم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "decentralized finance",
+      "ai_default_calque": "المالية غير المركزية",
+      "natural_arabic": "التمويل اللامركزي",
+      "alternatives": [],
+      "domain": "tech-crypto",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 35,
+      "llm_votes": {
+        "codex": {
+          "natural": "التمويل اللامركزي",
+          "naive": "التمويل اللامركزي"
+        },
+        "claude": {
+          "natural": "التمويل اللامركزي",
+          "naive": "المالية غير المركزية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "gas fee",
+      "ai_default_calque": "أجرة الغاز",
+      "natural_arabic": "رسوم الغاز",
+      "alternatives": [],
+      "domain": "tech-crypto",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 88,
+      "llm_votes": {
+        "codex": {
+          "natural": "رسوم الغاز",
+          "naive": "رسوم الغاز"
+        },
+        "claude": {
+          "natural": "رسوم الغاز",
+          "naive": "أجرة الغاز"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "layer 2",
+      "ai_default_calque": "الطبقة 2",
+      "natural_arabic": "الطبقة الثانية",
+      "alternatives": [],
+      "domain": "tech-crypto",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 447,
+      "llm_votes": {
+        "codex": {
+          "natural": "الطبقة الثانية",
+          "naive": "الطبقة 2"
+        },
+        "claude": {
+          "natural": "الطبقة الثانية",
+          "naive": "طبقة 2"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "non-fungible token",
+      "ai_default_calque": "رمز غير مثلي",
+      "natural_arabic": "رمز غير قابل للاستبدال",
+      "alternatives": [],
+      "domain": "tech-crypto",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 93,
+      "llm_votes": {
+        "codex": {
+          "natural": "رمز غير قابل للاستبدال",
+          "naive": "رمز غير قابل للاستبدال"
+        },
+        "claude": {
+          "natural": "رمز غير قابل للاستبدال",
+          "naive": "رمز غير مثلي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "proof of stake",
+      "ai_default_calque": "دليل الرهان",
+      "natural_arabic": "إثبات الحصة",
+      "alternatives": [],
+      "domain": "tech-crypto",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 54,
+      "llm_votes": {
+        "claude": {
+          "natural": "إثبات الحصة",
+          "naive": "دليل الرهان"
+        },
+        "codex": {
+          "natural": "إثبات الحصة",
+          "naive": "إثبات الرهان"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "proof of work",
+      "ai_default_calque": "برهان العمل",
+      "natural_arabic": "إثبات العمل",
+      "alternatives": [],
+      "domain": "tech-crypto",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 850,
+      "llm_votes": {
+        "codex": {
+          "natural": "إثبات العمل",
+          "naive": "إثبات العمل"
+        },
+        "claude": {
+          "natural": "إثبات العمل",
+          "naive": "برهان العمل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "rollup",
+      "ai_default_calque": "لفة للأعلى",
+      "natural_arabic": "تجميع",
+      "alternatives": [
+        "التجميع"
+      ],
+      "domain": "tech-crypto",
+      "confidence": "high",
+      "corpus_hits": 60,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "تجميع",
+          "naive": "لفة للأعلى"
+        },
+        "codex": {
+          "natural": "التجميع",
+          "naive": "لف للأعلى"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "smart contract",
+      "ai_default_calque": "عقد ذكي",
+      "natural_arabic": "العقد الذكي",
+      "alternatives": [
+        "عقد ذكي"
+      ],
+      "domain": "tech-crypto",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1029,
+      "llm_votes": {
+        "codex": {
+          "natural": "العقد الذكي",
+          "naive": "العقد الذكي"
+        },
+        "claude": {
+          "natural": "عقد ذكي",
+          "naive": "عقد ذكي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "staking",
+      "ai_default_calque": "التوتيد",
+      "natural_arabic": "التحقق بالرهن",
+      "alternatives": [
+        "تخزين العملات الرقمية"
+      ],
+      "domain": "tech-crypto",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 129,
+      "llm_votes": {
+        "claude": {
+          "natural": "التحقق بالرهن",
+          "naive": "التوتيد"
+        },
+        "codex": {
+          "natural": "تخزين العملات الرقمية",
+          "naive": "المراهنة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "ACID compliance",
+      "ai_default_calque": "امتثال ACID",
+      "natural_arabic": "التوافق مع خصائص ACID",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 39,
+      "llm_votes": {
+        "codex": {
+          "natural": "التوافق مع خصائص ACID",
+          "naive": "امتثال ACID"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
     },
     {
       "en": "ETL",
@@ -993,6 +4359,96 @@
       "safety": "safe"
     },
     {
+      "en": "data governance",
+      "ai_default_calque": "إدارة حكم البيانات",
+      "natural_arabic": "حوكمة البيانات",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 1228,
+      "llm_votes": {
+        "codex": {
+          "natural": "حوكمة البيانات",
+          "naive": "حوكمة البيانات"
+        },
+        "claude": {
+          "natural": "حوكمة البيانات",
+          "naive": "إدارة حكم البيانات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "data integrity",
+      "ai_default_calque": "نزاهة البيانات",
+      "natural_arabic": "سلامة البيانات",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 1281,
+      "llm_votes": {
+        "codex": {
+          "natural": "سلامة البيانات",
+          "naive": "نزاهة البيانات"
+        },
+        "claude": {
+          "natural": "سلامة البيانات",
+          "naive": "نزاهة البيانات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "data lineage",
+      "ai_default_calque": "نسب البيانات",
+      "natural_arabic": "تتبع مسار البيانات",
+      "alternatives": [
+        "سلسلة بيانات"
+      ],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 943,
+      "llm_votes": {
+        "codex": {
+          "natural": "تتبع مسار البيانات",
+          "naive": "نسب البيانات"
+        },
+        "claude": {
+          "natural": "سلسلة بيانات",
+          "naive": "نسب البيانات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "data migration",
+      "ai_default_calque": "هجرة البيانات",
+      "natural_arabic": "ترحيل البيانات",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 1228,
+      "llm_votes": {
+        "codex": {
+          "natural": "ترحيل البيانات",
+          "naive": "هجرة البيانات"
+        },
+        "claude": {
+          "natural": "ترحيل البيانات",
+          "naive": "هجرة البيانات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "data pipeline",
       "ai_default_calque": "خط أنابيب البيانات",
       "natural_arabic": "خط بيانات",
@@ -1027,6 +4483,42 @@
       "safety": "safe"
     },
     {
+      "en": "deadlock detection",
+      "ai_default_calque": "كشف القفل الميت",
+      "natural_arabic": "الكشف عن حالات التوقف التام",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 308,
+      "llm_votes": {
+        "codex": {
+          "natural": "الكشف عن حالات التوقف التام",
+          "naive": "كشف القفل الميت"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "eventual consistency",
+      "ai_default_calque": "الاتساق في نهاية المطاف",
+      "natural_arabic": "الاتساق النهائي",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 69,
+      "llm_votes": {
+        "codex": {
+          "natural": "الاتساق النهائي",
+          "naive": "الاتساق في نهاية المطاف"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
       "en": "foreign key",
       "ai_default_calque": "مفتاح خارجي",
       "natural_arabic": "مفتاح أجنبي",
@@ -1042,6 +4534,60 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "master-slave replication",
+      "ai_default_calque": "تكرار السيد والعبد",
+      "natural_arabic": "النسخ المتماثل الرئيسي-التابع",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 116,
+      "llm_votes": {
+        "codex": {
+          "natural": "النسخ المتماثل الرئيسي-التابع",
+          "naive": "تكرار السيد والعبد"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "materialized view",
+      "ai_default_calque": "رؤية متجسدة",
+      "natural_arabic": "طريقة عرض مادية",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1219,
+      "llm_votes": {
+        "codex": {
+          "natural": "طريقة عرض مادية",
+          "naive": "رؤية متجسدة"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "partition",
+      "ai_default_calque": "تقسيم",
+      "natural_arabic": "قسم",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "high",
+      "corpus_hits": 444,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "قسم",
+          "naive": "تقسيم"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
     },
     {
       "en": "primary key",
@@ -1061,6 +4607,30 @@
       "safety": "safe"
     },
     {
+      "en": "primary-replica",
+      "ai_default_calque": "أساسي-نسخة متماثلة",
+      "natural_arabic": "الرئيسي والنسخة المتماثلة",
+      "alternatives": [
+        "رئيسي-نسخة احتياطية"
+      ],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 103,
+      "llm_votes": {
+        "codex": {
+          "natural": "الرئيسي والنسخة المتماثلة",
+          "naive": "أساسي-نسخة متماثلة"
+        },
+        "claude": {
+          "natural": "رئيسي-نسخة احتياطية",
+          "naive": "أولي-نسخة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "replication",
       "ai_default_calque": "التكرار",
       "natural_arabic": "النسخ المتماثل",
@@ -1078,6 +4648,30 @@
       "safety": "safe"
     },
     {
+      "en": "schema evolution",
+      "ai_default_calque": "تطور المخطط",
+      "natural_arabic": "تطور مخطط البيانات",
+      "alternatives": [
+        "تطور المخطط"
+      ],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1102,
+      "llm_votes": {
+        "codex": {
+          "natural": "تطور مخطط البيانات",
+          "naive": "تطور المخطط"
+        },
+        "claude": {
+          "natural": "تطور المخطط",
+          "naive": "تطور السكيما"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "sharding",
       "ai_default_calque": "التشارد",
       "natural_arabic": "التجزئة",
@@ -1093,6 +4687,64 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "trigger",
+      "ai_default_calque": "زناد",
+      "natural_arabic": "مشغل",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "high",
+      "corpus_hits": 277,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "مشغل",
+          "naive": "زناد"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "view",
+      "ai_default_calque": "رؤية",
+      "natural_arabic": "مشاهدة",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "high",
+      "corpus_hits": 610,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "مشاهدة",
+          "naive": "رؤية"
+        }
+      },
+      "n_llms": 1,
+      "consensus_strength": 1
+    },
+    {
+      "en": "GitOps",
+      "ai_default_calque": "عمليات جيت",
+      "natural_arabic": "جيت أوبس",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "جيت أوبس",
+          "naive": "عمليات جيت"
+        },
+        "claude": {
+          "natural": "جيت أوبس",
+          "naive": "عمليات جيت"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "auto-scaling",
@@ -1129,6 +4781,54 @@
       "safety": "safe"
     },
     {
+      "en": "blue-green deployment",
+      "ai_default_calque": "الانتشار الأزرق الأخضر",
+      "natural_arabic": "النشر الأزرق والأخضر",
+      "alternatives": [
+        "النشر الأزرق الأخضر"
+      ],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 82,
+      "llm_votes": {
+        "codex": {
+          "natural": "النشر الأزرق والأخضر",
+          "naive": "الانتشار الأزرق الأخضر"
+        },
+        "claude": {
+          "natural": "النشر الأزرق الأخضر",
+          "naive": "نشر أزرق أخضر"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "canary release",
+      "ai_default_calque": "إصدار الكناري",
+      "natural_arabic": "الإطلاق التدريجي المحدود",
+      "alternatives": [
+        "إصدار تجريبي محدود"
+      ],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 106,
+      "llm_votes": {
+        "codex": {
+          "natural": "الإطلاق التدريجي المحدود",
+          "naive": "إصدار الكناري"
+        },
+        "claude": {
+          "natural": "إصدار تجريبي محدود",
+          "naive": "إصدار الكناري"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "cloud computing",
       "ai_default_calque": "حوسبة السحاب",
       "natural_arabic": "الحوسبة السحابية",
@@ -1144,6 +4844,30 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "cluster",
+      "ai_default_calque": "عنقود",
+      "natural_arabic": "تجمع",
+      "alternatives": [
+        "عنقود"
+      ],
+      "domain": "tech-infra",
+      "confidence": "high",
+      "corpus_hits": 215,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "تجمع",
+          "naive": "عنقود"
+        },
+        "claude": {
+          "natural": "عنقود",
+          "naive": "مجموعة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
     },
     {
       "en": "content delivery network",
@@ -1163,6 +4887,142 @@
       "safety": "safe"
     },
     {
+      "en": "continuous delivery",
+      "ai_default_calque": "التوصيل المستمر",
+      "natural_arabic": "التسليم المستمر",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 36,
+      "llm_votes": {
+        "codex": {
+          "natural": "التسليم المستمر",
+          "naive": "التسليم المستمر"
+        },
+        "claude": {
+          "natural": "التسليم المستمر",
+          "naive": "التوصيل المستمر"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "continuous integration",
+      "ai_default_calque": "الدمج المتواصل",
+      "natural_arabic": "التكامل المستمر",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 36,
+      "llm_votes": {
+        "codex": {
+          "natural": "التكامل المستمر",
+          "naive": "التكامل المستمر"
+        },
+        "claude": {
+          "natural": "التكامل المستمر",
+          "naive": "الدمج المتواصل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "control plane",
+      "ai_default_calque": "طائرة التحكم",
+      "natural_arabic": "مستوى التحكم",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 876,
+      "llm_votes": {
+        "codex": {
+          "natural": "مستوى التحكم",
+          "naive": "طائرة التحكم"
+        },
+        "claude": {
+          "natural": "مستوى التحكم",
+          "naive": "طائرة التحكم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "daemon set",
+      "ai_default_calque": "مجموعة الشياطين",
+      "natural_arabic": "مجموعة دايمون",
+      "alternatives": [
+        "مجموعة العفاريت"
+      ],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1477,
+      "llm_votes": {
+        "codex": {
+          "natural": "مجموعة دايمون",
+          "naive": "مجموعة الشياطين"
+        },
+        "claude": {
+          "natural": "مجموعة العفاريت",
+          "naive": "مجموعة الشيطان"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "data plane",
+      "ai_default_calque": "طائرة البيانات",
+      "natural_arabic": "مستوى البيانات",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 1545,
+      "llm_votes": {
+        "codex": {
+          "natural": "مستوى البيانات",
+          "naive": "طائرة البيانات"
+        },
+        "claude": {
+          "natural": "مستوى البيانات",
+          "naive": "طائرة البيانات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "downtime",
+      "ai_default_calque": "وقت التوقف",
+      "natural_arabic": "توقف",
+      "alternatives": [
+        "انقطاع الخدمة"
+      ],
+      "domain": "tech-infra",
+      "confidence": "high",
+      "corpus_hits": 535,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "توقف",
+          "naive": "وقت التوقف"
+        },
+        "codex": {
+          "natural": "انقطاع الخدمة",
+          "naive": "وقت التوقف"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "edge computing",
       "ai_default_calque": "حوسبة الحافة",
       "natural_arabic": "الحوسبة الطرفية",
@@ -1180,6 +5040,74 @@
       "safety": "safe"
     },
     {
+      "en": "error budget",
+      "ai_default_calque": "ميزانية الخطأ",
+      "natural_arabic": "ميزانية الأخطاء",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 54,
+      "llm_votes": {
+        "codex": {
+          "natural": "ميزانية الأخطاء",
+          "naive": "ميزانية الخطأ"
+        },
+        "claude": {
+          "natural": "ميزانية الأخطاء",
+          "naive": "ميزانية الخطأ"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "feature toggle",
+      "ai_default_calque": "تبديل الميزة",
+      "natural_arabic": "مفتاح الميزة",
+      "alternatives": [
+        "مفتاح تبديل الميزات"
+      ],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 541,
+      "llm_votes": {
+        "claude": {
+          "natural": "مفتاح الميزة",
+          "naive": "تبديل الميزة"
+        },
+        "codex": {
+          "natural": "مفتاح تبديل الميزات",
+          "naive": "تبديل الميزة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "helm chart",
+      "ai_default_calque": "مخطط الخوذة",
+      "natural_arabic": "مخطط هيلم",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "مخطط هيلم",
+          "naive": "مخطط الخوذة"
+        },
+        "claude": {
+          "natural": "مخطط هيلم",
+          "naive": "مخطط الدفة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "high availability",
       "ai_default_calque": "توفرية عالية",
       "natural_arabic": "توافر عال",
@@ -1195,6 +5123,166 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "horizontal scaling",
+      "ai_default_calque": "التحجيم الأفقي",
+      "natural_arabic": "التوسع الأفقي",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "التوسع الأفقي",
+          "naive": "التحجيم الأفقي"
+        },
+        "claude": {
+          "natural": "التوسع الأفقي",
+          "naive": "القياس الأفقي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "incident response",
+      "ai_default_calque": "استجابة الحادث",
+      "natural_arabic": "الاستجابة للحوادث",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 62,
+      "llm_votes": {
+        "codex": {
+          "natural": "الاستجابة للحوادث",
+          "naive": "استجابة الحادث"
+        },
+        "claude": {
+          "natural": "الاستجابة للحوادث",
+          "naive": "رد الحادث"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "infrastructure as code",
+      "ai_default_calque": "البنية التحتية ككود",
+      "natural_arabic": "البنية التحتية كرمز برمجي",
+      "alternatives": [
+        "البنية التحتية كرمز"
+      ],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 165,
+      "llm_votes": {
+        "codex": {
+          "natural": "البنية التحتية كرمز برمجي",
+          "naive": "البنية التحتية ككود"
+        },
+        "claude": {
+          "natural": "البنية التحتية كرمز",
+          "naive": "البنية التحتية كالكود"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "ingress controller",
+      "ai_default_calque": "وحدة التحكم في الدخول",
+      "natural_arabic": "متحكم الدخول",
+      "alternatives": [
+        "وحدة التحكم في الدخول"
+      ],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 632,
+      "llm_votes": {
+        "codex": {
+          "natural": "متحكم الدخول",
+          "naive": "وحدة التحكم في الدخول"
+        },
+        "claude": {
+          "natural": "وحدة التحكم في الدخول",
+          "naive": "متحكم الدخول"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "init container",
+      "ai_default_calque": "حاوية البدء",
+      "natural_arabic": "حاوية التهيئة",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "حاوية التهيئة",
+          "naive": "حاوية البدء"
+        },
+        "claude": {
+          "natural": "حاوية التهيئة",
+          "naive": "حاوية البدء"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "manifest",
+      "ai_default_calque": "واضح",
+      "natural_arabic": "بيان",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "high",
+      "corpus_hits": 233,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "بيان",
+          "naive": "واضح"
+        },
+        "claude": {
+          "natural": "بيان",
+          "naive": "مانيفست"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "mean time to recovery",
+      "ai_default_calque": "الوقت المتوسط إلى التعافي",
+      "natural_arabic": "متوسط زمن التعافي",
+      "alternatives": [
+        "متوسط وقت الاسترداد"
+      ],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 87,
+      "llm_votes": {
+        "codex": {
+          "natural": "متوسط زمن التعافي",
+          "naive": "الوقت المتوسط إلى التعافي"
+        },
+        "claude": {
+          "natural": "متوسط وقت الاسترداد",
+          "naive": "متوسط الوقت حتى الاسترداد"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
     },
     {
       "en": "monitoring",
@@ -1231,6 +5319,52 @@
       "safety": "safe"
     },
     {
+      "en": "postmortem",
+      "ai_default_calque": "ما بعد الوفاة",
+      "natural_arabic": "تقرير ما بعد الحادث",
+      "alternatives": [
+        "تحليل ما بعد الحادثة"
+      ],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 596,
+      "llm_votes": {
+        "codex": {
+          "natural": "تقرير ما بعد الحادث",
+          "naive": "ما بعد الوفاة"
+        },
+        "claude": {
+          "natural": "تحليل ما بعد الحادثة",
+          "naive": "ما بعد الوفاة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "scalability",
+      "ai_default_calque": "قابلية التدرج",
+      "natural_arabic": "قابلية التوسع",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "قابلية التوسع",
+          "naive": "قابلية التوسع"
+        },
+        "claude": {
+          "natural": "قابلية التوسع",
+          "naive": "قابلية التدرج"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "serverless",
       "ai_default_calque": "عديم الخادم",
       "natural_arabic": "بدون خوادم",
@@ -1246,6 +5380,94 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "service mesh",
+      "ai_default_calque": "شبكة الخدمة",
+      "natural_arabic": "شبكة الخدمات",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 1647,
+      "llm_votes": {
+        "codex": {
+          "natural": "شبكة الخدمات",
+          "naive": "شبكة الخدمة"
+        },
+        "claude": {
+          "natural": "شبكة الخدمات",
+          "naive": "شبكة الخدمة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "site reliability engineering",
+      "ai_default_calque": "هندسة موثوقية الموقع",
+      "natural_arabic": "هندسة موثوقية المواقع",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 598,
+      "llm_votes": {
+        "codex": {
+          "natural": "هندسة موثوقية المواقع",
+          "naive": "هندسة موثوقية الموقع"
+        },
+        "claude": {
+          "natural": "هندسة موثوقية المواقع",
+          "naive": "هندسة موثوقية الموقع"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "uptime",
+      "ai_default_calque": "وقت الاتصال بالشبكة",
+      "natural_arabic": "وقت التشغيل",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 1775,
+      "llm_votes": {
+        "claude": {
+          "natural": "وقت التشغيل",
+          "naive": "وقت الاتصال بالشبكة"
+        },
+        "codex": {
+          "natural": "وقت التشغيل",
+          "naive": "وقت الصعود"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "vertical scaling",
+      "ai_default_calque": "التوسع العمودي",
+      "natural_arabic": "التوسع الرأسي",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "التوسع الرأسي",
+          "naive": "التوسع العمودي"
+        },
+        "claude": {
+          "natural": "التوسع الرأسي",
+          "naive": "القياس العمودي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "virtualization",
@@ -1282,6 +5504,52 @@
       "safety": "safe"
     },
     {
+      "en": "advanced persistent threat",
+      "ai_default_calque": "التهديد المتواصل المتقدم",
+      "natural_arabic": "التهديد المتقدم المستمر",
+      "alternatives": [
+        "التهديدات المتقدمة المستمرة"
+      ],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 24,
+      "llm_votes": {
+        "claude": {
+          "natural": "التهديد المتقدم المستمر",
+          "naive": "التهديد المتواصل المتقدم"
+        },
+        "codex": {
+          "natural": "التهديدات المتقدمة المستمرة",
+          "naive": "التهديد المتقدم المستمر"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "attack vector",
+      "ai_default_calque": "متجه الهجوم",
+      "natural_arabic": "ناقل الهجوم",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 61,
+      "llm_votes": {
+        "codex": {
+          "natural": "ناقل الهجوم",
+          "naive": "متجه الهجوم"
+        },
+        "claude": {
+          "natural": "ناقل الهجوم",
+          "naive": "متجه الهجوم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "breach",
       "ai_default_calque": "خرق",
       "natural_arabic": "اختراق",
@@ -1297,6 +5565,120 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "command and control",
+      "ai_default_calque": "أمر والتحكم",
+      "natural_arabic": "القيادة والسيطرة",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 106,
+      "llm_votes": {
+        "claude": {
+          "natural": "القيادة والسيطرة",
+          "naive": "أمر والتحكم"
+        },
+        "codex": {
+          "natural": "القيادة والسيطرة",
+          "naive": "الأمر والتحكم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "credential stuffing",
+      "ai_default_calque": "حشو الوثائق التعريفية",
+      "natural_arabic": "حشو بيانات الاعتماد",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 462,
+      "llm_votes": {
+        "claude": {
+          "natural": "حشو بيانات الاعتماد",
+          "naive": "حشو الوثائق التعريفية"
+        },
+        "codex": {
+          "natural": "حشو بيانات الاعتماد",
+          "naive": "حشو بيانات الاعتماد"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "data exfiltration",
+      "ai_default_calque": "تسلل البيانات إلى الخارج",
+      "natural_arabic": "تسريب البيانات",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 1481,
+      "llm_votes": {
+        "codex": {
+          "natural": "تسريب البيانات",
+          "naive": "تسلل البيانات إلى الخارج"
+        },
+        "claude": {
+          "natural": "تسريب البيانات",
+          "naive": "إخراج البيانات"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "defense in depth",
+      "ai_default_calque": "الدفاع في العمق",
+      "natural_arabic": "الدفاع المتعمق",
+      "alternatives": [
+        "الدفاع في العمق"
+      ],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 54,
+      "llm_votes": {
+        "claude": {
+          "natural": "الدفاع المتعمق",
+          "naive": "الدفاع في العمق"
+        },
+        "codex": {
+          "natural": "الدفاع في العمق",
+          "naive": "الدفاع في العمق"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "endpoint protection",
+      "ai_default_calque": "حماية نقطة النهاية",
+      "natural_arabic": "حماية النقاط الطرفية",
+      "alternatives": [
+        "حماية الأجهزة الطرفية"
+      ],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 286,
+      "llm_votes": {
+        "claude": {
+          "natural": "حماية النقاط الطرفية",
+          "naive": "حماية نقطة النهاية"
+        },
+        "codex": {
+          "natural": "حماية الأجهزة الطرفية",
+          "naive": "حماية نقطة النهاية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
     },
     {
       "en": "exploit",
@@ -1333,6 +5715,50 @@
       "safety": "safe"
     },
     {
+      "en": "identity provider",
+      "ai_default_calque": "مقدم الهوية",
+      "natural_arabic": "مزود الهوية",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 187,
+      "llm_votes": {
+        "codex": {
+          "natural": "مزود الهوية",
+          "naive": "مقدم الهوية"
+        },
+        "claude": {
+          "natural": "مزود الهوية",
+          "naive": "مقدم الهوية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "indicator of compromise",
+      "ai_default_calque": "مؤشر التنازل",
+      "natural_arabic": "مؤشر اختراق",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 395,
+      "llm_votes": {
+        "codex": {
+          "natural": "مؤشر اختراق",
+          "naive": "مؤشر التنازل"
+        },
+        "claude": {
+          "natural": "مؤشر اختراق",
+          "naive": "مؤشر الاختراق"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "intrusion detection",
       "ai_default_calque": "اكتشاف الاقتحام",
       "natural_arabic": "كشف التسلل",
@@ -1350,6 +5776,50 @@
       "safety": "safe"
     },
     {
+      "en": "kill chain",
+      "ai_default_calque": "سلسلة القتل",
+      "natural_arabic": "سلسلة الهجوم",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 727,
+      "llm_votes": {
+        "claude": {
+          "natural": "سلسلة الهجوم",
+          "naive": "سلسلة القتل"
+        },
+        "codex": {
+          "natural": "سلسلة الهجوم",
+          "naive": "سلسلة القتل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "lateral movement",
+      "ai_default_calque": "التحرك الجانبي",
+      "natural_arabic": "الحركة الجانبية",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 59,
+      "llm_votes": {
+        "claude": {
+          "natural": "الحركة الجانبية",
+          "naive": "التحرك الجانبي"
+        },
+        "codex": {
+          "natural": "الحركة الجانبية",
+          "naive": "الحركة الجانبية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "malware",
       "ai_default_calque": "برمجيات ضارة",
       "natural_arabic": "برمجيات خبيثة",
@@ -1365,6 +5835,50 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "multi-factor authentication",
+      "ai_default_calque": "التحقق متعدد العوامل",
+      "natural_arabic": "المصادقة متعددة العوامل",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 199,
+      "llm_votes": {
+        "codex": {
+          "natural": "المصادقة متعددة العوامل",
+          "naive": "المصادقة متعددة العوامل"
+        },
+        "claude": {
+          "natural": "المصادقة متعددة العوامل",
+          "naive": "التحقق متعدد العوامل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "passwordless",
+      "ai_default_calque": "عديم كلمة السر",
+      "natural_arabic": "بدون كلمة مرور",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 477,
+      "llm_votes": {
+        "claude": {
+          "natural": "بدون كلمة مرور",
+          "naive": "عديم كلمة السر"
+        },
+        "codex": {
+          "natural": "بدون كلمة مرور",
+          "naive": "خال من كلمة المرور"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "patch",
@@ -1401,6 +5915,52 @@
       "safety": "safe"
     },
     {
+      "en": "security incident",
+      "ai_default_calque": "حادثة الأمان",
+      "natural_arabic": "حادث أمني",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 110,
+      "llm_votes": {
+        "claude": {
+          "natural": "حادث أمني",
+          "naive": "حادثة الأمان"
+        },
+        "codex": {
+          "natural": "حادث أمني",
+          "naive": "حادثة أمنية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "single sign-on",
+      "ai_default_calque": "تسجيل دخول واحد",
+      "natural_arabic": "تسجيل الدخول الموحد",
+      "alternatives": [
+        "الدخول الموحد"
+      ],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 710,
+      "llm_votes": {
+        "codex": {
+          "natural": "تسجيل الدخول الموحد",
+          "naive": "تسجيل دخول واحد"
+        },
+        "claude": {
+          "natural": "الدخول الموحد",
+          "naive": "تسجيل دخول مفرد"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "social engineering",
       "ai_default_calque": "هندسة المجتمع",
       "natural_arabic": "الهندسة الاجتماعية",
@@ -1416,6 +5976,98 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "spear phishing",
+      "ai_default_calque": "التصيد بالرمح",
+      "natural_arabic": "التصيد الاحتيالي الموجه",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 55,
+      "llm_votes": {
+        "codex": {
+          "natural": "التصيد الاحتيالي الموجه",
+          "naive": "التصيد بالرمح"
+        },
+        "claude": {
+          "natural": "التصيد الاحتيالي الموجه",
+          "naive": "تصيد الرمح"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "supply chain attack",
+      "ai_default_calque": "هجوم سلسلة الإمداد",
+      "natural_arabic": "هجوم على سلسلة التوريد",
+      "alternatives": [
+        "هجوم سلسلة التوريد"
+      ],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 370,
+      "llm_votes": {
+        "codex": {
+          "natural": "هجوم على سلسلة التوريد",
+          "naive": "هجوم سلسلة الإمداد"
+        },
+        "claude": {
+          "natural": "هجوم سلسلة التوريد",
+          "naive": "هجوم سلسلة الإمداد"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "threat actor",
+      "ai_default_calque": "فاعل التهديد",
+      "natural_arabic": "جهة التهديد",
+      "alternatives": [
+        "جهة تهديد"
+      ],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 111,
+      "llm_votes": {
+        "claude": {
+          "natural": "جهة التهديد",
+          "naive": "فاعل التهديد"
+        },
+        "codex": {
+          "natural": "جهة تهديد",
+          "naive": "ممثل التهديد"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "threat intelligence",
+      "ai_default_calque": "ذكاء التهديد",
+      "natural_arabic": "استخبارات التهديدات",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 168,
+      "llm_votes": {
+        "codex": {
+          "natural": "استخبارات التهديدات",
+          "naive": "ذكاء التهديد"
+        },
+        "claude": {
+          "natural": "استخبارات التهديدات",
+          "naive": "ذكاء التهديد"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "vulnerability",
@@ -1435,6 +6087,28 @@
       "safety": "safe"
     },
     {
+      "en": "zero trust",
+      "ai_default_calque": "الثقة الصفرية",
+      "natural_arabic": "الثقة المعدومة",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "الثقة المعدومة",
+          "naive": "الثقة الصفرية"
+        },
+        "claude": {
+          "natural": "الثقة المعدومة",
+          "naive": "الثقة الصفرية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "zero-day",
       "ai_default_calque": "يوم صفري",
       "natural_arabic": "ثغرة يوم الصفر",
@@ -1450,6 +6124,76 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "A/B test",
+      "ai_default_calque": "اختبار أ/ب",
+      "natural_arabic": "اختبار A/B",
+      "alternatives": [
+        "اختبار أ/ب"
+      ],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 168,
+      "llm_votes": {
+        "codex": {
+          "natural": "اختبار A/B",
+          "naive": "اختبار أ/ب"
+        },
+        "claude": {
+          "natural": "اختبار أ/ب",
+          "naive": "اختبار أ/ب"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "anti-pattern",
+      "ai_default_calque": "ضد النمط",
+      "natural_arabic": "نمط مضاد",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 62,
+      "llm_votes": {
+        "claude": {
+          "natural": "نمط مضاد",
+          "naive": "ضد النمط"
+        },
+        "codex": {
+          "natural": "نمط مضاد",
+          "naive": "نمط مضاد"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "backoff",
+      "ai_default_calque": "الرجوع إلى الخلف",
+      "natural_arabic": "التراجع",
+      "alternatives": [
+        "التراجع التدريجي"
+      ],
+      "domain": "tech-software",
+      "confidence": "high",
+      "corpus_hits": 64,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "التراجع",
+          "naive": "الرجوع إلى الخلف"
+        },
+        "claude": {
+          "natural": "التراجع التدريجي",
+          "naive": "التراجع للخلف"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
     },
     {
       "en": "bandwidth",
@@ -1469,6 +6213,230 @@
       "safety": "safe"
     },
     {
+      "en": "batch processing",
+      "ai_default_calque": "معالجة الدفعات",
+      "natural_arabic": "المعالجة الدفعية",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 44,
+      "llm_votes": {
+        "codex": {
+          "natural": "المعالجة الدفعية",
+          "naive": "معالجة الدفعات"
+        },
+        "claude": {
+          "natural": "المعالجة الدفعية",
+          "naive": "معالجة الحزمة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "broker",
+      "ai_default_calque": "بروكر",
+      "natural_arabic": "وسيط",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "وسيط",
+          "naive": "وسيط"
+        },
+        "claude": {
+          "natural": "وسيط",
+          "naive": "بروكر"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "circuit breaker",
+      "ai_default_calque": "كاسر الدائرة",
+      "natural_arabic": "قاطع الدائرة",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "claude": {
+          "natural": "قاطع الدائرة",
+          "naive": "كاسر الدائرة"
+        },
+        "codex": {
+          "natural": "قاطع الدائرة",
+          "naive": "كاسر الدائرة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "code review",
+      "ai_default_calque": "مراجعة الرمز",
+      "natural_arabic": "مراجعة الكود",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 139,
+      "llm_votes": {
+        "codex": {
+          "natural": "مراجعة الكود",
+          "naive": "مراجعة الرمز"
+        },
+        "claude": {
+          "natural": "مراجعة الكود",
+          "naive": "مراجعة الشفرة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "concurrency",
+      "ai_default_calque": "التزامنية",
+      "natural_arabic": "التزامن",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "claude": {
+          "natural": "التزامن",
+          "naive": "التزامنية"
+        },
+        "codex": {
+          "natural": "التزامن",
+          "naive": "التزامن"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "coordinator",
+      "ai_default_calque": "منسق الأعمال",
+      "natural_arabic": "منسق",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "منسق",
+          "naive": "منسق"
+        },
+        "claude": {
+          "natural": "منسق",
+          "naive": "منسق الأعمال"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "design pattern",
+      "ai_default_calque": "نموذج تصميم",
+      "natural_arabic": "نمط تصميم",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 596,
+      "llm_votes": {
+        "codex": {
+          "natural": "نمط تصميم",
+          "naive": "نمط تصميم"
+        },
+        "claude": {
+          "natural": "نمط تصميم",
+          "naive": "نموذج تصميم"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "event loop",
+      "ai_default_calque": "حلقة الحدث",
+      "natural_arabic": "حلقة الأحداث",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 125,
+      "llm_votes": {
+        "codex": {
+          "natural": "حلقة الأحداث",
+          "naive": "حلقة الحدث"
+        },
+        "claude": {
+          "natural": "حلقة الأحداث",
+          "naive": "حلقة الحدث"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "fault tolerance",
+      "ai_default_calque": "التسامح مع الأخطاء",
+      "natural_arabic": "تحمل الأخطاء",
+      "alternatives": [
+        "تحمل الأعطال"
+      ],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 260,
+      "llm_votes": {
+        "codex": {
+          "natural": "تحمل الأخطاء",
+          "naive": "التسامح مع الأخطاء"
+        },
+        "claude": {
+          "natural": "تحمل الأعطال",
+          "naive": "تسامح الخطأ"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "feature flag",
+      "ai_default_calque": "علم الميزة",
+      "natural_arabic": "مفتاح تفعيل الميزة",
+      "alternatives": [
+        "علامة الميزة"
+      ],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 528,
+      "llm_votes": {
+        "codex": {
+          "natural": "مفتاح تفعيل الميزة",
+          "naive": "علم الميزة"
+        },
+        "claude": {
+          "natural": "علامة الميزة",
+          "naive": "راية الخاصية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "garbage collection",
       "ai_default_calque": "تجميع القمامة",
       "natural_arabic": "جمع المهملات",
@@ -1484,6 +6452,52 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "idempotency",
+      "ai_default_calque": "التكرارية المتساوية",
+      "natural_arabic": "الأمان من التكرار",
+      "alternatives": [
+        "التكرار الآمن"
+      ],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 74,
+      "llm_votes": {
+        "claude": {
+          "natural": "الأمان من التكرار",
+          "naive": "التكرارية المتساوية"
+        },
+        "codex": {
+          "natural": "التكرار الآمن",
+          "naive": "تماثل القوة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "job queue",
+      "ai_default_calque": "طابور الوظائف",
+      "natural_arabic": "قائمة انتظار المهام",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 550,
+      "llm_votes": {
+        "codex": {
+          "natural": "قائمة انتظار المهام",
+          "naive": "طابور الوظائف"
+        },
+        "claude": {
+          "natural": "قائمة انتظار المهام",
+          "naive": "طابور الوظائف"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "latency",
@@ -1537,6 +6551,96 @@
       "safety": "safe"
     },
     {
+      "en": "orchestrator",
+      "ai_default_calque": "قائد الأوركسترا",
+      "natural_arabic": "منسق",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "منسق",
+          "naive": "قائد الأوركسترا"
+        },
+        "claude": {
+          "natural": "منسق",
+          "naive": "أوركسترا"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "parallelism",
+      "ai_default_calque": "التوازيية",
+      "natural_arabic": "التوازي",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "التوازي",
+          "naive": "التوازي"
+        },
+        "claude": {
+          "natural": "التوازي",
+          "naive": "التوازيية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "polling",
+      "ai_default_calque": "التصويت",
+      "natural_arabic": "الاستطلاع",
+      "alternatives": [
+        "استطلاع الرأي"
+      ],
+      "domain": "tech-software",
+      "confidence": "high",
+      "corpus_hits": 108,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "الاستطلاع",
+          "naive": "التصويت"
+        },
+        "codex": {
+          "natural": "استطلاع الرأي",
+          "naive": "الاقتراع"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "process",
+      "ai_default_calque": "بروسيس",
+      "natural_arabic": "عملية",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "high",
+      "corpus_hits": 1512,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "عملية",
+          "naive": "عملية"
+        },
+        "claude": {
+          "natural": "عملية",
+          "naive": "بروسيس"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
       "en": "race condition",
       "ai_default_calque": "شرط السباق",
       "natural_arabic": "حالة التسابق",
@@ -1552,6 +6656,76 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "rate limiting",
+      "ai_default_calque": "تحديد المعدل",
+      "natural_arabic": "تحديد معدل الطلبات",
+      "alternatives": [
+        "تقييد معدل الطلبات"
+      ],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 437,
+      "llm_votes": {
+        "claude": {
+          "natural": "تحديد معدل الطلبات",
+          "naive": "تحديد المعدل"
+        },
+        "codex": {
+          "natural": "تقييد معدل الطلبات",
+          "naive": "تحديد المعدل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "refactoring",
+      "ai_default_calque": "إعادة تشكيل",
+      "natural_arabic": "إعادة هيكلة الكود",
+      "alternatives": [
+        "إعادة الهيكلة"
+      ],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 250,
+      "llm_votes": {
+        "codex": {
+          "natural": "إعادة هيكلة الكود",
+          "naive": "إعادة تشكيل"
+        },
+        "claude": {
+          "natural": "إعادة الهيكلة",
+          "naive": "إعادة التشكيل"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "retry",
+      "ai_default_calque": "إعادة التجربة",
+      "natural_arabic": "إعادة المحاولة",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 375,
+      "llm_votes": {
+        "codex": {
+          "natural": "إعادة المحاولة",
+          "naive": "إعادة المحاولة"
+        },
+        "claude": {
+          "natural": "إعادة المحاولة",
+          "naive": "إعادة التجربة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "rollback",
@@ -1571,6 +6745,234 @@
       "safety": "safe"
     },
     {
+      "en": "rollout",
+      "ai_default_calque": "التدحرج إلى الخارج",
+      "natural_arabic": "طرح",
+      "alternatives": [
+        "إطلاق"
+      ],
+      "domain": "tech-software",
+      "confidence": "high",
+      "corpus_hits": 1607,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "طرح",
+          "naive": "التدحرج إلى الخارج"
+        },
+        "claude": {
+          "natural": "إطلاق",
+          "naive": "طرح تدريجي"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "runner",
+      "ai_default_calque": "عداء",
+      "natural_arabic": "مشغل",
+      "alternatives": [
+        "عامل"
+      ],
+      "domain": "tech-software",
+      "confidence": "high",
+      "corpus_hits": 277,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "مشغل",
+          "naive": "عداء"
+        },
+        "claude": {
+          "natural": "عامل",
+          "naive": "راكض"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "sequence",
+      "ai_default_calque": "تتابع",
+      "natural_arabic": "تسلسل",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "تسلسل",
+          "naive": "تسلسل"
+        },
+        "claude": {
+          "natural": "تسلسل",
+          "naive": "تتابع"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "stateful",
+      "ai_default_calque": "مليء بالحالة",
+      "natural_arabic": "ذو حالة",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 197,
+      "llm_votes": {
+        "codex": {
+          "natural": "ذو حالة",
+          "naive": "ذو حالة"
+        },
+        "claude": {
+          "natural": "ذو حالة",
+          "naive": "مليء بالحالة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "stateless",
+      "ai_default_calque": "بلا حالة",
+      "natural_arabic": "عديم الحالة",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 153,
+      "llm_votes": {
+        "claude": {
+          "natural": "عديم الحالة",
+          "naive": "بلا حالة"
+        },
+        "codex": {
+          "natural": "عديم الحالة",
+          "naive": "بلا دولة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "supervisor",
+      "ai_default_calque": "مراقب أعلى",
+      "natural_arabic": "مشرف",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 0,
+      "llm_votes": {
+        "codex": {
+          "natural": "مشرف",
+          "naive": "مشرف"
+        },
+        "claude": {
+          "natural": "مشرف",
+          "naive": "مراقب أعلى"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "task",
+      "ai_default_calque": "تاسك",
+      "natural_arabic": "مهمة",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "high",
+      "corpus_hits": 305,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "مهمة",
+          "naive": "مهمة"
+        },
+        "claude": {
+          "natural": "مهمة",
+          "naive": "تاسك"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "technical debt",
+      "ai_default_calque": "الدين الفني",
+      "natural_arabic": "الدين التقني",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 170,
+      "llm_votes": {
+        "codex": {
+          "natural": "الدين التقني",
+          "naive": "الدين التقني"
+        },
+        "claude": {
+          "natural": "الدين التقني",
+          "naive": "الدين الفني"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "thread pool",
+      "ai_default_calque": "بركة الخيوط",
+      "natural_arabic": "تجمع مؤشرات الترابط",
+      "alternatives": [
+        "مجمع الخيوط"
+      ],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 71,
+      "llm_votes": {
+        "codex": {
+          "natural": "تجمع مؤشرات الترابط",
+          "naive": "بركة الخيوط"
+        },
+        "claude": {
+          "natural": "مجمع الخيوط",
+          "naive": "بركة الخيوط"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "throttling",
+      "ai_default_calque": "الخنق",
+      "natural_arabic": "تقييد السرعة",
+      "alternatives": [
+        "تقييد المعدل"
+      ],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 158,
+      "llm_votes": {
+        "codex": {
+          "natural": "تقييد السرعة",
+          "naive": "الخنق"
+        },
+        "claude": {
+          "natural": "تقييد المعدل",
+          "naive": "الخنق"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
       "en": "throughput",
       "ai_default_calque": "ثروبوت",
       "natural_arabic": "الإنتاجية",
@@ -1586,6 +6988,74 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "version control",
+      "ai_default_calque": "تحكم النسخة",
+      "natural_arabic": "التحكم في الإصدارات",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium_consensus",
+      "corpus_hits": 0,
+      "partial_hits": 426,
+      "llm_votes": {
+        "claude": {
+          "natural": "التحكم في الإصدارات",
+          "naive": "تحكم النسخة"
+        },
+        "codex": {
+          "natural": "التحكم في الإصدارات",
+          "naive": "التحكم في النسخة"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
+    },
+    {
+      "en": "webhook",
+      "ai_default_calque": "خطاف الويب",
+      "natural_arabic": "ويب هوك",
+      "alternatives": [
+        "خطاف الويب"
+      ],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 127,
+      "llm_votes": {
+        "codex": {
+          "natural": "ويب هوك",
+          "naive": "خطاف الويب"
+        },
+        "claude": {
+          "natural": "خطاف الويب",
+          "naive": "خطاف الشبكة العنكبوتية"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 1
+    },
+    {
+      "en": "worker",
+      "ai_default_calque": "عمال",
+      "natural_arabic": "عامل",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "high",
+      "corpus_hits": 76,
+      "partial_hits": null,
+      "llm_votes": {
+        "codex": {
+          "natural": "عامل",
+          "naive": "عامل"
+        },
+        "claude": {
+          "natural": "عامل",
+          "naive": "عمال"
+        }
+      },
+      "n_llms": 2,
+      "consensus_strength": 2
     },
     {
       "en": "workflow",
@@ -1604,6 +7074,5 @@
       },
       "safety": "safe"
     }
-  ],
-  "$curation_notes": "Dropped 4 entries with semantic sense errors or calque-keys that have legitimate non-calque meanings in Arabic: ['demonstration', 'equity', 'logging', 'policy']."
+  ]
 }
