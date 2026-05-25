@@ -27,8 +27,8 @@ No API key needed — `tighten` mode is fully deterministic.
 
 Classic AI-flat news prose: a hedged opening (`من المهم ملاحظة أن`), a parenthetical filler (`في الواقع`), a formulaic transition (`علاوة على ذلك`), and a closing intensifier (`بكل تأكيد`). What `tighten` mode in the `news` register did, on this particular run:
 
-- `من المهم ملاحظة أن` → `يلزم التنبيه إلى أن` *(substituted with a less-mechanical clausal opener; the مَوصولة particle `أن` is preserved)*
-- `في الواقع،` → `حقيقةً،` *(formulaic filler swapped for a single-word alternative)*
+- `من المهم ملاحظة أن` → `يلزم التنبيه إلى أن` *(substituted with a less-mechanical clausal opener; the موصولة particle `أن` is preserved)*
+- `في الواقع،` → `حقيقة،` *(formulaic filler swapped for a single-word alternative)*
 - `علاوة على ذلك،` → `وفوق ذلك،` *(connector diversified — breaking the `علاوة` monoculture is a Dim 16 win)*
 - `بكل تأكيد،` → *(deleted entirely — pro-drop: Arabic prefers implicit emphasis to redundant intensifiers)*
 

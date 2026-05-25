@@ -25,7 +25,7 @@ No API key needed — `lex-only` mode is fully deterministic.
 
 ## What changed and why
 
-AI text often defaults to a monoculture of the connector `و` — the corpus-derived الفصل والوصل (connector entropy) dimension flags this as low-entropy / AI-flat. Classical register enables aggressive diversification: `و قد` becomes `قد`, sequential `و` openers get varied with the connectors classical Arabic actually uses (`أيضاً`, `كذلك`, `كما`, `فضلاً عن ذلك`, alternating). The historical references — Sibawayh, Al-Khalil ibn Ahmad, Al-Jurjani — are content nouns and stay untouched.
+AI text often defaults to a monoculture of the connector `و` — the corpus-derived الفصل والوصل (connector entropy) dimension flags this as low-entropy / AI-flat. Classical register enables aggressive diversification: `و قد` becomes `قد`, sequential `و` openers get varied with the connectors classical Arabic actually uses (`أيضا`, `كذلك`, `كما`, `فضلا عن ذلك`, alternating). The historical references — Sibawayh, Al-Khalil ibn Ahmad, Al-Jurjani — are content nouns and stay untouched.
 
 ## Reproducibility
 

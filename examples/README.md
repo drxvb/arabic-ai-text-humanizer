@@ -5,7 +5,7 @@ All examples here are **byte-deterministic** — they use `--mode lex-only` or `
 | # | Example | Mode | Register | What it shows |
 |---|---|---|---|---|
 | 01 | [News × tighten — pro-drop deletion](01-news-tighten-pro-drop.md) | tighten | news | Formulaic AI hedges (`من المهم ملاحظة أن`, `في الواقع`) get deleted; content is preserved |
-| 02 | [Opinion × tighten — de-stacking intensifiers](02-opinion-tighten-intensifier-destack.md) | tighten | opinion | Stacked intensifiers (`في غاية الأهمية البالغة جداً`) collapse to one |
+| 02 | [Opinion × tighten — de-stacking intensifiers](02-opinion-tighten-intensifier-destack.md) | tighten | opinion | Stacked intensifiers (`في غاية الأهمية البالغة جدا`) collapse to one |
 | 03 | [Technical × tighten — register restraint](03-technical-tighten-conservative.md) | tighten | technical | Technical terms (`Raft`, `Write-Ahead Logging`) preserved verbatim — register protects the substance |
 | 04 | [Classical × lex-only — connector diversification](04-classical-lex-only-connector-diversification.md) | lex-only | classical | و-monoculture broken with alternating classical connectors |
 | 05 | [Diagnostic — 16-dim scorecard](05-diagnostic-only-analyze.md) | — | — | `analyze_deep` produces a dimension-by-dimension report without transforming |

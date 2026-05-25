@@ -17,7 +17,7 @@ Exit code: `0` = no high-severity findings; `2` = at least one high-severity fin
 The input contains three classic hazards:
 1. **Unsourced statistic** (`87%`) — a specific number without a `حسب` / `وفق` / `بحسب` attribution
 2. **Anonymous source** (`مصدر مطلع`) — a quote attribution that can't be verified
-3. **Hostile attribution verb** (`تَزعم`) — `زعم` carries a built-in editorial stance that pure reporting doesn't
+3. **Hostile attribution verb** (`تزعم`) — `زعم` carries a built-in editorial stance that pure reporting doesn't
 
 ## Output: pre-flight findings
 
@@ -39,7 +39,6 @@ Findings: 2 total  (0 HIGH, 2 MEDIUM, 0 LOW)
 
 
 [stderr]
-
 ```
 
 ## What this means for the pipeline

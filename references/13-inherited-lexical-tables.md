@@ -11,30 +11,30 @@ This skill does **not** reinvent these tables. It reuses them as-is, then layers
 | من المهم ملاحظة | للعلم / من الجدير بالذكر / تذكر |
 | من الجدير بالذكر | للعلم / من المهم ملاحظة / تذكر |
 | من المفيد الإشارة | من الجدير بالذكر / من المهم ملاحظة |
-| في سياق متصل | أيضاً / كذلك / بالإضافة إلى ذلك |
-| في نفس السياق | أيضاً / كذلك / علاوة على ذلك |
-| علاوة على ذلك | بالإضافة / أيضاً / فضلاً عن ذلك |
-| بالإضافة إلى ذلك | أيضاً / كذلك / علاوة على ذلك |
+| في سياق متصل | أيضا / كذلك / بالإضافة إلى ذلك |
+| في نفس السياق | أيضا / كذلك / علاوة على ذلك |
+| علاوة على ذلك | بالإضافة / أيضا / فضلا عن ذلك |
+| بالإضافة إلى ذلك | أيضا / كذلك / علاوة على ذلك |
 | من ناحية أخرى | لكن / بالمقابل / في المقابل |
 | على الجانب الآخر | بالمقابل / في المقابل / لكن |
-| في النهاية | أخيراً / ختاماً / في الختام |
-| في الختام | أخيراً / ختاماً / في النهاية |
-| في البداية | أولاً / في الأول / لنبدأ بـ |
-| كما ذكر سابقاً | كما قلنا / كما أسلفنا / كما سبق |
+| في النهاية | أخيرا / ختاما / في الختام |
+| في الختام | أخيرا / ختاما / في النهاية |
+| في البداية | أولا / في الأول / لنبدأ بـ |
+| كما ذكر سابقا | كما قلنا / كما أسلفنا / كما سبق |
 | كما أسلفنا | كما ذكرنا / كما سبق / كما قلنا |
-| من الواضح أن | بوضوح / واضحاً / من البديهي أن |
+| من الواضح أن | بوضوح / واضحا / من البديهي أن |
 | من المهم التأكيد | نؤكد / يجب التنويه / من الجدير التنويه |
 | لا بد من الإشارة | من الجدير بالذكر / من المهم ملاحظة |
 | في إطار | ضمن / في نطاق / في مجال |
 | على صعيد | في مجال / فيما يتعلق بـ / بخصوص |
 | في ظل | مع / في حال / في وقت |
-| بناءً على ما تقدم | وبناءً عليه / لذلك / وعليه |
+| بناء على ما تقدم | وبناء عليه / لذلك / وعليه |
 | في ظل التطورات | مع التطورات / بالنظر إلى التطورات |
 | جدير بالذكر | من المهم / من الجدير بالذكر / للعلم |
 | من الممكن أن | قد / يمكن أن / ربما |
-| من المتوقع أن | من المرجح / من المنتظر / يُتوقع |
+| من المتوقع أن | من المرجح / من المنتظر / يتوقع |
 | يشار إلى أن | للعلم / من الجدير بالذكر |
-| يُعتبر من | هو من / يُعد من |
+| يعتبر من | هو من / يعد من |
 | في هذا الإطار | في هذا السياق / ضمن هذا / في هذا المجال |
 | على المستوى | في مجال / فيما يخص |
 | في مجال | بخصوص / فيما يتعلق بـ |
@@ -49,8 +49,8 @@ This skill does **not** reinvent these tables. It reuses them as-is, then layers
 | وعلاوة على ذلك، | كما أن، |
 | ومع ذلك، | لكن، |
 | وبالتالي، | لذلك، |
-| وبناءً عليه، | لذلك، |
-| على سبيل المثال، | مثلاً، |
+| وبناء عليه، | لذلك، |
+| على سبيل المثال، | مثلا، |
 | في المقابل، | بالمقابل، |
 | على العكس من ذلك، | بعكس ذلك، |
 | باختصار، | بشكل مختصر، |
@@ -65,11 +65,11 @@ The detector list (sentences starting with these are candidates for diversificat
 | Starter |
 |---|
 | تعتبر |
-| تُعتبر |
-| يُعتبر |
+| تعتبر |
+| يعتبر |
 | تعد |
-| يُعد |
-| تُعد |
+| يعد |
+| تعد |
 | يمكن |
 | تستطيع |
 | نستطيع |
@@ -95,7 +95,7 @@ When `--intensity > 0.4`, v1 occasionally prepends a "human filler" to a sentenc
 
 | Filler |
 |---|
-| طبعاً، |
+| طبعا، |
 | بالمناسبة، |
 | في الحقيقة، |
 | أعني، |
@@ -106,11 +106,11 @@ v1 rewrites positional adverbs with 50% probability to introduce variance:
 
 | AI pattern | Alternative |
 |---|---|
-| أولاً، | في البداية، |
-| ثانياً، | بعد ذلك، |
-| ثالثاً، | أيضاً، |
-| رابعاً، | علاوة على ذلك، |
-| أخيراً، | في النهاية، |
+| أولا، | في البداية، |
+| ثانيا، | بعد ذلك، |
+| ثالثا، | أيضا، |
+| رابعا، | علاوة على ذلك، |
+| أخيرا، | في النهاية، |
 
 ## How v2 calls this layer
 
@@ -143,64 +143,64 @@ v1 catches "من المهم ملاحظة" and "من الجدير بالذكر" b
 
 | Missed AI phrase | Why it's an AI tell | Suggested alternatives |
 |---|---|---|
-| تجدر الإشارة إلى أنّ | absent from corpus; AI signature | يُذكر أنّ / والحقيقة أنّ / [delete] |
+| تجدر الإشارة إلى أن | absent from corpus; AI signature | يذكر أن / والحقيقة أن / [delete] |
 | في هذا الصدد | corpus rank low; AI over-uses | هنا / بصدد ذلك / [delete] |
 | من هذا المنطلق | rare in corpus | من هنا / لذلك |
-| على هذا الأساس | rare in corpus | بناءً على ذلك / لذلك |
-| لا شك أنّ | over-used as filler | بلا شك / [delete intensifier] |
-| من المعروف أنّ | AI hedge | المعروف أنّ / [delete] |
-| كما هو معلوم | AI hedge | المعلوم أنّ / [delete] |
+| على هذا الأساس | rare in corpus | بناء على ذلك / لذلك |
+| لا شك أن | over-used as filler | بلا شك / [delete intensifier] |
+| من المعروف أن | AI hedge | المعروف أن / [delete] |
+| كما هو معلوم | AI hedge | المعلوم أن / [delete] |
 | في حقيقة الأمر | AI filler | في الحقيقة / [delete] |
-| لا يخفى على أحد | AI cliché | الواضح أنّ |
-| تجدر الإشارة كذلك | AI cliché | كذلك / يُضاف |
+| لا يخفى على أحد | AI cliché | الواضح أن |
+| تجدر الإشارة كذلك | AI cliché | كذلك / يضاف |
 
 ### Gap B — Missing AI connectors
 v1's CONNECTORS_AI_AR list has only 8 entries. Add these high-frequency AI connectors:
 
 | Missed AI connector | Natural alternative |
 |---|---|
-| فضلاً عن ذلك، | كذلك، / أيضاً، |
+| فضلا عن ذلك، | كذلك، / أيضا، |
 | إضافة إلى ذلك، | كذلك، / و، |
 | من جهة أخرى، | بالمقابل، / لكن، |
 | من جانب آخر، | بالمقابل، |
-| بصورة عامة، | عموماً، |
-| بشكل عام، | عموماً، |
-| بشكل خاص، | خصوصاً، |
-| في الواقع، | فعلاً، / حقيقة، |
-| في حين أنّ | بينما / لكن |
+| بصورة عامة، | عموما، |
+| بشكل عام، | عموما، |
+| بشكل خاص، | خصوصا، |
+| في الواقع، | فعلا، / حقيقة، |
+| في حين أن | بينما / لكن |
 | على الرغم من ذلك، | رغم ذلك، / لكن، |
 | نتيجة لذلك، | لذلك، / فـ، |
-| استناداً إلى ذلك، | بناءً عليه، |
-| تبعاً لذلك، | لذلك، |
+| استنادا إلى ذلك، | بناء عليه، |
+| تبعا لذلك، | لذلك، |
 
 ### Gap C — Missing repetitive starters
-v1's starter list focuses on verb-initial forms (تعتبر / يُعد). The corpus exposes these additional AI-favored openers:
+v1's starter list focuses on verb-initial forms (تعتبر / يعد). The corpus exposes these additional AI-favored openers:
 
 | Missed AI starter | Replacement strategy |
 |---|---|
-| يلعب ... دوراً | dive directly into the role: "X يحدّد / يُشكّل / يَصنع" |
-| يشكّل ... عاملاً | replace with active claim: "X هو السبب الرئيسي" |
-| يمثّل ... جزءاً | "X هو" / "X يُعدّ" |
+| يلعب ... دورا | dive directly into the role: "X يحدد / يشكل / يصنع" |
+| يشكل ... عاملا | replace with active claim: "X هو السبب الرئيسي" |
+| يمثل ... جزءا | "X هو" / "X يعد" |
 | يكمن ... في | "السبب: ..." / "ها هو السبب:" |
-| تنبع ... من | "يَأتي من" / "أصلها" |
-| تتمثّل ... في | "هي:" / "تَتلخّص في" |
-| تكتسب ... أهمية | "تُهمّ" / "حاسمة" |
-| تواجه ... تحديات | "أمام X تحديات" / "X يَتعثّر في" |
-| تشهد ... تطوراً | "X يَتطوّر" |
-| تسعى ... إلى | "X تُريد" / "X تَطمح إلى" |
+| تنبع ... من | "يأتي من" / "أصلها" |
+| تتمثل ... في | "هي:" / "تتلخص في" |
+| تكتسب ... أهمية | "تهم" / "حاسمة" |
+| تواجه ... تحديات | "أمام X تحديات" / "X يتعثر في" |
+| تشهد ... تطورا | "X يتطور" |
+| تسعى ... إلى | "X تريد" / "X تطمح إلى" |
 
 ### Gap D — Missing quote-introducing verb diversity (news register)
-v1 doesn't rotate quote-verbs. The corpus shows news writers rotate أكد، أشار، أوضح، أضاف، أعلن، صرّح، ذكر، نقل، روى — but AI defaults to قال and يقول repeatedly. v2 should add a quote-verb rotation pass:
+v1 doesn't rotate quote-verbs. The corpus shows news writers rotate أكد، أشار، أوضح، أضاف، أعلن، صرح، ذكر، نقل، روى — but AI defaults to قال and يقول repeatedly. v2 should add a quote-verb rotation pass:
 
 | AI default | Rotation pool (news register) |
 |---|---|
-| قال | أكّد / أشار / أوضح / أضاف / صرّح / ذكر / نوّه / لفت |
-| يقول | يَرى / يَعتقد / يَزعم / يُقرّر / يُؤكّد |
-| ذكر أن | أفاد بأنّ / أشار إلى أنّ / لفت إلى أنّ / كشف أنّ |
+| قال | أكد / أشار / أوضح / أضاف / صرح / ذكر / نوه / لفت |
+| يقول | يرى / يعتقد / يزعم / يقرر / يؤكد |
+| ذكر أن | أفاد بأن / أشار إلى أن / لفت إلى أن / كشف أن |
 
 ### Gap E — Missing register-aware substitution
 v1 applies all substitutions uniformly regardless of register. v2 should gate substitutions:
-- **Heritage register** (Stage 2 detects fصحى التراث): suppress vernacular fillers (طبعاً، يعني)
+- **Heritage register** (Stage 2 detects fصحى التراث): suppress vernacular fillers (طبعا، يعني)
 - **News register**: allow news-style transitions, suppress poetic devices
 - **Educational register**: prefer simpler alternatives in every substitution table
 - See `references/10-register-modulation.md` for the gating logic
@@ -209,4 +209,4 @@ v1 applies all substitutions uniformly regardless of register. v2 should gate su
 v1 substitutes blindly. The string "من المهم" inside a quoted phrase or technical term should be preserved. v2 should add a quoted-span detector to bypass substitution within "..." and «...».
 
 ### Gap G — No handling of redundant intensifiers
-v1 doesn't catch AI's stacked intensifiers: "في غاية الأهمية البالغة جداً"، "بشكل كبير جداً"، "بصورة ملحوظة وواضحة". The corpus shows humans rarely stack these — usually one intensifier per phrase, at most. v2 should add a de-stacking pass.
+v1 doesn't catch AI's stacked intensifiers: "في غاية الأهمية البالغة جدا"، "بشكل كبير جدا"، "بصورة ملحوظة وواضحة". The corpus shows humans rarely stack these — usually one intensifier per phrase, at most. v2 should add a de-stacking pass.

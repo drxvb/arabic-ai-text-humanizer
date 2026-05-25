@@ -25,7 +25,7 @@ No API key needed — `tighten` mode is fully deterministic.
 
 ## What changed and why
 
-Opinion text often stacks intensifiers (`في غاية الأهمية البالغة جداً` ≈ "extremely extraordinarily very important"). The empirical corpus shows humans rarely stack — usually one intensifier per phrase. The lex pass de-stacks, deletes the hedging openers (`لا شك أن`, `من المؤكد أن`), and rotates `علاوة على ذلك` to a less mechanical connector. Quote verbs are absent here so the rotation env-gate doesn't come into play.
+Opinion text often stacks intensifiers (`في غاية الأهمية البالغة جدا` ≈ "extremely extraordinarily very important"). The empirical corpus shows humans rarely stack — usually one intensifier per phrase. The lex pass de-stacks, deletes the hedging openers (`لا شك أن`, `من المؤكد أن`), and rotates `علاوة على ذلك` to a less mechanical connector. Quote verbs are absent here so the rotation env-gate doesn't come into play.
 
 ## Reproducibility
 

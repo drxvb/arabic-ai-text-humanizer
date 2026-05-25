@@ -68,7 +68,7 @@ The classical/modern figure (51.46) is dominated by extreme outliers — multi-p
 | 10 | بل | 809 | Adversative-corrective. AI rarely uses; should be added. |
 | 11 | وقد | 605 | Compound. Heritage marker. |
 | 12 | حيث | 550 | Locative-causal. AI over-uses for causation. |
-| 13 | أيضاً | 501 | Additive. AI over-uses. |
+| 13 | أيضا | 501 | Additive. AI over-uses. |
 | 14 | لأن | 484 | Causal. |
 | 15 | إذ | 474 | Heritage causal. AI under-uses. |
 
@@ -109,7 +109,7 @@ Notably **absent or rare:** كما (only 59), لأن (1), بسبب (1). The Qur'
 
 ### Classical / Modern
 Top connectors: **أن (5,945), و (3,377), أو (2,615), قد (1,253), كما (1,072), إن (974), ثم (829), حتى (676), إذا (652), بل (618)**.
-This is the dominant prior. Note **أيضاً (469)** and **لأن (422)** appear — the modern half of this category brings in more explicit causation.
+This is the dominant prior. Note **أيضا (469)** and **لأن (422)** appear — the modern half of this category brings in more explicit causation.
 
 ### News
 Top connectors: **أن (1,820), كما (387), إن (316), قد (301), أو (301), حتى (254), حيث (245), وقد (184), نحو (180), بسبب (125)**.
@@ -140,7 +140,7 @@ Almost no connectors found (4 occurrences of و, 1 of نحو). Lexicon entries a
 | 14 | ولا | 1,052 | negative coordination |
 | 15 | وعن | 922 | reportative-chain marker |
 
-**What humans actually start sentences with:** reportative verbs (قال/وقال), heritage particles (وقد/فان/واما), and conjoined forms (و+X). Note that **يُعتبر / تُعتبر / يُعد / تُعد** — the AI default — does not appear in the top 50 anywhere.
+**What humans actually start sentences with:** reportative verbs (قال/وقال), heritage particles (وقد/فان/واما), and conjoined forms (و+X). Note that **يعتبر / تعتبر / يعد / تعد** — the AI default — does not appear in the top 50 anywhere.
 
 ### News-specific sentence starters
 
@@ -159,7 +159,7 @@ News reorganizes the top starters dramatically:
 | واكد | 121 | quote-chain |
 | ومن | 103 | partitive |
 
-The signature of human news writing in Arabic: **a dense register of quote-introducing verbs** (قال، أضاف، أشار، أوضح، أكد، أعلن، ذكر، نقل، صرّح). AI-generated news lacks this verb diversity — it defaults to قال and يقول.
+The signature of human news writing in Arabic: **a dense register of quote-introducing verbs** (قال، أضاف، أشار، أوضح، أكد، أعلن، ذكر، نقل، صرح). AI-generated news lacks this verb diversity — it defaults to قال and يقول.
 
 ## Tashkeel (diacritic) ratios
 
@@ -176,9 +176,9 @@ News is effectively undiacritized (0.2%). Classical and Qur'anic text is heavily
 
 ### Which AI tells does this corpus expose?
 
-1. **The "يُعتبر / تُعتبر" lead-in is statistically anomalous.** Not in the top 50 sentence-initial tokens anywhere in 100K human records. Strong AI fingerprint.
+1. **The "يعتبر / تعتبر" lead-in is statistically anomalous.** Not in the top 50 sentence-initial tokens anywhere in 100K human records. Strong AI fingerprint.
 2. **The "علاوة على ذلك / بالإضافة إلى ذلك" connector pair is under-represented in the corpus.** They appear orders of magnitude below their AI usage rate.
-3. **Quote-introducing verb diversity is a human signature** — AI uses قال and يقول; humans rotate أكد، أشار، أوضح، أضاف، أعلن، صرّح، ذكر، نقل، روى، أفصح.
+3. **Quote-introducing verb diversity is a human signature** — AI uses قال and يقول; humans rotate أكد، أشار، أوضح، أضاف، أعلن، صرح، ذكر، نقل، روى، أفصح.
 4. **قد + past verb** is heavily used by humans (1,680 corpus instances) and under-used by AI. Inject it where context allows.
 5. **The 51+ word sentence is normal in classical Arabic (24.9% of all sentences) and present in news (8.3%).** AI never produces them. A humanized text in literary register should include at least one per 300 words.
 6. **The 1-5 word sentence is normal in Qur'anic and present in news (7%).** AI never produces them either. Inject short punctuating sentences.

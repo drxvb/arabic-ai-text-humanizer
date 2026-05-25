@@ -46,7 +46,6 @@ Weakest 3 dimensions (target with humanize_v2.py):
   [ 0/15] dim 4: التحليل البشري (Human analysis)
   [ 0/15] dim 5: التدرج في الشرح (Graduated explanation)
   [ 0/15] dim 6: تحديد النطاق (Scope definition)
-
 ```
 
 ## Interpretation

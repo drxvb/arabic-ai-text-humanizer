@@ -171,9 +171,9 @@ python scripts/score_humanness.py \
 **Input** (AI-generated, register: news, mode: tighten):
 
 ```
-من المهم ملاحظة أن الاقتصاد السعودي يشهد نمواً ملحوظاً في القطاعات غير النفطية.
+من المهم ملاحظة أن الاقتصاد السعودي يشهد نموا ملحوظا في القطاعات غير النفطية.
 في الواقع، أكدت التقارير أن نسبة المشاركة في سوق العمل ارتفعت بشكل كبير.
-علاوة على ذلك، فإن هذا النمو يعكس تنوعاً متزايداً في مصادر الدخل.
+علاوة على ذلك، فإن هذا النمو يعكس تنوعا متزايدا في مصادر الدخل.
 ```
 
 **Command:**
@@ -187,9 +187,9 @@ python scripts/humanize_v2.py \
 **Output** (lex-only pass; pro-drop deletions removed `من المهم ملاحظة أن`, `في الواقع`, and the connector `علاوة على ذلك` is swapped to `كما أن`):
 
 ```
-يشهد الاقتصاد السعودي نمواً ملحوظاً في القطاعات غير النفطية.
+يشهد الاقتصاد السعودي نموا ملحوظا في القطاعات غير النفطية.
 أكدت التقارير أن نسبة المشاركة في سوق العمل ارتفعت بشكل كبير.
-كما أن هذا النمو يعكس تنوعاً متزايداً في مصادر الدخل.
+كما أن هذا النمو يعكس تنوعا متزايدا في مصادر الدخل.
 ```
 
 **Dimensions that fired:** Dim 14 (reader-respect, +3 from removing 2 hedges), Dim 16 (الفصل والوصل, +2 from connector diversification), Dim 15 (typography unchanged — input already clean). Net humanness delta: ~+5/240, runs in <1s, no API call.
