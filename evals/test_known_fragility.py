@@ -31,7 +31,7 @@ What's covered (and why each test exists):
        error in the run log.
 """
 from __future__ import annotations
-import json, os, subprocess, sys, tempfile
+import json, os, re, subprocess, sys, tempfile
 from pathlib import Path
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -150,6 +150,78 @@ def main():
     except Exception as e:
         r.check("T6.no_crash_without_api", False,
                 f"crashed instead of graceful degradation: {e}")
+
+    print()
+    print("=" * 60)
+    print("  T7 — hamza letter forms survive (NOT tashkeel)")
+    print("=" * 60)
+    out = run_humanize(
+        "إن النظام يعمل. أن نعرف ذلك. إما هذا أو ذاك. أما أنت فمختلف.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T7.hamza_above_alif_an", "أن" in out,
+            f"أن (hamza above) was stripped: {out[:80]!r}")
+    r.check("T7.hamza_below_alif_in", "إن" in out,
+            f"إن (hamza below) was stripped: {out[:80]!r}")
+    r.check("T7.imma_vs_amma_preserved",
+            "إما" in out and "أما" in out,
+            f"إما/أما distinction lost: {out[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T8 — madda/precomposed letters survive (قرآن آلام آمال)")
+    print("=" * 60)
+    out = run_humanize(
+        "النص يتحدث عن قرآن وآلام وآمال وأحصنة وآذان.",
+        "--mode", "tighten", "--register", "news",
+    )
+    for word in ("قرآن", "آلام", "آمال", "أحصنة", "آذان"):
+        r.check(f"T8.{word}_survives", word in out,
+                f"{word} broken in output: {out[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T9 — Arabic-Indic digits preserved (٠-٩)")
+    print("=" * 60)
+    out = run_humanize(
+        "الأرقام ٠١٢٣٤٥٦٧٨٩ والسنة ٢٠٢٦ والنسبة ٨٧٪ يجب أن تَبقى.",
+        "--mode", "tighten", "--register", "news",
+    )
+    for digit in ("٠١٢٣٤٥٦٧٨٩", "٢٠٢٦", "٨٧"):
+        r.check(f"T9.digits_{digit}_survive", digit in out,
+                f"digit run '{digit}' was stripped: {out[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T10 — pipeline calque (خط أنابيب) replaced by workflow phrasing")
+    print("=" * 60)
+    out = run_humanize(
+        "خط أنابيب التحويل يَعمل بكفاءة في كل المراحل.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T10.calque_replaced", "خط أنابيب" not in out,
+            f"خط أنابيب still present: {out[:120]!r}")
+    r.check("T10.workflow_inserted",
+            "مسار عمل" in out or "مسار العمل" in out or "تسلسل العمل" in out,
+            f"no workflow phrasing in output: {out[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T11 — tashkeel reduced in news register, preserved in classical")
+    print("=" * 60)
+    heavy_in = "النَّصُّ المُولَّدُ بِالذَّكاءِ الاصطِناعيِّ يَحتاجُ إلى تَحويلٍ عَميقٍ."
+    tashkeel_re = re.compile(r"[ً-ْٰ]")
+    in_count = len(tashkeel_re.findall(heavy_in))
+
+    out_news = run_humanize(heavy_in, "--mode", "tighten", "--register", "news")
+    out_classical = run_humanize(heavy_in, "--mode", "tighten", "--register", "classical")
+    news_count = len(tashkeel_re.findall(out_news))
+    classical_count = len(tashkeel_re.findall(out_classical))
+
+    r.check("T11.news_reduces_tashkeel", news_count < in_count // 2,
+            f"news register kept {news_count}/{in_count} tashkeel marks (expected < half)")
+    r.check("T11.classical_preserves_tashkeel", classical_count >= in_count * 0.7,
+            f"classical register kept only {classical_count}/{in_count} marks (expected >= 70%)")
 
     print()
     print("=" * 60)

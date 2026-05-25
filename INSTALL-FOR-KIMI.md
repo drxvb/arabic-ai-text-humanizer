@@ -4201,6 +4201,14 @@ AI_PHRASES_AR = {
     "في نفس السياق":        ["وفي السياق ذاته", "وعلى الصعيد نفسه"],
     "علاوة على ذلك":        ["وفوق ذلك", "ويُضاف إلى ذلك"],
     "بالإضافة إلى ذلك":     ["ويُضاف إلى ذلك", "وفوق ذلك"],
+    # ── ENGLISH-CALQUE → NATIVE-ARABIC replacements ──
+    # AI translations often produce literal calques that read awkwardly in
+    # Arabic. "خط أنابيب" (line of pipes) for English "pipeline" is the
+    # canonical example — native Arabic uses "مسار عمل" (workflow / path-of-work).
+    "خط أنابيب":           ["مسار عمل", "مسار العمل", "تسلسل العمل"],
+    "خطّ أنابيب":          ["مسار عمل", "مسار العمل"],
+    "خط الأنابيب":         ["مسار العمل", "تسلسل العمل"],
+    "خطّ الأنابيب":         ["مسار العمل", "تسلسل العمل"],
     "من ناحية أخرى":        ["وعلى صعيد آخر", "وبالمقابل"],
     "على الجانب الآخر":     ["وعلى الصعيد المقابل", "وبالمقابل"],
     "في النهاية":           ["وفي الختام", "وفي نهاية المطاف"],
@@ -4877,6 +4885,8 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         from analyze_deep import analyze as _analyze
         diag = _analyze(text)
         text, applied = lex_enrich(text, diag, max_inserts=3)
+        # Tashkeel reduction (news/opinion only)
+        text = lex_reduce_tashkeel(text, register=register)
         # Apply typography normalization LAST (after enrichment)
         text = lex_dim15_typography(text)
         # Store the enrichment log in module-level for the caller to retrieve
@@ -4898,6 +4908,8 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         text = lex_dim14_anti_known_definitions(text) # Delete "ونعني بـ X هو"
         text = lex_dim14_cleanup_orphans(text)        # Clean up orphan punctuation
         text = re.sub(r'\s+', ' ', text).strip()
+        # Tashkeel reduction (news/opinion only; classical/technical preserve)
+        text = lex_reduce_tashkeel(text, register=register)
         text = lex_dim15_typography(text)             # Typography hygiene LAST
         return text
 
@@ -4942,9 +4954,71 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         text = lex_vary_lengths(text, intensity)
 
     text = re.sub(r'\s+', ' ', text).strip()
+    # Tashkeel reduction (modern editorial convention): strip non-disambiguating
+    # diacritics. Register-gated — classical preserves traditional tashkeel.
+    text = lex_reduce_tashkeel(text, register=register)
     # Dim 15 typography ALWAYS last — safe for every register.
     text = lex_dim15_typography(text)
     return text
+
+
+# ── Tashkeel reduction (hamza-safe, digit-safe) ─────────────────────────────
+
+# Strict tashkeel range: ONLY the 9 canonical combining diacritics:
+#   U+064B ً  tanween fatha     U+064F ُ  damma
+#   U+064C ٌ  tanween damma     U+0650 ِ  kasra
+#   U+064D ٍ  tanween kasra     U+0651 ّ  shadda
+#   U+064E َ  fatha             U+0652 ْ  sukun
+#                               U+0670 ٰ  superscript alef (alif khanjariya)
+#
+# DOES NOT TOUCH:
+#   - Hamza letter forms (أ إ آ ء ؤ ئ ى) — distinct letters carrying meaning
+#     (إن vs أن, إما vs أما, قرآن with madda, آلام, أحصنة, etc.)
+#   - Arabic-Indic digits ٠١٢٣٤٥٦٧٨٩ (U+0660–U+0669)
+#   - The combining maddah/hamza marks (U+0653–U+0655) which could damage
+#     decomposed letter forms in non-NFC text
+TASHKEEL_REDUCE_RE = re.compile(r'[ً-ْٰ]')
+
+# Homograph whitelist: words whose tashkeel disambiguates a real ambiguity in
+# the skill's domain. Empty by default; add entries only when the consonantal
+# skeleton genuinely maps to multiple plausible lexemes in normal prose.
+# Example future entries (not enabled yet — context usually resolves):
+#   "بعد": "بُعْد",   # dimension (vs. بَعْد = after)
+#   "علم": "عِلْم",   # knowledge (vs. عَلَم = flag, عَلِمَ = he knew)
+TASHKEEL_KEEP_WHITELIST: dict[str, str] = {}
+
+
+def lex_reduce_tashkeel(text: str, register: str = "news") -> str:
+    """Reduce excessive tashkeel per modern Arabic editorial convention.
+
+    Strips the 9 canonical combining diacritics (fatha/kasra/damma/tanween
+    variants, shadda, sukun, superscript alef) — preserves hamza letter
+    forms (أ إ آ ء ؤ ئ ى) and Arabic digits (٠-٩).
+
+    Register-gated: the `classical` register preserves traditional tashkeel
+    (matching classical-Arabic editorial convention); news/opinion/technical
+    strip aggressively.
+
+    The TASHKEEL_KEEP_WHITELIST allows specific homograph words to retain
+    their tashkeel; currently empty (context-disambiguation suffices).
+    """
+    if register in ("classical", "technical"):
+        # Classical: traditional Arabic editorial convention keeps tashkeel.
+        # Technical: conservative-by-design — preserve every character of the
+        # source. Tashkeel may carry meaning (تشكيل على الحرف disambiguates
+        # homographs); strict technical writing keeps it.
+        return text
+    # Mask whitelisted words before stripping
+    masked = text
+    placeholders: dict[str, str] = {}
+    for stripped, kept in TASHKEEL_KEEP_WHITELIST.items():
+        marker = f"\x00WL{len(placeholders)}\x00"
+        placeholders[marker] = kept
+        masked = re.sub(rf"\b{re.escape(stripped)}\b", marker, masked)
+    cleaned = TASHKEEL_REDUCE_RE.sub("", masked)
+    for marker, kept in placeholders.items():
+        cleaned = cleaned.replace(marker, kept)
+    return cleaned
 
 
 # ── LLM-augmented passes ────────────────────────────────────────────────────
@@ -5249,7 +5323,7 @@ if __name__ == "__main__":
       "tests_priority": ["economy"],
       "input": "ارتفعت الأسعار. ونَستنتج من هذا أن المُستهلك سيَدفع أكثر. وهذا يَدلّ على ارتفاع تكلفة المعيشة.",
       "must_not_contain": ["ونَستنتج من هذا أن", "وهذا يَدلّ على"],
-      "must_contain_after_tighten_news": ["المُستهلك", "تكلفة المعيشة"],
+      "must_contain_after_tighten_news": ["المستهلك", "تكلفة المعيشة"],
       "rationale_ar": "ترك الاستنتاج للقارئ. الكاتب يَعرض الحَقائق المتجاورة وَالقارئ يَربط."
     },
     {
@@ -5559,7 +5633,7 @@ What's covered (and why each test exists):
        error in the run log.
 """
 from __future__ import annotations
-import json, os, subprocess, sys, tempfile
+import json, os, re, subprocess, sys, tempfile
 from pathlib import Path
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -5678,6 +5752,78 @@ def main():
     except Exception as e:
         r.check("T6.no_crash_without_api", False,
                 f"crashed instead of graceful degradation: {e}")
+
+    print()
+    print("=" * 60)
+    print("  T7 — hamza letter forms survive (NOT tashkeel)")
+    print("=" * 60)
+    out = run_humanize(
+        "إن النظام يعمل. أن نعرف ذلك. إما هذا أو ذاك. أما أنت فمختلف.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T7.hamza_above_alif_an", "أن" in out,
+            f"أن (hamza above) was stripped: {out[:80]!r}")
+    r.check("T7.hamza_below_alif_in", "إن" in out,
+            f"إن (hamza below) was stripped: {out[:80]!r}")
+    r.check("T7.imma_vs_amma_preserved",
+            "إما" in out and "أما" in out,
+            f"إما/أما distinction lost: {out[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T8 — madda/precomposed letters survive (قرآن آلام آمال)")
+    print("=" * 60)
+    out = run_humanize(
+        "النص يتحدث عن قرآن وآلام وآمال وأحصنة وآذان.",
+        "--mode", "tighten", "--register", "news",
+    )
+    for word in ("قرآن", "آلام", "آمال", "أحصنة", "آذان"):
+        r.check(f"T8.{word}_survives", word in out,
+                f"{word} broken in output: {out[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T9 — Arabic-Indic digits preserved (٠-٩)")
+    print("=" * 60)
+    out = run_humanize(
+        "الأرقام ٠١٢٣٤٥٦٧٨٩ والسنة ٢٠٢٦ والنسبة ٨٧٪ يجب أن تَبقى.",
+        "--mode", "tighten", "--register", "news",
+    )
+    for digit in ("٠١٢٣٤٥٦٧٨٩", "٢٠٢٦", "٨٧"):
+        r.check(f"T9.digits_{digit}_survive", digit in out,
+                f"digit run '{digit}' was stripped: {out[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T10 — pipeline calque (خط أنابيب) replaced by workflow phrasing")
+    print("=" * 60)
+    out = run_humanize(
+        "خط أنابيب التحويل يَعمل بكفاءة في كل المراحل.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T10.calque_replaced", "خط أنابيب" not in out,
+            f"خط أنابيب still present: {out[:120]!r}")
+    r.check("T10.workflow_inserted",
+            "مسار عمل" in out or "مسار العمل" in out or "تسلسل العمل" in out,
+            f"no workflow phrasing in output: {out[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T11 — tashkeel reduced in news register, preserved in classical")
+    print("=" * 60)
+    heavy_in = "النَّصُّ المُولَّدُ بِالذَّكاءِ الاصطِناعيِّ يَحتاجُ إلى تَحويلٍ عَميقٍ."
+    tashkeel_re = re.compile(r"[ً-ْٰ]")
+    in_count = len(tashkeel_re.findall(heavy_in))
+
+    out_news = run_humanize(heavy_in, "--mode", "tighten", "--register", "news")
+    out_classical = run_humanize(heavy_in, "--mode", "tighten", "--register", "classical")
+    news_count = len(tashkeel_re.findall(out_news))
+    classical_count = len(tashkeel_re.findall(out_classical))
+
+    r.check("T11.news_reduces_tashkeel", news_count < in_count // 2,
+            f"news register kept {news_count}/{in_count} tashkeel marks (expected < half)")
+    r.check("T11.classical_preserves_tashkeel", classical_count >= in_count * 0.7,
+            f"classical register kept only {classical_count}/{in_count} marks (expected >= 70%)")
 
     print()
     print("=" * 60)
