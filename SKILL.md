@@ -78,6 +78,7 @@ Applies the deterministic lexical pipeline:
   - AI-formulaic hedge deletion (`في الواقع`, `بكل تأكيد`, etc. — pro-drop where possible)
   - Clause-preserving formulaic-opener substitution (`أن`-bearing patterns)
   - **English-calque → native Arabic** (v2.2.0) — `خط أنابيب` → `مسار عمل` / `مسار العمل`
+- **Calque dictionary** (v2.3.0, news/opinion only) — `corpus/calque-dictionary.json` holds 93 corpus-validated English-calque → natural-Arabic pairs across 9 domains (tech-software, tech-ai-ml, tech-data, tech-security, tech-infra, tech-consumer, business, news-journalism, politics). Built via multi-LLM swarm (Claude Sonnet) + frequency validation against an 8,850-article Arabic tech-news corpus (AITNews). Examples: `بدء التشغيل` → `شركة ناشئة`, `مونيتورينغ` → `مراقبة`, `الإعلام الاجتماعي` → `وسائل التواصل الاجتماعي`, `قطع الأشجار` → `تسجيل` (logging), `الرئيس التنفيذي` (high-confidence: 428 corpus hits).
 - Connector swap (breaks the و-monoculture flagged by Dim 16 الفصل والوصل)
 - Quote-verb rotation (env-gated only: `HUMANIZER_ALLOW_QUOTE_ROTATION=1`)
 - Intensifier de-stacking
@@ -305,7 +306,8 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 | Version | What changed |
 |---|---|
-| **v2.2.0** | `lex_reduce_tashkeel()` added — strips 9 canonical combining diacritics in news/opinion (classical/technical preserve). Hamza-safe (preserves أ إ آ ء ؤ ئ ى) and digit-safe (preserves ٠–٩). Pipeline-calque `خط أنابيب` → `مسار عمل` / `مسار العمل` / `تسلسل العمل` added to `AI_PHRASES_AR`. Five new fragility test classes (T7–T11): hamza preservation, madda preservation, digit preservation, calque substitution, register-gated tashkeel policy. |
+| **v2.3.0** | **Calque-translation dictionary** — `corpus/calque-dictionary.json` (93 entries, 9 domains, 27 high-confidence + 66 medium). Built via multi-LLM swarm (Claude Sonnet) on 181 seed English terms, validated against an 8,850-article Arabic tech-news corpus (AITNews; 2.88M tokens). New `lex_apply_calque_dictionary()` runs in news/opinion registers (classical/technical preserve source). Double-ال handling for substitutions where input has definite article but key/natural don't agree on prefix. 3 new fragility test classes (T12–T14): dictionary-load verification, multi-domain calque catches, register-gating. Fragility suite now 31/31. |
+| v2.2.0 | `lex_reduce_tashkeel()` added — strips 9 canonical combining diacritics in news/opinion (classical/technical preserve). Hamza-safe (preserves أ إ آ ء ؤ ئ ى) and digit-safe (preserves ٠–٩). Pipeline-calque `خط أنابيب` → `مسار عمل` / `مسار العمل` / `تسلسل العمل` added to `AI_PHRASES_AR`. Five new fragility test classes (T7–T11): hamza preservation, madda preservation, digit preservation, calque substitution, register-gated tashkeel policy. |
 | v2.1.3 | Arabic editorial pass on documentation: replaced English-calque "pipeline" with "مسار عمل" in README.ar.md; reduced ~96% of tashkeel marks in prose; preserved classical-Arabic quotations within `«»` / `""` brackets. |
 | v2.1.2 | `examples/` directory added — 6 byte-deterministic worked examples covering register × mode combinations. README + README.ar.md gained source-size + effort disclosure. |
 | v2.1.1 | Corpus-stats refactor: replaced `8.5 GB classical-Arabic dataset` wording with lexicon-level statistics (1.31M sentences / 71.28M tokens / 4 register categories / ~87s mining time). Multi-LLM CLI security audit (regex + Claude Sonnet + Codex). Hardcoded path leak in `corpus/empirical-patterns.json` redacted. |

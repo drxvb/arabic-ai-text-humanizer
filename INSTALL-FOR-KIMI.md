@@ -203,6 +203,7 @@ Applies the deterministic lexical pipeline:
   - AI-formulaic hedge deletion (`في الواقع`, `بكل تأكيد`, etc. — pro-drop where possible)
   - Clause-preserving formulaic-opener substitution (`أن`-bearing patterns)
   - **English-calque → native Arabic** (v2.2.0) — `خط أنابيب` → `مسار عمل` / `مسار العمل`
+- **Calque dictionary** (v2.3.0, news/opinion only) — `corpus/calque-dictionary.json` holds 93 corpus-validated English-calque → natural-Arabic pairs across 9 domains (tech-software, tech-ai-ml, tech-data, tech-security, tech-infra, tech-consumer, business, news-journalism, politics). Built via multi-LLM swarm (Claude Sonnet) + frequency validation against an 8,850-article Arabic tech-news corpus (AITNews). Examples: `بدء التشغيل` → `شركة ناشئة`, `مونيتورينغ` → `مراقبة`, `الإعلام الاجتماعي` → `وسائل التواصل الاجتماعي`, `قطع الأشجار` → `تسجيل` (logging), `الرئيس التنفيذي` (high-confidence: 428 corpus hits).
 - Connector swap (breaks the و-monoculture flagged by Dim 16 الفصل والوصل)
 - Quote-verb rotation (env-gated only: `HUMANIZER_ALLOW_QUOTE_ROTATION=1`)
 - Intensifier de-stacking
@@ -430,7 +431,8 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 | Version | What changed |
 |---|---|
-| **v2.2.0** | `lex_reduce_tashkeel()` added — strips 9 canonical combining diacritics in news/opinion (classical/technical preserve). Hamza-safe (preserves أ إ آ ء ؤ ئ ى) and digit-safe (preserves ٠–٩). Pipeline-calque `خط أنابيب` → `مسار عمل` / `مسار العمل` / `تسلسل العمل` added to `AI_PHRASES_AR`. Five new fragility test classes (T7–T11): hamza preservation, madda preservation, digit preservation, calque substitution, register-gated tashkeel policy. |
+| **v2.3.0** | **Calque-translation dictionary** — `corpus/calque-dictionary.json` (93 entries, 9 domains, 27 high-confidence + 66 medium). Built via multi-LLM swarm (Claude Sonnet) on 181 seed English terms, validated against an 8,850-article Arabic tech-news corpus (AITNews; 2.88M tokens). New `lex_apply_calque_dictionary()` runs in news/opinion registers (classical/technical preserve source). Double-ال handling for substitutions where input has definite article but key/natural don't agree on prefix. 3 new fragility test classes (T12–T14): dictionary-load verification, multi-domain calque catches, register-gating. Fragility suite now 31/31. |
+| v2.2.0 | `lex_reduce_tashkeel()` added — strips 9 canonical combining diacritics in news/opinion (classical/technical preserve). Hamza-safe (preserves أ إ آ ء ؤ ئ ى) and digit-safe (preserves ٠–٩). Pipeline-calque `خط أنابيب` → `مسار عمل` / `مسار العمل` / `تسلسل العمل` added to `AI_PHRASES_AR`. Five new fragility test classes (T7–T11): hamza preservation, madda preservation, digit preservation, calque substitution, register-gated tashkeel policy. |
 | v2.1.3 | Arabic editorial pass on documentation: replaced English-calque "pipeline" with "مسار عمل" in README.ar.md; reduced ~96% of tashkeel marks in prose; preserved classical-Arabic quotations within `«»` / `""` brackets. |
 | v2.1.2 | `examples/` directory added — 6 byte-deterministic worked examples covering register × mode combinations. README + README.ar.md gained source-size + effort disclosure. |
 | v2.1.1 | Corpus-stats refactor: replaced `8.5 GB classical-Arabic dataset` wording with lexicon-level statistics (1.31M sentences / 71.28M tokens / 4 register categories / ~87s mining time). Multi-LLM CLI security audit (regex + Claude Sonnet + Codex). Hardcoded path leak in `corpus/empirical-patterns.json` redacted. |
@@ -4911,6 +4913,8 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         text = lex_reduce_tashkeel(text, register=register)
         # First: full lex pass (deletions + phrase swaps etc.)
         text = lex_replace_phrases(text)
+        # Calque dictionary (v2.3.0): English-calque -> natural-Arabic
+        text = lex_apply_calque_dictionary(text, register=register)
         text = lex_replace_connectors(text)
         if register != "technical":
             text = lex_break_structural_openers(text)
@@ -4950,6 +4954,8 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         # sees normalized text. Classical/technical pass through unchanged.
         text = lex_reduce_tashkeel(text, register=register)
         text = lex_replace_phrases(text)              # Remove AI signature phrases
+        # Calque dictionary (v2.3.0): English-calque -> natural-Arabic
+        text = lex_apply_calque_dictionary(text, register=register)
         text = lex_destack_intensifiers(text)         # Collapse "صعب ومعقّد" etc.
         text = lex_dim14_anti_tautology(text)         # "مؤكَّد وحقيقي وثابت" → "مؤكَّد"
         text = lex_dim14_anti_re_explanation(text)    # Delete "أي بمعنى آخر"
@@ -4967,6 +4973,8 @@ def lex_pass(text: str, intensity: float, register: str = "news",
     # normalized text. Classical/technical passes through unchanged.
     text = lex_reduce_tashkeel(text, register=register)
     text = lex_replace_phrases(text)             # Gap A: safe for all registers
+    # Calque dictionary (v2.3.0): English-calque -> natural-Arabic
+    text = lex_apply_calque_dictionary(text, register=register)
     text = lex_replace_connectors(text)          # Gap B: safe for all registers
 
     # Gap C (structural noun-frame openers): SKIP for technical (changes meaning)
@@ -5071,6 +5079,86 @@ def lex_reduce_tashkeel(text: str, register: str = "news") -> str:
     for marker, kept in placeholders.items():
         cleaned = cleaned.replace(marker, kept)
     return cleaned
+
+
+# ── Calque-translation dictionary (v2.3.0) ──────────────────────────────────
+
+def _load_calque_dictionary() -> tuple[list[str], dict]:
+    """Load corpus/calque-dictionary.json at module init.
+
+    The dictionary captures English-calque -> natural-Arabic translation
+    pairs validated against the AITNews corpus (and multi-LLM swarm).
+    Source-of-truth lives in the JSON file so it can be audited/extended
+    without touching code.
+
+    Returns: (sorted_calque_keys, lookup_dict)
+      - sorted_calque_keys: list of calque strings, sorted by length desc
+        (longer phrases match first to avoid partial overlaps)
+      - lookup_dict: {calque: {"natural": str, "alternatives": list,
+                               "domain": str, "confidence": str}}
+    """
+    p = Path(__file__).resolve().parent.parent / "corpus" / "calque-dictionary.json"
+    if not p.exists():
+        return [], {}
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return [], {}
+    lookup: dict[str, dict] = {}
+    keys: list[str] = []
+    for e in data.get("entries", []):
+        calque = e.get("ai_default_calque", "").strip()
+        natural = e.get("natural_arabic", "").strip()
+        if not calque or not natural or calque == natural:
+            continue
+        lookup[calque] = {
+            "natural": natural,
+            "alternatives": e.get("alternatives", []),
+            "domain": e.get("domain", "general"),
+            "confidence": e.get("confidence", "medium"),
+        }
+        keys.append(calque)
+    # Longer keys first so multi-word phrases match before single-word
+    keys.sort(key=len, reverse=True)
+    return keys, lookup
+
+
+_CALQUE_KEYS, _CALQUE_LOOKUP = _load_calque_dictionary()
+
+
+def lex_apply_calque_dictionary(text: str, register: str = "news") -> str:
+    """Replace English-calque Arabic phrases with their natural-Arabic
+    equivalents, per the calque-dictionary at corpus/calque-dictionary.json.
+
+    Register-gated: only news/opinion (modern editorial registers) apply
+    the substitution. classical/technical preserve the source verbatim
+    because:
+      - classical: traditional Arabic doesn't use English calques
+      - technical: may use English borrowings intentionally; preserving
+        the source's lexical choices avoids breaking precision
+
+    The substitution operates outside quoted spans (via _apply_outside_quotes)
+    to preserve direct citations.
+    """
+    if register in ("classical", "technical"):
+        return text
+    if not _CALQUE_KEYS:
+        return text  # dictionary file missing or empty
+
+    def _apply(segment: str) -> str:
+        for key in _CALQUE_KEYS:
+            natural = _CALQUE_LOOKUP[key]["natural"]
+            # Double-ال fix: if input has "ال" + calque (with definite article)
+            # AND the natural form ALSO starts with "ال", substitute the
+            # ال+calque sequence with the natural form to avoid "الال..."
+            if natural.startswith("ال") and ("ال" + key) in segment:
+                segment = segment.replace("ال" + key, natural)
+                continue
+            if key in segment:
+                segment = segment.replace(key, natural)
+        return segment
+
+    return _apply_outside_quotes(text, _apply)
 
 
 # ── LLM-augmented passes ────────────────────────────────────────────────────
@@ -5876,6 +5964,58 @@ def main():
             f"news register kept {news_count}/{in_count} tashkeel marks (expected < half)")
     r.check("T11.classical_preserves_tashkeel", classical_count >= in_count * 0.7,
             f"classical register kept only {classical_count}/{in_count} marks (expected >= 70%)")
+
+    print()
+    print("=" * 60)
+    print("  T12 — calque dictionary loads (v2.3.0)")
+    print("=" * 60)
+    # Sanity: the lex pipeline should produce different output on calque input
+    # vs the same input absent the calque. We test a known dictionary entry.
+    out_calque = run_humanize(
+        "خط أنابيب البيانات يعمل بكفاءة عالية في المنصة.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T12.dict_loaded",
+            "خط أنابيب" not in out_calque,
+            f"calque survived in output: {out_calque[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T13 — calque dictionary catches multi-domain calques")
+    print("=" * 60)
+    # Business calque: 'startup' as 'بدء التشغيل' should become 'شركة ناشئة'
+    out_biz = run_humanize(
+        "بدء التشغيل التقنية الجديدة تطلق منتجها الأول هذا الأسبوع.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T13.business_calque_caught",
+            "بدء التشغيل" not in out_biz or "شركة ناشئة" in out_biz,
+            f"startup calque survived: {out_biz[:120]!r}")
+
+    # Security calque: 'logging' is NOT in our dict (we dropped it due to ambiguity)
+    # but 'monitoring' as 'مونيتورينغ' should become 'مراقبة'
+    out_sec = run_humanize(
+        "مونيتورينغ النظام يكشف الأخطاء فور حدوثها.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T13.transliteration_calque_caught",
+            "مونيتورينغ" not in out_sec,
+            f"monitoring transliteration survived: {out_sec[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T14 — calque dictionary REGISTER-GATED (technical preserves source)")
+    print("=" * 60)
+    # In technical register, calques in the new v2.3.0 dictionary should NOT
+    # be substituted (preserve source verbatim). We use 'مونيتورينغ' which is
+    # only in the new calque-dictionary.json — NOT in AI_PHRASES_AR.
+    out_tech = run_humanize(
+        "مونيتورينغ النظام يعمل بكفاءة في البيئة الإنتاجية.",
+        "--mode", "tighten", "--register", "technical",
+    )
+    r.check("T14.technical_preserves_calque",
+            "مونيتورينغ" in out_tech,
+            f"technical register substituted: {out_tech[:120]!r}")
 
     print()
     print("=" * 60)

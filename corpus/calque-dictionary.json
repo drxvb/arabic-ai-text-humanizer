@@ -1,0 +1,1609 @@
+{
+  "$schema_version": "1.0",
+  "$generated_at": "",
+  "$source_corpus": "Y:/Linguistics/News/Technology/AITNews",
+  "$llms_consulted": [
+    "claude"
+  ],
+  "$n_entries": 93,
+  "$by_confidence": {
+    "medium": 66,
+    "high": 27
+  },
+  "$by_domain": {
+    "business": 16,
+    "news-journalism": 16,
+    "politics": 4,
+    "tech-ai-ml": 9,
+    "tech-consumer": 10,
+    "tech-data": 8,
+    "tech-infra": 10,
+    "tech-security": 11,
+    "tech-software": 9
+  },
+  "$description": "Calque-translation dictionary for the Arabic AI-Text Humanizer. Each entry maps an English term to: (a) the AI-default calque that naive translators produce, (b) the natural Arabic form that native tech/news writers use. Validated against AITNews corpus frequencies.",
+  "entries": [
+    {
+      "en": "Series A",
+      "ai_default_calque": "السلسلة أ",
+      "natural_arabic": "جولة التمويل الأولى",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 474,
+      "llm_votes": {
+        "claude": {
+          "natural": "جولة التمويل الأولى",
+          "naive": "السلسلة أ"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "acquisition",
+      "ai_default_calque": "اقتناء",
+      "natural_arabic": "استحواذ",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "high",
+      "corpus_hits": 202,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "استحواذ",
+          "naive": "اقتناء"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "annual report",
+      "ai_default_calque": "تقرير سنوي",
+      "natural_arabic": "التقرير السنوي",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 577,
+      "llm_votes": {
+        "claude": {
+          "natural": "التقرير السنوي",
+          "naive": "تقرير سنوي"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "board of directors",
+      "ai_default_calque": "لجنة المديرين",
+      "natural_arabic": "مجلس الإدارة",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 240,
+      "llm_votes": {
+        "claude": {
+          "natural": "مجلس الإدارة",
+          "naive": "لجنة المديرين"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "burn rate",
+      "ai_default_calque": "معدل الاحتراق",
+      "natural_arabic": "معدل الإنفاق",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 346,
+      "llm_votes": {
+        "claude": {
+          "natural": "معدل الإنفاق",
+          "naive": "معدل الاحتراق"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "chief executive officer",
+      "ai_default_calque": "ضابط التنفيذ الرئيسي",
+      "natural_arabic": "الرئيس التنفيذي",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "high",
+      "corpus_hits": 428,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "الرئيس التنفيذي",
+          "naive": "ضابط التنفيذ الرئيسي"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "chief technology officer",
+      "ai_default_calque": "ضابط التكنولوجيا الرئيسي",
+      "natural_arabic": "الرئيس التنفيذي للتكنولوجيا",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 580,
+      "llm_votes": {
+        "claude": {
+          "natural": "الرئيس التنفيذي للتكنولوجيا",
+          "naive": "ضابط التكنولوجيا الرئيسي"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "initial public offering",
+      "ai_default_calque": "عرض عام أولي ابتدائي",
+      "natural_arabic": "طرح عام أولي",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1420,
+      "llm_votes": {
+        "claude": {
+          "natural": "طرح عام أولي",
+          "naive": "عرض عام أولي ابتدائي"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "market share",
+      "ai_default_calque": "مشاركة السوق",
+      "natural_arabic": "حصة السوق",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "high",
+      "corpus_hits": 45,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "حصة السوق",
+          "naive": "مشاركة السوق"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "scale-up",
+      "ai_default_calque": "توسع للأعلى",
+      "natural_arabic": "توسيع النطاق",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 220,
+      "llm_votes": {
+        "claude": {
+          "natural": "توسيع النطاق",
+          "naive": "توسع للأعلى"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "seed funding",
+      "ai_default_calque": "تمويل البذور",
+      "natural_arabic": "تمويل بذري",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 32,
+      "llm_votes": {
+        "claude": {
+          "natural": "تمويل بذري",
+          "naive": "تمويل البذور"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "stakeholder",
+      "ai_default_calque": "حاملو الحصص",
+      "natural_arabic": "أصحاب المصلحة",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 152,
+      "llm_votes": {
+        "claude": {
+          "natural": "أصحاب المصلحة",
+          "naive": "حاملو الحصص"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "startup",
+      "ai_default_calque": "بدء التشغيل",
+      "natural_arabic": "شركة ناشئة",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "high",
+      "corpus_hits": 63,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "شركة ناشئة",
+          "naive": "بدء التشغيل"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "supply chain",
+      "ai_default_calque": "سلسلة الإمداد",
+      "natural_arabic": "سلسلة التوريد",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 666,
+      "llm_votes": {
+        "claude": {
+          "natural": "سلسلة التوريد",
+          "naive": "سلسلة الإمداد"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "valuation",
+      "ai_default_calque": "تقدير القيمة",
+      "natural_arabic": "تقييم",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "high",
+      "corpus_hits": 89,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "تقييم",
+          "naive": "تقدير القيمة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "venture capital",
+      "ai_default_calque": "رأس مال المجازفة",
+      "natural_arabic": "رأس المال المغامر",
+      "alternatives": [],
+      "domain": "business",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 87,
+      "llm_votes": {
+        "claude": {
+          "natural": "رأس المال المغامر",
+          "naive": "رأس مال المجازفة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "backlash",
+      "ai_default_calque": "رد الفعل العكسي",
+      "natural_arabic": "ردود فعل غاضبة",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 41,
+      "llm_votes": {
+        "claude": {
+          "natural": "ردود فعل غاضبة",
+          "naive": "رد الفعل العكسي"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "breaking news",
+      "ai_default_calque": "أخبار عاجلة",
+      "natural_arabic": "عاجل",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "high",
+      "corpus_hits": 130,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "عاجل",
+          "naive": "أخبار عاجلة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "ceasefire",
+      "ai_default_calque": "وقف النار",
+      "natural_arabic": "وقف إطلاق النار",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1397,
+      "llm_votes": {
+        "claude": {
+          "natural": "وقف إطلاق النار",
+          "naive": "وقف النار"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "crackdown",
+      "ai_default_calque": "شد التشقق",
+      "natural_arabic": "حملة",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "high",
+      "corpus_hits": 345,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "حملة",
+          "naive": "شد التشقق"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "embargo",
+      "ai_default_calque": "إمبارغو",
+      "natural_arabic": "حظر",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "high",
+      "corpus_hits": 256,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "حظر",
+          "naive": "إمبارغو"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "exclusive interview",
+      "ai_default_calque": "مقابلة حصرية",
+      "natural_arabic": "مقابلة خاصة",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 793,
+      "llm_votes": {
+        "claude": {
+          "natural": "مقابلة خاصة",
+          "naive": "مقابلة حصرية"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "foreign policy",
+      "ai_default_calque": "السياسة الأجنبية",
+      "natural_arabic": "السياسة الخارجية",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 175,
+      "llm_votes": {
+        "claude": {
+          "natural": "السياسة الخارجية",
+          "naive": "السياسة الأجنبية"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "grassroots movement",
+      "ai_default_calque": "حركة جذور العشب",
+      "natural_arabic": "حركة شعبية",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 333,
+      "llm_votes": {
+        "claude": {
+          "natural": "حركة شعبية",
+          "naive": "حركة جذور العشب"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "press conference",
+      "ai_default_calque": "مؤتمر الصحافة",
+      "natural_arabic": "مؤتمر صحفي",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "high",
+      "corpus_hits": 69,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "مؤتمر صحفي",
+          "naive": "مؤتمر الصحافة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "press release",
+      "ai_default_calque": "إصدار صحافي",
+      "natural_arabic": "بيان صحفي",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 181,
+      "llm_votes": {
+        "claude": {
+          "natural": "بيان صحفي",
+          "naive": "إصدار صحافي"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "public outcry",
+      "ai_default_calque": "صرخة عامة",
+      "natural_arabic": "موجة غضب شعبي",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 23,
+      "llm_votes": {
+        "claude": {
+          "natural": "موجة غضب شعبي",
+          "naive": "صرخة عامة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "regime change",
+      "ai_default_calque": "تغيير الريجيم",
+      "natural_arabic": "تغيير النظام",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1063,
+      "llm_votes": {
+        "claude": {
+          "natural": "تغيير النظام",
+          "naive": "تغيير الريجيم"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "spokesperson",
+      "ai_default_calque": "ناطق باسم",
+      "natural_arabic": "متحدث رسمي",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 170,
+      "llm_votes": {
+        "claude": {
+          "natural": "متحدث رسمي",
+          "naive": "ناطق باسم"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "stakeholder",
+      "ai_default_calque": "حاملو الحصص",
+      "natural_arabic": "أصحاب المصلحة",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 152,
+      "llm_votes": {
+        "claude": {
+          "natural": "أصحاب المصلحة",
+          "naive": "حاملو الحصص"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "think tank",
+      "ai_default_calque": "خزان تفكير",
+      "natural_arabic": "مركز أبحاث",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 398,
+      "llm_votes": {
+        "claude": {
+          "natural": "مركز أبحاث",
+          "naive": "خزان تفكير"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "whistleblower",
+      "ai_default_calque": "نافخ الصافرة",
+      "natural_arabic": "المبلغ عن المخالفات",
+      "alternatives": [],
+      "domain": "news-journalism",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 19,
+      "llm_votes": {
+        "claude": {
+          "natural": "المبلغ عن المخالفات",
+          "naive": "نافخ الصافرة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "campaign",
+      "ai_default_calque": "كمبين",
+      "natural_arabic": "حملة",
+      "alternatives": [],
+      "domain": "politics",
+      "confidence": "high",
+      "corpus_hits": 345,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "حملة",
+          "naive": "كمبين"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "lobbyist",
+      "ai_default_calque": "الداعي في الردهة",
+      "natural_arabic": "جماعات الضغط",
+      "alternatives": [],
+      "domain": "politics",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 505,
+      "llm_votes": {
+        "claude": {
+          "natural": "جماعات الضغط",
+          "naive": "الداعي في الردهة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "rule of law",
+      "ai_default_calque": "حكم القانون",
+      "natural_arabic": "سيادة القانون",
+      "alternatives": [],
+      "domain": "politics",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 49,
+      "llm_votes": {
+        "claude": {
+          "natural": "سيادة القانون",
+          "naive": "حكم القانون"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "separation of powers",
+      "ai_default_calque": "فصل القوى",
+      "natural_arabic": "الفصل بين السلطات",
+      "alternatives": [],
+      "domain": "politics",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 56,
+      "llm_votes": {
+        "claude": {
+          "natural": "الفصل بين السلطات",
+          "naive": "فصل القوى"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "alignment",
+      "ai_default_calque": "محاذاة",
+      "natural_arabic": "توافق",
+      "alternatives": [],
+      "domain": "tech-ai-ml",
+      "confidence": "high",
+      "corpus_hits": 85,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "توافق",
+          "naive": "محاذاة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "attention mechanism",
+      "ai_default_calque": "مكانيزم الانتباه",
+      "natural_arabic": "آلية الانتباه",
+      "alternatives": [],
+      "domain": "tech-ai-ml",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 99,
+      "llm_votes": {
+        "claude": {
+          "natural": "آلية الانتباه",
+          "naive": "مكانيزم الانتباه"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "neural network",
+      "ai_default_calque": "شبكة عصبية",
+      "natural_arabic": "الشبكة العصبية",
+      "alternatives": [],
+      "domain": "tech-ai-ml",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 644,
+      "llm_votes": {
+        "claude": {
+          "natural": "الشبكة العصبية",
+          "naive": "شبكة عصبية"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "overfitting",
+      "ai_default_calque": "الملاءمة الزائدة",
+      "natural_arabic": "الإفراط في التدريب",
+      "alternatives": [],
+      "domain": "tech-ai-ml",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 20,
+      "llm_votes": {
+        "claude": {
+          "natural": "الإفراط في التدريب",
+          "naive": "الملاءمة الزائدة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "prompt",
+      "ai_default_calque": "بروميت",
+      "natural_arabic": "موجه",
+      "alternatives": [],
+      "domain": "tech-ai-ml",
+      "confidence": "high",
+      "corpus_hits": 118,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "موجه",
+          "naive": "بروميت"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "reinforcement learning",
+      "ai_default_calque": "تعلم التعزيز",
+      "natural_arabic": "التعلم المعزز",
+      "alternatives": [],
+      "domain": "tech-ai-ml",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 112,
+      "llm_votes": {
+        "claude": {
+          "natural": "التعلم المعزز",
+          "naive": "تعلم التعزيز"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "supervised learning",
+      "ai_default_calque": "التعلم المشرف عليه",
+      "natural_arabic": "التعلم الخاضع للإشراف",
+      "alternatives": [],
+      "domain": "tech-ai-ml",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 39,
+      "llm_votes": {
+        "claude": {
+          "natural": "التعلم الخاضع للإشراف",
+          "naive": "التعلم المشرف عليه"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "tokenization",
+      "ai_default_calque": "التوكنة",
+      "natural_arabic": "التجزئة",
+      "alternatives": [],
+      "domain": "tech-ai-ml",
+      "confidence": "high",
+      "corpus_hits": 145,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "التجزئة",
+          "naive": "التوكنة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "transfer learning",
+      "ai_default_calque": "تعلم النقل",
+      "natural_arabic": "التعلم بالنقل",
+      "alternatives": [],
+      "domain": "tech-ai-ml",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 58,
+      "llm_votes": {
+        "claude": {
+          "natural": "التعلم بالنقل",
+          "naive": "تعلم النقل"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "in-app purchase",
+      "ai_default_calque": "شراء داخل-التطبيق",
+      "natural_arabic": "شراء داخل التطبيق",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1267,
+      "llm_votes": {
+        "claude": {
+          "natural": "شراء داخل التطبيق",
+          "naive": "شراء داخل-التطبيق"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "internet of things",
+      "ai_default_calque": "شبكة الإنترنت للأشياء",
+      "natural_arabic": "إنترنت الأشياء",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "high",
+      "corpus_hits": 47,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "إنترنت الأشياء",
+          "naive": "شبكة الإنترنت للأشياء"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "mobile app",
+      "ai_default_calque": "تطبيق المحمول",
+      "natural_arabic": "تطبيق الجوال",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 3885,
+      "llm_votes": {
+        "claude": {
+          "natural": "تطبيق الجوال",
+          "naive": "تطبيق المحمول"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "responsive design",
+      "ai_default_calque": "تصميم استجابي",
+      "natural_arabic": "تصميم متجاوب",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 534,
+      "llm_votes": {
+        "claude": {
+          "natural": "تصميم متجاوب",
+          "naive": "تصميم استجابي"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "smart home",
+      "ai_default_calque": "البيت الذكي",
+      "natural_arabic": "المنزل الذكي",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1112,
+      "llm_votes": {
+        "claude": {
+          "natural": "المنزل الذكي",
+          "naive": "البيت الذكي"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "social media",
+      "ai_default_calque": "الإعلام الاجتماعي",
+      "natural_arabic": "وسائل التواصل الاجتماعي",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "high",
+      "corpus_hits": 56,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "وسائل التواصل الاجتماعي",
+          "naive": "الإعلام الاجتماعي"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "streaming",
+      "ai_default_calque": "التدفق",
+      "natural_arabic": "البث المباشر",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "high",
+      "corpus_hits": 99,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "البث المباشر",
+          "naive": "التدفق"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "tablet",
+      "ai_default_calque": "قرص",
+      "natural_arabic": "جهاز لوحي",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "high",
+      "corpus_hits": 58,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "جهاز لوحي",
+          "naive": "قرص"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "user experience",
+      "ai_default_calque": "خبرة المستعمل",
+      "natural_arabic": "تجربة المستخدم",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 3631,
+      "llm_votes": {
+        "claude": {
+          "natural": "تجربة المستخدم",
+          "naive": "خبرة المستعمل"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "wearable technology",
+      "ai_default_calque": "تقنية قابلة للارتداء",
+      "natural_arabic": "التقنية القابلة للارتداء",
+      "alternatives": [],
+      "domain": "tech-consumer",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 924,
+      "llm_votes": {
+        "claude": {
+          "natural": "التقنية القابلة للارتداء",
+          "naive": "تقنية قابلة للارتداء"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "ETL",
+      "ai_default_calque": "استخراج وتحويل وتحميل",
+      "natural_arabic": "استخلاص البيانات وتحويلها وتحميلها",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 614,
+      "llm_votes": {
+        "claude": {
+          "natural": "استخلاص البيانات وتحويلها وتحميلها",
+          "naive": "استخراج وتحويل وتحميل"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "cache",
+      "ai_default_calque": "كاش",
+      "natural_arabic": "ذاكرة التخزين المؤقت",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 637,
+      "llm_votes": {
+        "claude": {
+          "natural": "ذاكرة التخزين المؤقت",
+          "naive": "كاش"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "data pipeline",
+      "ai_default_calque": "خط أنابيب البيانات",
+      "natural_arabic": "خط بيانات",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 589,
+      "llm_votes": {
+        "claude": {
+          "natural": "خط بيانات",
+          "naive": "خط أنابيب البيانات"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "data warehouse",
+      "ai_default_calque": "مخزن البيانات",
+      "natural_arabic": "مستودع البيانات",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1228,
+      "llm_votes": {
+        "claude": {
+          "natural": "مستودع البيانات",
+          "naive": "مخزن البيانات"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "foreign key",
+      "ai_default_calque": "مفتاح خارجي",
+      "natural_arabic": "مفتاح أجنبي",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 43,
+      "llm_votes": {
+        "claude": {
+          "natural": "مفتاح أجنبي",
+          "naive": "مفتاح خارجي"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "primary key",
+      "ai_default_calque": "المفتاح الأولي",
+      "natural_arabic": "المفتاح الرئيسي",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 155,
+      "llm_votes": {
+        "claude": {
+          "natural": "المفتاح الرئيسي",
+          "naive": "المفتاح الأولي"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "replication",
+      "ai_default_calque": "التكرار",
+      "natural_arabic": "النسخ المتماثل",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 174,
+      "llm_votes": {
+        "claude": {
+          "natural": "النسخ المتماثل",
+          "naive": "التكرار"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "sharding",
+      "ai_default_calque": "التشارد",
+      "natural_arabic": "التجزئة",
+      "alternatives": [],
+      "domain": "tech-data",
+      "confidence": "high",
+      "corpus_hits": 145,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "التجزئة",
+          "naive": "التشارد"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "auto-scaling",
+      "ai_default_calque": "القياس التلقائي",
+      "natural_arabic": "التوسع التلقائي",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 120,
+      "llm_votes": {
+        "claude": {
+          "natural": "التوسع التلقائي",
+          "naive": "القياس التلقائي"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "availability zone",
+      "ai_default_calque": "منطقة الإتاحية",
+      "natural_arabic": "منطقة التوفر",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 330,
+      "llm_votes": {
+        "claude": {
+          "natural": "منطقة التوفر",
+          "naive": "منطقة الإتاحية"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "cloud computing",
+      "ai_default_calque": "حوسبة السحاب",
+      "natural_arabic": "الحوسبة السحابية",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "high",
+      "corpus_hits": 363,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "الحوسبة السحابية",
+          "naive": "حوسبة السحاب"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "content delivery network",
+      "ai_default_calque": "شبكة تسليم المحتوى",
+      "natural_arabic": "شبكة توصيل المحتوى",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 1114,
+      "llm_votes": {
+        "claude": {
+          "natural": "شبكة توصيل المحتوى",
+          "naive": "شبكة تسليم المحتوى"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "edge computing",
+      "ai_default_calque": "حوسبة الحافة",
+      "natural_arabic": "الحوسبة الطرفية",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 265,
+      "llm_votes": {
+        "claude": {
+          "natural": "الحوسبة الطرفية",
+          "naive": "حوسبة الحافة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "high availability",
+      "ai_default_calque": "توفرية عالية",
+      "natural_arabic": "توافر عال",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 89,
+      "llm_votes": {
+        "claude": {
+          "natural": "توافر عال",
+          "naive": "توفرية عالية"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "monitoring",
+      "ai_default_calque": "مونيتورينغ",
+      "natural_arabic": "مراقبة",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "high",
+      "corpus_hits": 244,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "مراقبة",
+          "naive": "مونيتورينغ"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "observability",
+      "ai_default_calque": "قابلية الملاحظة",
+      "natural_arabic": "المراقبة",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "high",
+      "corpus_hits": 88,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "المراقبة",
+          "naive": "قابلية الملاحظة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "serverless",
+      "ai_default_calque": "عديم الخادم",
+      "natural_arabic": "بدون خوادم",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 312,
+      "llm_votes": {
+        "claude": {
+          "natural": "بدون خوادم",
+          "naive": "عديم الخادم"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "virtualization",
+      "ai_default_calque": "الافتراضية",
+      "natural_arabic": "المحاكاة الافتراضية",
+      "alternatives": [],
+      "domain": "tech-infra",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 193,
+      "llm_votes": {
+        "claude": {
+          "natural": "المحاكاة الافتراضية",
+          "naive": "الافتراضية"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "DDoS attack",
+      "ai_default_calque": "هجوم رفض الخدمة الموزع",
+      "natural_arabic": "هجوم حجب الخدمة الموزع",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 592,
+      "llm_votes": {
+        "claude": {
+          "natural": "هجوم حجب الخدمة الموزع",
+          "naive": "هجوم رفض الخدمة الموزع"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "breach",
+      "ai_default_calque": "خرق",
+      "natural_arabic": "اختراق",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "high",
+      "corpus_hits": 613,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "اختراق",
+          "naive": "خرق"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "exploit",
+      "ai_default_calque": "استغلال",
+      "natural_arabic": "ثغرة",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "high",
+      "corpus_hits": 772,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "ثغرة",
+          "naive": "استغلال"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "firewall",
+      "ai_default_calque": "جدار النار",
+      "natural_arabic": "جدار الحماية",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 248,
+      "llm_votes": {
+        "claude": {
+          "natural": "جدار الحماية",
+          "naive": "جدار النار"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "intrusion detection",
+      "ai_default_calque": "اكتشاف الاقتحام",
+      "natural_arabic": "كشف التسلل",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 287,
+      "llm_votes": {
+        "claude": {
+          "natural": "كشف التسلل",
+          "naive": "اكتشاف الاقتحام"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "malware",
+      "ai_default_calque": "برمجيات ضارة",
+      "natural_arabic": "برمجيات خبيثة",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "high",
+      "corpus_hits": 89,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "برمجيات خبيثة",
+          "naive": "برمجيات ضارة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "patch",
+      "ai_default_calque": "رقعة",
+      "natural_arabic": "تحديث أمني",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 944,
+      "llm_votes": {
+        "claude": {
+          "natural": "تحديث أمني",
+          "naive": "رقعة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "ransomware",
+      "ai_default_calque": "برمجيات طلب الفدية",
+      "natural_arabic": "برامج الفدية",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 432,
+      "llm_votes": {
+        "claude": {
+          "natural": "برامج الفدية",
+          "naive": "برمجيات طلب الفدية"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "social engineering",
+      "ai_default_calque": "هندسة المجتمع",
+      "natural_arabic": "الهندسة الاجتماعية",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 810,
+      "llm_votes": {
+        "claude": {
+          "natural": "الهندسة الاجتماعية",
+          "naive": "هندسة المجتمع"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "vulnerability",
+      "ai_default_calque": "قابلية التعرض للخطر",
+      "natural_arabic": "ثغرة",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "high",
+      "corpus_hits": 772,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "ثغرة",
+          "naive": "قابلية التعرض للخطر"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "zero-day",
+      "ai_default_calque": "يوم صفري",
+      "natural_arabic": "ثغرة يوم الصفر",
+      "alternatives": [],
+      "domain": "tech-security",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 620,
+      "llm_votes": {
+        "claude": {
+          "natural": "ثغرة يوم الصفر",
+          "naive": "يوم صفري"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "bandwidth",
+      "ai_default_calque": "عرض الحزمة",
+      "natural_arabic": "عرض النطاق",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 998,
+      "llm_votes": {
+        "claude": {
+          "natural": "عرض النطاق",
+          "naive": "عرض الحزمة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "garbage collection",
+      "ai_default_calque": "تجميع القمامة",
+      "natural_arabic": "جمع المهملات",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 85,
+      "llm_votes": {
+        "claude": {
+          "natural": "جمع المهملات",
+          "naive": "تجميع القمامة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "latency",
+      "ai_default_calque": "الكمون",
+      "natural_arabic": "زمن الاستجابة",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 109,
+      "llm_votes": {
+        "claude": {
+          "natural": "زمن الاستجابة",
+          "naive": "الكمون"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "microservice",
+      "ai_default_calque": "ميكروخدمة",
+      "natural_arabic": "الخدمات المصغرة",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 592,
+      "llm_votes": {
+        "claude": {
+          "natural": "الخدمات المصغرة",
+          "naive": "ميكروخدمة"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "namespace",
+      "ai_default_calque": "مساحة الاسم",
+      "natural_arabic": "فضاء الأسماء",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 62,
+      "llm_votes": {
+        "claude": {
+          "natural": "فضاء الأسماء",
+          "naive": "مساحة الاسم"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "race condition",
+      "ai_default_calque": "شرط السباق",
+      "natural_arabic": "حالة التسابق",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 197,
+      "llm_votes": {
+        "claude": {
+          "natural": "حالة التسابق",
+          "naive": "شرط السباق"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "rollback",
+      "ai_default_calque": "الرجوع إلى الخلف",
+      "natural_arabic": "التراجع",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "high",
+      "corpus_hits": 64,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "التراجع",
+          "naive": "الرجوع إلى الخلف"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "throughput",
+      "ai_default_calque": "ثروبوت",
+      "natural_arabic": "الإنتاجية",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "high",
+      "corpus_hits": 124,
+      "partial_hits": null,
+      "llm_votes": {
+        "claude": {
+          "natural": "الإنتاجية",
+          "naive": "ثروبوت"
+        }
+      },
+      "safety": "safe"
+    },
+    {
+      "en": "workflow",
+      "ai_default_calque": "تدفق العمل",
+      "natural_arabic": "سير العمل",
+      "alternatives": [],
+      "domain": "tech-software",
+      "confidence": "medium",
+      "corpus_hits": 0,
+      "partial_hits": 850,
+      "llm_votes": {
+        "claude": {
+          "natural": "سير العمل",
+          "naive": "تدفق العمل"
+        }
+      },
+      "safety": "safe"
+    }
+  ],
+  "$curation_notes": "Dropped 4 entries with semantic sense errors or calque-keys that have legitimate non-calque meanings in Arabic: ['demonstration', 'equity', 'logging', 'policy']."
+}

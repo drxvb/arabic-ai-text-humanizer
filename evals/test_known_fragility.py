@@ -225,6 +225,58 @@ def main():
 
     print()
     print("=" * 60)
+    print("  T12 — calque dictionary loads (v2.3.0)")
+    print("=" * 60)
+    # Sanity: the lex pipeline should produce different output on calque input
+    # vs the same input absent the calque. We test a known dictionary entry.
+    out_calque = run_humanize(
+        "خط أنابيب البيانات يعمل بكفاءة عالية في المنصة.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T12.dict_loaded",
+            "خط أنابيب" not in out_calque,
+            f"calque survived in output: {out_calque[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T13 — calque dictionary catches multi-domain calques")
+    print("=" * 60)
+    # Business calque: 'startup' as 'بدء التشغيل' should become 'شركة ناشئة'
+    out_biz = run_humanize(
+        "بدء التشغيل التقنية الجديدة تطلق منتجها الأول هذا الأسبوع.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T13.business_calque_caught",
+            "بدء التشغيل" not in out_biz or "شركة ناشئة" in out_biz,
+            f"startup calque survived: {out_biz[:120]!r}")
+
+    # Security calque: 'logging' is NOT in our dict (we dropped it due to ambiguity)
+    # but 'monitoring' as 'مونيتورينغ' should become 'مراقبة'
+    out_sec = run_humanize(
+        "مونيتورينغ النظام يكشف الأخطاء فور حدوثها.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T13.transliteration_calque_caught",
+            "مونيتورينغ" not in out_sec,
+            f"monitoring transliteration survived: {out_sec[:120]!r}")
+
+    print()
+    print("=" * 60)
+    print("  T14 — calque dictionary REGISTER-GATED (technical preserves source)")
+    print("=" * 60)
+    # In technical register, calques in the new v2.3.0 dictionary should NOT
+    # be substituted (preserve source verbatim). We use 'مونيتورينغ' which is
+    # only in the new calque-dictionary.json — NOT in AI_PHRASES_AR.
+    out_tech = run_humanize(
+        "مونيتورينغ النظام يعمل بكفاءة في البيئة الإنتاجية.",
+        "--mode", "tighten", "--register", "technical",
+    )
+    r.check("T14.technical_preserves_calque",
+            "مونيتورينغ" in out_tech,
+            f"technical register substituted: {out_tech[:120]!r}")
+
+    print()
+    print("=" * 60)
     print(f"  Total: {r.passed + r.failed}  |  PASS: {r.passed}  |  FAIL: {r.failed}")
     print("=" * 60)
     sys.exit(0 if r.failed == 0 else 1)

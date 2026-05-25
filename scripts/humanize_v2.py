@@ -733,6 +733,8 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         text = lex_reduce_tashkeel(text, register=register)
         # First: full lex pass (deletions + phrase swaps etc.)
         text = lex_replace_phrases(text)
+        # Calque dictionary (v2.3.0): English-calque -> natural-Arabic
+        text = lex_apply_calque_dictionary(text, register=register)
         text = lex_replace_connectors(text)
         if register != "technical":
             text = lex_break_structural_openers(text)
@@ -772,6 +774,8 @@ def lex_pass(text: str, intensity: float, register: str = "news",
         # sees normalized text. Classical/technical pass through unchanged.
         text = lex_reduce_tashkeel(text, register=register)
         text = lex_replace_phrases(text)              # Remove AI signature phrases
+        # Calque dictionary (v2.3.0): English-calque -> natural-Arabic
+        text = lex_apply_calque_dictionary(text, register=register)
         text = lex_destack_intensifiers(text)         # Collapse "صعب ومعقّد" etc.
         text = lex_dim14_anti_tautology(text)         # "مؤكَّد وحقيقي وثابت" → "مؤكَّد"
         text = lex_dim14_anti_re_explanation(text)    # Delete "أي بمعنى آخر"
@@ -789,6 +793,8 @@ def lex_pass(text: str, intensity: float, register: str = "news",
     # normalized text. Classical/technical passes through unchanged.
     text = lex_reduce_tashkeel(text, register=register)
     text = lex_replace_phrases(text)             # Gap A: safe for all registers
+    # Calque dictionary (v2.3.0): English-calque -> natural-Arabic
+    text = lex_apply_calque_dictionary(text, register=register)
     text = lex_replace_connectors(text)          # Gap B: safe for all registers
 
     # Gap C (structural noun-frame openers): SKIP for technical (changes meaning)
@@ -893,6 +899,86 @@ def lex_reduce_tashkeel(text: str, register: str = "news") -> str:
     for marker, kept in placeholders.items():
         cleaned = cleaned.replace(marker, kept)
     return cleaned
+
+
+# ── Calque-translation dictionary (v2.3.0) ──────────────────────────────────
+
+def _load_calque_dictionary() -> tuple[list[str], dict]:
+    """Load corpus/calque-dictionary.json at module init.
+
+    The dictionary captures English-calque -> natural-Arabic translation
+    pairs validated against the AITNews corpus (and multi-LLM swarm).
+    Source-of-truth lives in the JSON file so it can be audited/extended
+    without touching code.
+
+    Returns: (sorted_calque_keys, lookup_dict)
+      - sorted_calque_keys: list of calque strings, sorted by length desc
+        (longer phrases match first to avoid partial overlaps)
+      - lookup_dict: {calque: {"natural": str, "alternatives": list,
+                               "domain": str, "confidence": str}}
+    """
+    p = Path(__file__).resolve().parent.parent / "corpus" / "calque-dictionary.json"
+    if not p.exists():
+        return [], {}
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return [], {}
+    lookup: dict[str, dict] = {}
+    keys: list[str] = []
+    for e in data.get("entries", []):
+        calque = e.get("ai_default_calque", "").strip()
+        natural = e.get("natural_arabic", "").strip()
+        if not calque or not natural or calque == natural:
+            continue
+        lookup[calque] = {
+            "natural": natural,
+            "alternatives": e.get("alternatives", []),
+            "domain": e.get("domain", "general"),
+            "confidence": e.get("confidence", "medium"),
+        }
+        keys.append(calque)
+    # Longer keys first so multi-word phrases match before single-word
+    keys.sort(key=len, reverse=True)
+    return keys, lookup
+
+
+_CALQUE_KEYS, _CALQUE_LOOKUP = _load_calque_dictionary()
+
+
+def lex_apply_calque_dictionary(text: str, register: str = "news") -> str:
+    """Replace English-calque Arabic phrases with their natural-Arabic
+    equivalents, per the calque-dictionary at corpus/calque-dictionary.json.
+
+    Register-gated: only news/opinion (modern editorial registers) apply
+    the substitution. classical/technical preserve the source verbatim
+    because:
+      - classical: traditional Arabic doesn't use English calques
+      - technical: may use English borrowings intentionally; preserving
+        the source's lexical choices avoids breaking precision
+
+    The substitution operates outside quoted spans (via _apply_outside_quotes)
+    to preserve direct citations.
+    """
+    if register in ("classical", "technical"):
+        return text
+    if not _CALQUE_KEYS:
+        return text  # dictionary file missing or empty
+
+    def _apply(segment: str) -> str:
+        for key in _CALQUE_KEYS:
+            natural = _CALQUE_LOOKUP[key]["natural"]
+            # Double-ال fix: if input has "ال" + calque (with definite article)
+            # AND the natural form ALSO starts with "ال", substitute the
+            # ال+calque sequence with the natural form to avoid "الال..."
+            if natural.startswith("ال") and ("ال" + key) in segment:
+                segment = segment.replace("ال" + key, natural)
+                continue
+            if key in segment:
+                segment = segment.replace(key, natural)
+        return segment
+
+    return _apply_outside_quotes(text, _apply)
 
 
 # ── LLM-augmented passes ────────────────────────────────────────────────────
