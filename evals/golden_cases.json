@@ -1,0 +1,184 @@
+{
+  "$schema_version": "1.0",
+  "$description": "Arabic Humanizer — Golden Test Suite. Each case has explicit pre/post-conditions, register, mode, and expected behavior. Derived from cross-LLM critiques of the actual bugs the framework has historically had.",
+  "$rationale": "Regression-test the bugs we fixed so they don't reappear. Each case explicitly states which of the 5 priorities (meaning > naturalness > register > economy > anti-translationese) it tests.",
+
+  "cases": [
+    {
+      "id": "clause-1-من-الواضح-أن",
+      "category": "clause_preserving_substitution",
+      "tests_priority": ["meaning_preservation", "syntactic_naturalness"],
+      "input": "من الواضح أن القرار مناسب.",
+      "must_contain_after_tighten_news": ["أن"],
+      "must_not_contain": ["بوضوح القرار"],
+      "rationale_ar": "الاستبدال يجب أن يحافظ على 'أن' الموصولة بالجملة الاسمية التالية. 'بوضوح القرار' كسرٌ نحويّ."
+    },
+    {
+      "id": "clause-2-من-المهم-ملاحظة-أن",
+      "category": "clause_preserving_substitution",
+      "tests_priority": ["meaning_preservation", "syntactic_naturalness"],
+      "input": "من المهم ملاحظة أن النظام يعمل جيداً.",
+      "must_contain_after_tighten_news": ["أن"],
+      "must_not_contain": ["للعلم النظام", "للعلم أن النظام يعمل جيداً"],
+      "rationale_ar": "البديل المعجمي الأعمى السابق 'للعلم' كان يَكسر الجملة. الآن يَجب الإبقاء على 'أن'."
+    },
+    {
+      "id": "clause-3-يشار-إلى-أن",
+      "category": "clause_preserving_substitution",
+      "tests_priority": ["meaning_preservation", "syntactic_naturalness"],
+      "input": "يشار إلى أن السوق تغيّر.",
+      "must_contain_after_tighten_news": ["أن", "السوق"],
+      "must_not_contain": ["للعلم السوق"],
+      "rationale_ar": "أ. الإبقاء على 'أن'. ب. عدم تحويل الجملة إلى تركيب 'للعلم السوق تغيّر' الذي حذَف الرابط."
+    },
+    {
+      "id": "quote-verb-safety",
+      "category": "editorial_safety",
+      "tests_priority": ["meaning_preservation"],
+      "input": "يقول الخبير إن النتائج إيجابية. قال المدير إن المشروع ناجح.",
+      "must_contain_after_tighten_news": ["يقول", "قال"],
+      "must_not_contain": ["يزعم", "كشف", "ادّعى", "اعترف"],
+      "rationale_ar": "أفعال القول العدائية تَنقل النص من حياد إلى موقف. تَدوير افتراضي مَمنوع. opt-in فقط عبر env var."
+    },
+    {
+      "id": "prodrop-fluff-deletion",
+      "category": "pro_drop_deletion",
+      "tests_priority": ["economy", "syntactic_naturalness"],
+      "input": "في الواقع، النظام يعمل. بكل تأكيد. لا شك أن المستقبل قادم.",
+      "must_not_contain": ["في الواقع،", "بكل تأكيد."],
+      "must_contain_after_tighten_news": ["النظام يعمل", "المستقبل"],
+      "rationale_ar": "الحَذف أفضل من الاستبدال للعبارات الحَشوية (نتيجة النقد المتعدد للنموذج). 'في الواقع' و'بكل تأكيد' حَشو بلا معنى يَضيع بالحذف."
+    },
+    {
+      "id": "orphan-punctuation-cleanup",
+      "category": "post_deletion_hygiene",
+      "tests_priority": ["syntactic_naturalness"],
+      "input": "النظام يعمل. بكل تأكيد. ولا بد من الإشارة هنا إلى أنه يجب التحرك.",
+      "must_not_contain": [". .", " . "],
+      "rationale_ar": "بعد حَذف 'بكل تأكيد' و'ولا بد من الإشارة هنا إلى أنه' يَنبغي ألا تَبقى نُقطة يَتيمة."
+    },
+    {
+      "id": "typography-arabic-english-spacing",
+      "category": "typography",
+      "tests_priority": ["anti_translationese"],
+      "input": "النموذجAI يَفهم السياق(LLM)بشكل سريع.",
+      "must_contain_after_tighten_news": ["النموذج AI", "( LLM )"],
+      "must_not_contain": ["النموذجAI", "(LLM)"],
+      "rationale_ar": "Ar-En adjacency يَجب أن تَفصلها مسافة. الأقواس حول اللاتيني يَجب أن تَكون مُبَطَّنة بِمسافة."
+    },
+    {
+      "id": "typography-arabic-punctuation",
+      "category": "typography",
+      "tests_priority": ["anti_translationese"],
+      "input": "النظام يعمل, ويَتطوَّر, ويَنتشر.",
+      "must_contain_after_tighten_news": ["،"],
+      "must_not_contain": ["النظام يعمل,", "يَتطوَّر,"],
+      "rationale_ar": "الفاصلة اللاتينية بَين كَلمتَين عربيَّتَين يَجب أن تُحوَّل إلى '،'."
+    },
+    {
+      "id": "preflight-blocks-loaded-generalization",
+      "category": "preflight_safety",
+      "tests_priority": ["meaning_preservation"],
+      "input": "كل العرب يَدعمون هذه الخطوة.",
+      "preflight_verdict": "BLOCK",
+      "preflight_must_flag": ["loaded_group_generalization"],
+      "rationale_ar": "تَعميم سَلبي على مَجموعة 'كل العرب' يُحَذِّر منه الـpreflight بِشَدة HIGH. لا يَجب أن نُحَسِّن النص قَبل التَنبيه."
+    },
+    {
+      "id": "preflight-flags-anonymous-source",
+      "category": "preflight_safety",
+      "tests_priority": ["meaning_preservation"],
+      "input": "قالت مصادر مطلعة لم تَكشف عن هويتها إن المشروع سيُلغى.",
+      "preflight_verdict": "FLAG",
+      "preflight_must_flag": ["anonymous_source_chain"],
+      "rationale_ar": "سلسلة مصادر مَجهولة الهوية تَحتاج إلى تَحقُّق إنساني قَبل أن تُحَسَّن مَظهرياً."
+    },
+    {
+      "id": "preflight-flags-pseudo-precision",
+      "category": "preflight_safety",
+      "tests_priority": ["meaning_preservation"],
+      "input": "نحو 73% من القطاعات ستستفيد من التقنية.",
+      "preflight_verdict": "FLAG",
+      "preflight_must_flag": ["pseudo_precision"],
+      "rationale_ar": "أرقام تَقديريّة بِلا مَصدر تَحتاج إلى تَحقُّق."
+    },
+    {
+      "id": "register-news-no-rhetorical",
+      "category": "register_gating",
+      "tests_priority": ["register_fit"],
+      "input": "النظام يَتطوَّر بِسُرعة. الشركات تَتَبَنّى التقنية.",
+      "register": "news",
+      "must_not_contain_in_output": ["سَجع", "جِناس", "بَلَغ السَّيل الزُّبى"],
+      "rationale_ar": "الـnews register يَمنع المُحَسِّنات البلاغية مثل السَّجع والجِناس. تَطبيقها في خَبر = أَمَاتورية."
+    },
+    {
+      "id": "register-technical-no-structural-rewrites",
+      "category": "register_gating",
+      "tests_priority": ["register_fit", "meaning_preservation"],
+      "input": "يلعب الذكاء الاصطناعي دوراً مهماً في المعالجة.",
+      "register": "technical",
+      "must_contain_after_lex_only_technical": ["دوراً مهماً"],
+      "rationale_ar": "الـtechnical register يَتَجَنّب إعادة الكتابة الهيكلية. 'يلعب X دوراً' يَبقى كما هو في النص التقني."
+    },
+    {
+      "id": "dim14-anti-tautology",
+      "category": "reader_respect",
+      "tests_priority": ["economy"],
+      "input": "هذا أمر مؤكَّد وحقيقي وثابت. وَهذا واضح وجَلِيّ ولا شَكّ فيه.",
+      "must_not_contain": ["مؤكَّد وحقيقي وثابت", "واضح وجَلِيّ ولا شَكّ"],
+      "rationale_ar": "السلاسل التَّكاراريّة من المُرادفات (مُؤكَّد + حقيقي + ثابت) تُكَثَّف إلى كلمة واحدة."
+    },
+    {
+      "id": "dim14-anti-forced-conclusion",
+      "category": "reader_respect",
+      "tests_priority": ["economy"],
+      "input": "ارتفعت الأسعار. ونَستنتج من هذا أن المُستهلك سيَدفع أكثر. وهذا يَدلّ على ارتفاع تكلفة المعيشة.",
+      "must_not_contain": ["ونَستنتج من هذا أن", "وهذا يَدلّ على"],
+      "must_contain_after_tighten_news": ["المُستهلك", "تكلفة المعيشة"],
+      "rationale_ar": "ترك الاستنتاج للقارئ. الكاتب يَعرض الحَقائق المتجاورة وَالقارئ يَربط."
+    },
+    {
+      "id": "dim16-monoculture-detection",
+      "category": "junction_disjunction",
+      "tests_priority": ["anti_translationese"],
+      "input": "النظام مهم و التطور سريع و الشركات تَستخدم التقنية و المستقبل واعد و النتائج إيجابية.",
+      "expected_dim16_score": 2,
+      "expected_dim16_max": 15,
+      "rationale_ar": "أحادية الرابط 'و' = بَصْمة AI. Dim 16 يُسَجِّل 2/15 على هذه."
+    },
+    {
+      "id": "dim16-rich-distribution",
+      "category": "junction_disjunction",
+      "tests_priority": ["anti_translationese"],
+      "input": "النظام مُهم؛ فالتقنية تَتطور بسرعة، ثم تَنتشر، بَيد أنّها تَواجه تحديات، إذ القاعدة كَبيرة، لكنّ هذا الخَطأ جُزء من النُّمو. وقد تَبدّلت الأَدوات، فَتَبَدَّلت معها الطُّرق، ثم تَبدّلت الغاية. بَيد أنّ الجوهر ثابت، إذ الإنسان واحد، وَالأَدوات تَتغير، لكنّ الفِطرة لا تَتبدّل.",
+      "expected_dim16_score_min": 12,
+      "expected_dim16_max": 15,
+      "rationale_ar": "تَنَوُّع الروابط (؛، فـ، ثم، بَيد أن، إذ، لكنّ، و، وقد، أَنّ) عبر نص أَطول = إنتروبيا عالية، أكثر من 5 روابط مَطلوبة لِتَجاوُز عَتبة 'too few'."
+    },
+    {
+      "id": "empty-input-graceful",
+      "category": "edge_case",
+      "tests_priority": ["robustness"],
+      "input": "",
+      "expected_exit": "graceful_error",
+      "rationale_ar": "إدخال فارغ يَجب ألا يَكسر السكربت."
+    },
+    {
+      "id": "single-sentence-short",
+      "category": "edge_case",
+      "tests_priority": ["robustness"],
+      "input": "النظام يعمل.",
+      "expected_no_crash": true,
+      "expected_humanness_at_least": 5,
+      "rationale_ar": "نَصّ قَصير جِدّاً يَجب ألا يَكسر التحليل. الـDim 16 يَرجع 8/15 (neutral للنَّصِّ القَصير)."
+    },
+    {
+      "id": "gold-standard-classical",
+      "category": "positive_recognition",
+      "tests_priority": ["anti_translationese", "register_fit"],
+      "input": "في حدود ما يخصّ علاقة الفِكر بِالتقنية، يَكفي أن نَتأمَّل ما جَرى في عَصرَين سابقَين لِنَستشِفّ ما يَجري في عَصرنا. بدايةً، نَستحضِر القرن السادس الهجري حين انتقل الفِكر العَربي من النَّقل إلى التَّحقيق على يَد ابن رشد، فَأنتَج ما لم يَكن مُتاحاً قَبله. أمّا الثاني، ففي القرن الثامن عشر الميلادي حين أَلِفَت أوروبا الآلة، فَتَحَوَّلت من زِراعة إلى صِناعة، إذ القاعدة الكَبيرة لا تَنشأ إلا بِأَدَوات كَبيرة. ومن جهة أخرى، كل تَحَوُّل تَقني سَبَقَه تَحَوُّل في الوَعي، لا العَكس. كَأَنّنا أَمام نَهر يَجري في مَجراه القَديم، لَكِنّ ماءَه أَسرَع. وَكَما تَقدّم، فالنَّمَط واحد، والإيقاع مُختلف. ولَعَلّ القارئ يَتذكر ما ذَكَرَه ابن خَلدون من أنّ الدُّوَل تَتَبَدّل في أَطوارٍ مُتَتالية. هكذا تَتَبَدّل التَّقَنيات.",
+      "expected_humanness_at_least": 40,
+      "rationale_ar": "النص الكلاسيكي المُتقن (الإصدار الكامل من الجَلسة، 150+ كلمة، يَحوي إسناداً تاريخياً وَاستعارة وَطباقاً وَتَنَوُّع روابط) يَجب أن يُسَجّل في النِّطاق المَقبول."
+    }
+  ]
+}

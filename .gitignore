@@ -1,0 +1,36 @@
+# Never commit credentials or secrets
+config.json
+*.key
+*.token
+*.credentials
+.env
+.env.*
+!config.example.json
+!.env.example
+
+# Python bytecode and caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local test artifacts
+/tmp/
+*.tmp
+*.bak
+*.licensebak
+*.sectionsbak
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Source JSONL corpus (user-supplied, regenerable; never commit raw data)
+corpus/*.jsonl
+corpus/*.bak
+
+# Lock state files (ephemeral)
+.lock_*

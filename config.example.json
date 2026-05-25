@@ -1,0 +1,79 @@
+{
+  "$schema_version": "2.0",
+  "$description": "Example configuration for the Arabic Humanizer skill. Copy to config.json and edit, OR set the equivalent environment variables. The skill is provider-agnostic: any OpenAI-compatible chat-completions endpoint works.",
+
+  "backends": {
+    "api": {
+      "$comment": "Cloud OpenAI-compatible endpoint. NO URL DEFAULT — you MUST set LLM_API_URL (or pass --backend-url at the CLI). LLM_MODEL is also required and must be the exact model identifier your provider expects.",
+      "url_env": "LLM_API_URL",
+      "url_default": "",
+      "key_env": "LLM_API_KEY",
+      "model_env": "LLM_MODEL",
+      "model_default": "",
+      "timeout_env": "LLM_TIMEOUT_S",
+      "timeout_default_seconds": 300
+    },
+    "local": {
+      "$comment": "Ollama or any OpenAI-compatible local server. Defaults to Ollama on 127.0.0.1:11434. Key usually not required.",
+      "url_env": "LOCAL_API_URL",
+      "url_default": "http://127.0.0.1:11434/v1/chat/completions",
+      "key_env": "LOCAL_API_KEY",
+      "model_env": "LOCAL_MODEL",
+      "model_default": "qwen2.5:14b-instruct",
+      "timeout_env": "LOCAL_TIMEOUT_S",
+      "timeout_default_seconds": 300
+    }
+  },
+
+  "$provider_examples": {
+    "$comment": "Real public endpoints + canonical model IDs. Pick one and set LLM_API_URL + LLM_MODEL accordingly.",
+    "openai":   {"LLM_API_URL": "https://api.openai.com/v1/chat/completions",        "LLM_MODEL": "gpt-4o-mini"},
+    "moonshot": {"LLM_API_URL": "https://api.moonshot.cn/v1/chat/completions",       "LLM_MODEL": "moonshot-v1-8k"},
+    "minimax":  {"LLM_API_URL": "https://api.minimaxi.chat/v1/text/chatcompletion_v2","LLM_MODEL": "abab6.5s-chat"},
+    "together": {"LLM_API_URL": "https://api.together.xyz/v1/chat/completions",      "LLM_MODEL": "Qwen/Qwen2.5-72B-Instruct"},
+    "groq":     {"LLM_API_URL": "https://api.groq.com/openai/v1/chat/completions",   "LLM_MODEL": "llama-3.3-70b-versatile"},
+    "deepseek": {"LLM_API_URL": "https://api.deepseek.com/v1/chat/completions",      "LLM_MODEL": "deepseek-chat"}
+  },
+
+  "$feature_flags": {
+    "HUMANIZER_ALLOW_QUOTE_ROTATION": {
+      "$comment": "Off by default. When set to '1', the lexical pass may rotate neutral quote verbs (e.g. قال → يَزعم) for stylistic variation. Cross-LLM critique flagged this as editorial-stance shift, not neutral substitution; only enable for opinion/classical registers where stance shifts are acceptable. Anything else: leave unset.",
+      "default": "unset",
+      "enable_value": "1"
+    }
+  },
+
+  "$corpus_note": "The skill ships with corpus/empirical-patterns.json (mined from a 100K-record sample = 1.31M sentences = 71.28M tokens across 4 register categories: quran, classical-and-modern, news, lexicon; mining time ~87s). Re-mining is only needed if you want to substitute a different reference corpus. Set ARABIC_CORPUS_PATH env var to your own JSONL.",
+
+  "$quickstart": [
+    "# Deterministic mode (no LLM, runs offline, ~1s):",
+    "python scripts/humanize_v2.py --file input.txt --mode tighten --register news --output cleaned.txt",
+    "",
+    "# With LLM — Step 1: pick a provider and set env vars (POSIX shell):",
+    "export LLM_API_URL=https://api.openai.com/v1/chat/completions",
+    "export LLM_API_KEY=sk-your-key-here",
+    "export LLM_MODEL=gpt-4o-mini",
+    "",
+    "# With LLM — Step 1 (PowerShell):",
+    "# $env:LLM_API_URL = 'https://api.openai.com/v1/chat/completions'",
+    "# $env:LLM_API_KEY = 'sk-your-key-here'",
+    "# $env:LLM_MODEL   = 'gpt-4o-mini'",
+    "",
+    "# With LLM — Step 2: run a cognitive-augmented humanization:",
+    "python scripts/humanize_v2.py --file input.txt --mode +cognitive --llm-backend api --output deep.txt --analyze",
+    "",
+    "# OR override env per invocation:",
+    "python scripts/humanize_v2.py --file input.txt --mode +cognitive --llm-backend api \\",
+    "   --backend-url https://api.moonshot.cn/v1/chat/completions \\",
+    "   --auth-token your-moonshot-key --model moonshot-v1-8k --output deep.txt",
+    "",
+    "# Safety pre-flight (catches loaded generalizations, anonymous sources, etc.):",
+    "python scripts/humanize_v2.py --file input.txt --preflight --strict-preflight --mode tighten --register news --output safe.txt",
+    "",
+    "# Diagnostic only (no transformation):",
+    "python scripts/analyze_deep.py --file input.txt --report",
+    "",
+    "# Verify the skill works on this machine:",
+    "python evals/run_golden.py"
+  ]
+}
