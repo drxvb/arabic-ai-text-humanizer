@@ -1,0 +1,17 @@
+======================================================================
+Pre-flight factual / ethical / sourcing-hygiene check
+======================================================================
+Verdict: FLAG
+Findings: 2 total  (0 HIGH, 2 MEDIUM, 0 LOW)
+
+
+[1] MEDIUM unsourced_statistic
+    Found: "40 مليار"
+    Advice: Add attribution: 'حسب X' / 'وفق دراسة Y' / 'بحسب تقرير Z'
+
+[2] MEDIUM anonymous_source_chain
+    Found: "مصدر مطلع"
+    Advice: Anonymous sourcing. Verify with named editorial chain; do not let humanizer beautify into more credible-seeming prose without verification.
+
+
+[stderr]

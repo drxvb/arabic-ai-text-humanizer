@@ -1,0 +1,29 @@
+======================================================================
+13-Dimension Humanness Analysis
+======================================================================
+Words: 44  Sentences: 5  Burstiness: 0.273
+Overall humanness: 26.2/100  (63/240 points)
+
+  # Dimension                                        Score
+----------------------------------------------------------------------
+  1 الاستنتاج (Deduction)                              5/15
+  2 الاستدلال (Inference)                              5/15
+  3 الاستنباط (Specific inference)                     5/15
+  4 التحليل البشري (Human analysis)                    0/15
+  5 التدرج في الشرح (Graduated explanation)            0/15
+  6 تحديد النطاق (Scope definition)                    0/15
+  7 التنقل في الأفكار (Idea transitions)               0/15
+  8 التقسيم للمحاور (Axes partitioning)                0/15
+  9 الفن الأدبي (Literary art)                         3/15
+ 10 الاستدلال التاريخي (Historical anchoring)          0/15
+ 11 التخيل وتوسيع الإدراك (Imagination)                0/15
+ 12 البلاغة (Rhetorical figures)                       0/15
+ 13 عدم التكرار + الاستدلال الداخلي (Coherence)        7/15
+ 14 ضبط القارئ — Cognitive Restraint Score (positive: high=good)  15/15
+ 15 إتقان الصياغة — Typographic Precision Score (positive: high=good)  15/15
+ 16 الفصل والوصل (Junction-disjunction — DISTRIBUTIONAL)   8/15
+
+Weakest 3 dimensions (target with humanize_v2.py):
+  [ 0/15] dim 4: التحليل البشري (Human analysis)
+  [ 0/15] dim 5: التدرج في الشرح (Graduated explanation)
+  [ 0/15] dim 6: تحديد النطاق (Scope definition)
