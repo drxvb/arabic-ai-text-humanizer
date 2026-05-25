@@ -331,6 +331,115 @@ def main():
 
     print()
     print("=" * 60)
+    print("  T18 — Arabic punctuation: no space BEFORE (v2.4.2)")
+    print("=" * 60)
+    # Per Al Jazeera Learning / Loghate / Drasah authoritative rule:
+    # punctuation is ATTACHED to the preceding word; space only AFTER.
+    # Input has pre-spaces that violate this rule.
+    out = run_humanize(
+        "هذا اختبار ، للتأكد ؛ والنتيجة ؟ يجب أن تكون نظيفة .",
+        "--mode", "tighten", "--register", "news",
+    )
+    # Each punctuation should be attached to its preceding word (no space before)
+    r.check("T18a.no_space_before_arabic_comma",
+            " ،" not in out,
+            f"space before ، survived: {out!r}")
+    r.check("T18b.no_space_before_arabic_semicolon",
+            " ؛" not in out,
+            f"space before ؛ survived: {out!r}")
+    r.check("T18c.no_space_before_arabic_question",
+            " ؟" not in out,
+            f"space before ؟ survived: {out!r}")
+    r.check("T18d.no_space_before_period",
+            " ." not in out,
+            f"space before . survived: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T19 — Latin punctuation → Arabic in Arabic context (existing rule made explicit)")
+    print("=" * 60)
+    # The existing typography_latin_punct_to_arabic should catch these.
+    # T19 makes the contract explicit so any regression is caught.
+    out = run_humanize(
+        "اللغة العربية, ولغة عبادة; وثقافة. هل تفهم?",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T19a.latin_comma_in_arabic_to_arabic_comma",
+            "،" in out,
+            f"Latin comma between Arabic letters not converted: {out!r}")
+    r.check("T19b.latin_semicolon_in_arabic_to_arabic_semicolon",
+            "؛" in out,
+            f"Latin semicolon between Arabic letters not converted: {out!r}")
+    r.check("T19c.latin_question_in_arabic_to_arabic_question",
+            "؟" in out,
+            f"Latin question mark at end of Arabic clause not converted: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T20 — Latin punctuation preserved in pure Latin context")
+    print("=" * 60)
+    out = run_humanize(
+        "OpenAI, Google, and Anthropic are AI labs. What do they share?",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T20a.latin_comma_preserved_in_english",
+            "," in out,
+            f"Latin comma incorrectly converted in English context: {out!r}")
+    r.check("T20b.latin_question_preserved_in_english",
+            "?" in out and "؟" not in out,
+            f"Latin ? incorrectly converted in English context: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T21 — post-space added after Arabic punctuation (existing rule, made explicit)")
+    print("=" * 60)
+    # Input with punctuation followed by no space should get post-space inserted
+    out = run_humanize(
+        "كلمة،أخرى وجملة؛ثانية ونقطة.ثم سؤال؟ماذا تقول",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T21a.space_after_comma",
+            "، " in out and "،أ" not in out,
+            f"missing space after Arabic comma: {out!r}")
+    r.check("T21b.space_after_semicolon",
+            "؛ " in out and "؛ث" not in out,
+            f"missing space after Arabic semicolon: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T22 — comma → semicolon before unambiguous causal connectors (v2.4.2)")
+    print("=" * 60)
+    # Universal rule from 8 sources: ؛ (not ،) is correct before causal connectors.
+    # Conservative: only fires on unambiguously-causal connectors.
+    out = run_humanize(
+        "كان مجتهداً، لذلك نجح. أحب الكتاب، لأنه ممتع. شكرته، لذا أعد لي هدية.",
+        "--mode", "tighten", "--register", "news",
+    )
+    # Each of "، لذلك", "، لأنه", "، لذا" should become "؛ لذلك", "؛ لأنه", "؛ لذا"
+    r.check("T22a.lithalik_gets_semicolon",
+            "؛ لذلك" in out and "، لذلك" not in out,
+            f"، لذلك not converted to ؛: {out!r}")
+    r.check("T22b.li2anna_gets_semicolon",
+            "؛ لأنه" in out and "، لأنه" not in out,
+            f"، لأنه not converted to ؛: {out!r}")
+    r.check("T22c.litha_gets_semicolon",
+            "؛ لذا" in out and "، لذا" not in out,
+            f"، لذا not converted to ؛: {out!r}")
+    # And ambiguous connectors (إذ، حيث) must NOT be converted (could mean
+    # "when"/"where" not "because"). Verify these stay as Arabic commas.
+    out_ambig = run_humanize(
+        "ذهبتُ، إذ كان الجوُّ جميلاً. وقفتُ، حيث رأيتُ المنظر.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T22d.idh_NOT_converted",
+            "، إذ" in out_ambig or "؛ إذ" not in out_ambig,
+            f"، إذ incorrectly converted (ambiguous): {out_ambig!r}")
+    r.check("T22e.haythu_NOT_converted",
+            "، حيث" in out_ambig or "؛ حيث" not in out_ambig,
+            f"، حيث incorrectly converted (ambiguous): {out_ambig!r}")
+
+    print()
+    print("=" * 60)
     print(f"  Total: {r.passed + r.failed}  |  PASS: {r.passed}  |  FAIL: {r.failed}")
     print("=" * 60)
     sys.exit(0 if r.failed == 0 else 1)

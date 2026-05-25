@@ -585,6 +585,61 @@ def lex_enrich(text: str, analyzer_result: dict, max_inserts: int = 3) -> tuple[
     return " ".join(s.strip() for s in sentences), applied
 
 
+def typography_comma_to_semicolon_before_causal(text: str) -> str:
+    """Per multiple authoritative Arabic style guides (Al Jazeera Learning,
+    Loghate, Drasah, KSU, Mawdoo3, Mobt3ath), the Arabic SEMICOLON (؛) — not
+    Arabic comma (،) — is the correct mark before clauses expressing CAUSE
+    or REASON. Naive AI translation typically uses a comma where Arabic
+    style prescribes a semicolon.
+
+    This conversion is CONSERVATIVE — only fires for connectors that are
+    UNAMBIGUOUSLY causal in modern Arabic:
+      - لأن, لأنّ  ("because") — always causal
+      - لذلك        ("therefore") — always consequential
+      - لذا         ("thus") — always consequential
+      - ومن ثَمَّ    ("and consequently") — always consequential
+
+    SKIPS connectors with non-causal senses:
+      - إذ  (can mean "because" or "when" — temporal/causal ambiguity)
+      - حيث (can mean "because", "where", or relative pronoun)
+      - إذن (often "then" or "therefore" — too context-dependent)
+
+    Example:
+      "كان مجتهداً، لذلك نجح"  →  "كان مجتهداً؛ لذلك نجح"
+      "أحب الكتاب، لأنه ممتع"  →  "أحب الكتاب؛ لأنه ممتع"
+    """
+    # Match: Arabic letter, then ،  then space(s) + an unambiguous causal connector
+    return re.sub(
+        r'([؀-ۿ])،(\s+(?:لأن[ّ]?|لذلك|لذا|ومن ثَمَّ))',
+        r'\1؛\2',
+        text,
+    )
+
+
+def typography_no_space_before_arabic_punct(text: str) -> str:
+    """Remove whitespace BEFORE Arabic punctuation marks. Per multiple
+    authoritative Arabic style guides (Al Jazeera Learning, Loghate,
+    Drasah), Arabic punctuation is ATTACHED to the preceding word:
+
+      "ملاصقة للكلمة التي قبلها، مع وجود مسافة مع الكلمة التي بعدها"
+      (attached to the previous word, with space after to the next word)
+
+    Marks covered: ، ؛ ؟ : ! . (Arabic comma, semicolon, question mark,
+    colon, exclamation, and Latin period when following Arabic letter).
+
+    Examples:
+      'كلمة ، كلمة' → 'كلمة، كلمة'   (pre-space removed; post-space kept)
+      'النص .' → 'النص.'             (period attached)
+      'سؤال ؟' → 'سؤال؟'             (question mark attached)
+      'كلمة, word'  →  unchanged       (Latin comma in Latin context — not Arabic punct)
+    """
+    # Arabic letter + whitespace + Arabic-specific punctuation
+    text = re.sub(r'([؀-ۿ])\s+([،؛؟:!])', r'\1\2', text)
+    # Arabic letter + whitespace + Latin period (Arabic uses Latin `.` as sentence end)
+    text = re.sub(r'([؀-ۿ])\s+\.', r'\1.', text)
+    return text
+
+
 def typography_strip_kashida(text: str) -> str:
     """Strip Arabic kashida/tatweel (U+0640) — modern editorial convention
     for encoded body text. Kashida is for display typography (logos,
@@ -630,6 +685,13 @@ def lex_dim15_typography(text: str) -> str:
     # v2.4.1 additions:
     text = typography_strip_kashida(text)
     text = typography_em_dash_to_arabic_comma(text)
+    # v2.4.2 additions: enforce no-space-before-Arabic-punctuation rule
+    # and convert comma to semicolon before unambiguous causal connectors
+    # (per Al Jazeera Learning, Loghate, Drasah, KSU, Mawdoo3, Mobt3ath
+    # — see typography_no_space_before_arabic_punct and
+    # typography_comma_to_semicolon_before_causal docstrings)
+    text = typography_no_space_before_arabic_punct(text)
+    text = typography_comma_to_semicolon_before_causal(text)
     # Collapse any double-spaces introduced
     text = re.sub(r'  +', ' ', text)
     text = _restore_spans(text, protected)

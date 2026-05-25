@@ -431,7 +431,8 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 | Version | What changed |
 |---|---|
-| **v2.4.1** | **Typography fixes** — two AI-Arabic tells that v2.2.0–v2.4.0 didn't catch: (1) **Kashida (Arabic tatweel `ـ`, U+0640) stripped** from output per modern editorial convention — kashida is for display typography (logos, posters, justified-text rendering at typeset time), NEVER for encoded body text; AI translators sometimes inject it to "look more Arabic" which is the exact opposite of professional Arabic typography. Stripping is UNIVERSAL (all registers), not register-gated. (2) **Em-dash `—` converted to Arabic comma `،`** when surrounded by Arabic letters (e.g., `النص — التعليق` → `النص، التعليق`); preserved in English-context (e.g., `OpenAI — مؤسسة` keeps em-dash because `I` is Latin). 4 new fragility test sub-checks (T15–T17). Fragility suite now **35/35**. |
+| **v2.4.2** | **Authoritative-source-based punctuation rules.** Researched 9 Arabic style guides (Al Jazeera Learning, Drasah, Loghate ×2, Mawdoo3, Mobt3ath, KSU College of Humanities, Itwadi, Shoair School). Implemented: (1) **No space before Arabic punctuation** (`،`، `؛`، `؟`، `:`، `!`، `.`) — the universal rule from all sources ("ملاصقة للكلمة التي قبلها"). (2) **Comma → semicolon before unambiguous causal connectors** (`لأن`، `لأنّ`، `لذلك`، `لذا`، `ومن ثَمَّ`) — semicolon is the correct mark before causal clauses per multiple sources; ambiguous connectors (`إذ`، `حيث`) skipped to avoid false conversions ("when"/"where" vs "because"). (3) Made existing Latin→Arabic punctuation rules explicit via T19-T21 tests (formerly inherited from v1, now fragility-guarded). Deferred to v2.4.3: list-conjunction `و` between Arabic list items (requires multi-pass context detection), LRM-Bidi handling (render-time concern). Fragility suite now **51/51**. |
+| v2.4.1 | **Typography fixes** — two AI-Arabic tells that v2.2.0–v2.4.0 didn't catch: (1) **Kashida (Arabic tatweel `ـ`, U+0640) stripped** from output per modern editorial convention — kashida is for display typography (logos, posters, justified-text rendering at typeset time), NEVER for encoded body text; AI translators sometimes inject it to "look more Arabic" which is the exact opposite of professional Arabic typography. Stripping is UNIVERSAL (all registers), not register-gated. (2) **Em-dash `—` converted to Arabic comma `،`** when surrounded by Arabic letters (e.g., `النص — التعليق` → `النص، التعليق`); preserved in English-context (e.g., `OpenAI — مؤسسة` keeps em-dash because `I` is Latin). 4 new fragility test sub-checks (T15–T17). Fragility suite now **35/35**. |
 | v2.4.0 | **Dictionary expansion — 93 → 338 entries (3.6×).** Adds process/workflow, agents/swarm/multi-agent (modern AI vocabulary not in v2.3.0), expanded database, DevOps/cloud-native, crypto/Web3, healthcare, climate, geopolitics. New domains: `tech-ai-agents` (35), `tech-crypto` (15), `climate` (15), `healthcare` (11). Expanded domains: `tech-software` (44, +35), `tech-infra` (36, +26), `news-journalism` (44, +28), `business` (43, +27), `tech-security` (31, +20). Built via Claude+Codex multi-LLM swarm on 361 seed terms (300 yielded responses; partial promoted to final because of CLI rate-limit stall on the tail batch); 151 `medium_consensus` entries reflect multi-LLM agreement strength. **Lex pass unchanged** — same `lex_apply_calque_dictionary()`, just more data. Fragility still 31/31. |
 | v2.3.0 | **Calque-translation dictionary** — initial release. `corpus/calque-dictionary.json` (93 entries, 9 domains, 27 high-confidence + 66 medium). Built via multi-LLM swarm (Claude Sonnet) on 181 seed English terms, validated against an 8,850-article Arabic tech-news corpus (AITNews; 2.88M tokens). New `lex_apply_calque_dictionary()` runs in news/opinion registers (classical/technical preserve source). Double-ال handling for substitutions where input has definite article but key/natural don't agree on prefix. 3 new fragility test classes (T12–T14): dictionary-load verification, multi-domain calque catches, register-gating. Fragility suite now 31/31. |
 | v2.2.0 | `lex_reduce_tashkeel()` added — strips 9 canonical combining diacritics in news/opinion (classical/technical preserve). Hamza-safe (preserves أ إ آ ء ؤ ئ ى) and digit-safe (preserves ٠–٩). Pipeline-calque `خط أنابيب` → `مسار عمل` / `مسار العمل` / `تسلسل العمل` added to `AI_PHRASES_AR`. Five new fragility test classes (T7–T11): hamza preservation, madda preservation, digit preservation, calque substitution, register-gated tashkeel policy. |
@@ -4767,6 +4768,61 @@ def lex_enrich(text: str, analyzer_result: dict, max_inserts: int = 3) -> tuple[
     return " ".join(s.strip() for s in sentences), applied
 
 
+def typography_comma_to_semicolon_before_causal(text: str) -> str:
+    """Per multiple authoritative Arabic style guides (Al Jazeera Learning,
+    Loghate, Drasah, KSU, Mawdoo3, Mobt3ath), the Arabic SEMICOLON (؛) — not
+    Arabic comma (،) — is the correct mark before clauses expressing CAUSE
+    or REASON. Naive AI translation typically uses a comma where Arabic
+    style prescribes a semicolon.
+
+    This conversion is CONSERVATIVE — only fires for connectors that are
+    UNAMBIGUOUSLY causal in modern Arabic:
+      - لأن, لأنّ  ("because") — always causal
+      - لذلك        ("therefore") — always consequential
+      - لذا         ("thus") — always consequential
+      - ومن ثَمَّ    ("and consequently") — always consequential
+
+    SKIPS connectors with non-causal senses:
+      - إذ  (can mean "because" or "when" — temporal/causal ambiguity)
+      - حيث (can mean "because", "where", or relative pronoun)
+      - إذن (often "then" or "therefore" — too context-dependent)
+
+    Example:
+      "كان مجتهداً، لذلك نجح"  →  "كان مجتهداً؛ لذلك نجح"
+      "أحب الكتاب، لأنه ممتع"  →  "أحب الكتاب؛ لأنه ممتع"
+    """
+    # Match: Arabic letter, then ،  then space(s) + an unambiguous causal connector
+    return re.sub(
+        r'([؀-ۿ])،(\s+(?:لأن[ّ]?|لذلك|لذا|ومن ثَمَّ))',
+        r'\1؛\2',
+        text,
+    )
+
+
+def typography_no_space_before_arabic_punct(text: str) -> str:
+    """Remove whitespace BEFORE Arabic punctuation marks. Per multiple
+    authoritative Arabic style guides (Al Jazeera Learning, Loghate,
+    Drasah), Arabic punctuation is ATTACHED to the preceding word:
+
+      "ملاصقة للكلمة التي قبلها، مع وجود مسافة مع الكلمة التي بعدها"
+      (attached to the previous word, with space after to the next word)
+
+    Marks covered: ، ؛ ؟ : ! . (Arabic comma, semicolon, question mark,
+    colon, exclamation, and Latin period when following Arabic letter).
+
+    Examples:
+      'كلمة ، كلمة' → 'كلمة، كلمة'   (pre-space removed; post-space kept)
+      'النص .' → 'النص.'             (period attached)
+      'سؤال ؟' → 'سؤال؟'             (question mark attached)
+      'كلمة, word'  →  unchanged       (Latin comma in Latin context — not Arabic punct)
+    """
+    # Arabic letter + whitespace + Arabic-specific punctuation
+    text = re.sub(r'([؀-ۿ])\s+([،؛؟:!])', r'\1\2', text)
+    # Arabic letter + whitespace + Latin period (Arabic uses Latin `.` as sentence end)
+    text = re.sub(r'([؀-ۿ])\s+\.', r'\1.', text)
+    return text
+
+
 def typography_strip_kashida(text: str) -> str:
     """Strip Arabic kashida/tatweel (U+0640) — modern editorial convention
     for encoded body text. Kashida is for display typography (logos,
@@ -4812,6 +4868,13 @@ def lex_dim15_typography(text: str) -> str:
     # v2.4.1 additions:
     text = typography_strip_kashida(text)
     text = typography_em_dash_to_arabic_comma(text)
+    # v2.4.2 additions: enforce no-space-before-Arabic-punctuation rule
+    # and convert comma to semicolon before unambiguous causal connectors
+    # (per Al Jazeera Learning, Loghate, Drasah, KSU, Mawdoo3, Mobt3ath
+    # — see typography_no_space_before_arabic_punct and
+    # typography_comma_to_semicolon_before_causal docstrings)
+    text = typography_no_space_before_arabic_punct(text)
+    text = typography_comma_to_semicolon_before_causal(text)
     # Collapse any double-spaces introduced
     text = re.sub(r'  +', ' ', text)
     text = _restore_spans(text, protected)
@@ -6109,6 +6172,115 @@ def main():
     r.check("T17.english_em_dash_preserved",
             "—" in out,
             f"em-dash incorrectly stripped from English context: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T18 — Arabic punctuation: no space BEFORE (v2.4.2)")
+    print("=" * 60)
+    # Per Al Jazeera Learning / Loghate / Drasah authoritative rule:
+    # punctuation is ATTACHED to the preceding word; space only AFTER.
+    # Input has pre-spaces that violate this rule.
+    out = run_humanize(
+        "هذا اختبار ، للتأكد ؛ والنتيجة ؟ يجب أن تكون نظيفة .",
+        "--mode", "tighten", "--register", "news",
+    )
+    # Each punctuation should be attached to its preceding word (no space before)
+    r.check("T18a.no_space_before_arabic_comma",
+            " ،" not in out,
+            f"space before ، survived: {out!r}")
+    r.check("T18b.no_space_before_arabic_semicolon",
+            " ؛" not in out,
+            f"space before ؛ survived: {out!r}")
+    r.check("T18c.no_space_before_arabic_question",
+            " ؟" not in out,
+            f"space before ؟ survived: {out!r}")
+    r.check("T18d.no_space_before_period",
+            " ." not in out,
+            f"space before . survived: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T19 — Latin punctuation → Arabic in Arabic context (existing rule made explicit)")
+    print("=" * 60)
+    # The existing typography_latin_punct_to_arabic should catch these.
+    # T19 makes the contract explicit so any regression is caught.
+    out = run_humanize(
+        "اللغة العربية, ولغة عبادة; وثقافة. هل تفهم?",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T19a.latin_comma_in_arabic_to_arabic_comma",
+            "،" in out,
+            f"Latin comma between Arabic letters not converted: {out!r}")
+    r.check("T19b.latin_semicolon_in_arabic_to_arabic_semicolon",
+            "؛" in out,
+            f"Latin semicolon between Arabic letters not converted: {out!r}")
+    r.check("T19c.latin_question_in_arabic_to_arabic_question",
+            "؟" in out,
+            f"Latin question mark at end of Arabic clause not converted: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T20 — Latin punctuation preserved in pure Latin context")
+    print("=" * 60)
+    out = run_humanize(
+        "OpenAI, Google, and Anthropic are AI labs. What do they share?",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T20a.latin_comma_preserved_in_english",
+            "," in out,
+            f"Latin comma incorrectly converted in English context: {out!r}")
+    r.check("T20b.latin_question_preserved_in_english",
+            "?" in out and "؟" not in out,
+            f"Latin ? incorrectly converted in English context: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T21 — post-space added after Arabic punctuation (existing rule, made explicit)")
+    print("=" * 60)
+    # Input with punctuation followed by no space should get post-space inserted
+    out = run_humanize(
+        "كلمة،أخرى وجملة؛ثانية ونقطة.ثم سؤال؟ماذا تقول",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T21a.space_after_comma",
+            "، " in out and "،أ" not in out,
+            f"missing space after Arabic comma: {out!r}")
+    r.check("T21b.space_after_semicolon",
+            "؛ " in out and "؛ث" not in out,
+            f"missing space after Arabic semicolon: {out!r}")
+
+    print()
+    print("=" * 60)
+    print("  T22 — comma → semicolon before unambiguous causal connectors (v2.4.2)")
+    print("=" * 60)
+    # Universal rule from 8 sources: ؛ (not ،) is correct before causal connectors.
+    # Conservative: only fires on unambiguously-causal connectors.
+    out = run_humanize(
+        "كان مجتهداً، لذلك نجح. أحب الكتاب، لأنه ممتع. شكرته، لذا أعد لي هدية.",
+        "--mode", "tighten", "--register", "news",
+    )
+    # Each of "، لذلك", "، لأنه", "، لذا" should become "؛ لذلك", "؛ لأنه", "؛ لذا"
+    r.check("T22a.lithalik_gets_semicolon",
+            "؛ لذلك" in out and "، لذلك" not in out,
+            f"، لذلك not converted to ؛: {out!r}")
+    r.check("T22b.li2anna_gets_semicolon",
+            "؛ لأنه" in out and "، لأنه" not in out,
+            f"، لأنه not converted to ؛: {out!r}")
+    r.check("T22c.litha_gets_semicolon",
+            "؛ لذا" in out and "، لذا" not in out,
+            f"، لذا not converted to ؛: {out!r}")
+    # And ambiguous connectors (إذ، حيث) must NOT be converted (could mean
+    # "when"/"where" not "because"). Verify these stay as Arabic commas.
+    out_ambig = run_humanize(
+        "ذهبتُ، إذ كان الجوُّ جميلاً. وقفتُ، حيث رأيتُ المنظر.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T22d.idh_NOT_converted",
+            "، إذ" in out_ambig or "؛ إذ" not in out_ambig,
+            f"، إذ incorrectly converted (ambiguous): {out_ambig!r}")
+    r.check("T22e.haythu_NOT_converted",
+            "، حيث" in out_ambig or "؛ حيث" not in out_ambig,
+            f"، حيث incorrectly converted (ambiguous): {out_ambig!r}")
 
     print()
     print("=" * 60)

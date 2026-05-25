@@ -6,7 +6,52 @@ A multi-pass Arabic-text humanizer that reduces AI fingerprints across **16 dime
 
 The full specification, transformation protocol, dimension definitions, anti-patterns, and worked example all live in **[`SKILL.md`](SKILL.md)**. This README is a one-screen overview.
 
-## What's new in v2.4.1 (current)
+## What's new in v2.4.2 (current)
+
+**Authoritative-source-based punctuation rules.** Researched **9 Arabic style guides** (Al Jazeera Learning, Drasah, Loghate ×2, Mawdoo3, Mobt3ath, KSU College of Humanities, Itwadi, Shoair School) and implemented the rules where they universally agree.
+
+### New rules
+
+**1. No space BEFORE Arabic punctuation** (universal — all 9 sources):
+> "الفاصلة ملاصقة للكلمة التي قبلها، مع وجود مسافة مع الكلمة التي بعدها" — *Loghate*
+
+| Input | Output |
+|---|---|
+| `كلمة ، كلمة` | `كلمة، كلمة` |
+| `النص .` | `النص.` |
+| `سؤال ؟` | `سؤال؟` |
+
+Covers `،`، `؛`، `؟`، `:`، `!`، `.` after Arabic letters.
+
+**2. Comma → Semicolon before unambiguous causal connectors** (multiple sources):
+> "تستخدم الفاصلة المنقوطة عند العلاقة السببية" — *Loghate, Al Jazeera, KSU, Mawdoo3*
+
+| Input | Output |
+|---|---|
+| `كان مجتهداً، لذلك نجح` | `كان مجتهداً؛ لذلك نجح` |
+| `أحب الكتاب، لأنه ممتع` | `أحب الكتاب؛ لأنه ممتع` |
+| `شكرته، لذا أعد لي هدية` | `شكرته؛ لذا أعد لي هدية` |
+
+**Conservative — only unambiguously causal connectors:** `لأن`، `لأنّ`، `لذلك`، `لذا`، `ومن ثَمَّ`. Connectors with non-causal senses (`إذ` = "when" or "because", `حيث` = "where" or "because") are **deliberately skipped** to prevent false conversions.
+
+**3. Existing Latin→Arabic and post-space rules made explicit via fragility tests T19–T21** (no behavior change; tests now guard the contract):
+
+| Mark | Latin | Arabic |
+|---|---|---|
+| Comma | `,` | `،` |
+| Semicolon | `;` | `؛` |
+| Question mark | `?` | `؟` |
+
+### Deferred to v2.4.3
+
+- **`و` (waw) before each Arabic list item** — Itwadi's "خرب، والرياضيات، والكيمياء" rule. Auto-fix requires multi-pass list-context detection; risk of false positives on clause-separator commas. Designing now.
+- **LRM (Left-to-Right Mark) for Bidi runs** — render-time concern; not addressed at encoding level.
+
+### Verification
+
+- Lint PASS · Golden **20/20** · Fragility **51/51** (12 + 15 + 6 + 4 + 11 + 3 + 5 — T18–T22 are the v2.4.2 additions)
+
+## What's new in v2.4.1
 
 Two Arabic-typography fixes targeting AI tells that v2.4.0 didn't catch:
 
