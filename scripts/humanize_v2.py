@@ -1172,14 +1172,24 @@ def lex_apply_calque_dictionary(text: str, register: str = "news") -> str:
     def _apply(segment: str) -> str:
         for key in _CALQUE_KEYS:
             natural = _CALQUE_LOOKUP[key]["natural"]
-            # Double-ال fix: if input has "ال" + calque (with definite article)
-            # AND the natural form ALSO starts with "ال", substitute the
-            # ال+calque sequence with the natural form to avoid "الال..."
-            if natural.startswith("ال") and ("ال" + key) in segment:
-                segment = segment.replace("ال" + key, natural)
-                continue
-            if key in segment:
-                segment = segment.replace(key, natural)
+            # Word-boundary check (v2.4.5): the calque key must NOT be
+            # immediately followed by an Arabic letter — otherwise the
+            # substitution would break a longer word that just happens to
+            # contain the calque as a substring.
+            # Example: key='ذكاء السرب' should match `ذكاء السرب` but NOT
+            # match inside `ذكاء السربي` (adjectival form ending in ي).
+            key_re = re.compile(re.escape(key) + r'(?![؀-ۿ])')
+
+            # Double-ال fix: if input has "ال" + calque AND natural form
+            # ALSO starts with "ال", substitute the ال+calque sequence
+            # with the natural form to avoid "الال..."
+            if natural.startswith("ال"):
+                doubled_re = re.compile(r'ال' + re.escape(key) + r'(?![؀-ۿ])')
+                if doubled_re.search(segment):
+                    segment = doubled_re.sub(natural, segment)
+                    continue
+            if key_re.search(segment):
+                segment = key_re.sub(natural, segment)
         return segment
 
     return _apply_outside_quotes(text, _apply)

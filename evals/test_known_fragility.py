@@ -523,6 +523,58 @@ def main():
 
     print()
     print("=" * 60)
+    print("  T27 — user-reviewed corrections: سلوكاً → أسلوباً (v2.4.5)")
+    print("=" * 60)
+    out = run_humanize(
+        "اتخذ المهندس سلوكاً جديداً في حل المشكلة.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T27a.mansoob_suluk_corrected",
+            "أسلوبا" in out and "سلوكا" not in out,
+            f"سلوكاً not corrected to أسلوباً: {out!r}")
+
+    # Negative case: bare سلوك in psych context should NOT be touched
+    out_psych = run_humanize(
+        "سلوك الحيوانات في الغابة موضوع للبحث.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T27b.bare_suluk_preserved_in_psych_context",
+            "سلوك الحيوانات" in out_psych,
+            f"bare سلوك incorrectly substituted in psych context: {out_psych!r}")
+
+    print()
+    print("=" * 60)
+    print("  T28 — swarm intelligence: أسراب → مجموعة (v2.4.5)")
+    print("=" * 60)
+    # Plural form: ذكاء الأسراب → ذكاء المجموعة
+    out_plural = run_humanize(
+        "ذكاء الأسراب يستخدم في تصميم الروبوتات.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T28a.plural_swarm_corrected",
+            "ذكاء المجموعة" in out_plural,
+            f"ذكاء الأسراب not corrected: {out_plural!r}")
+
+    # Singular calque: ذكاء السرب → ذكاء المجموعة
+    out_singular = run_humanize(
+        "ذكاء السرب موضوع بحثي.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T28b.singular_swarm_corrected",
+            "ذكاء المجموعة" in out_singular,
+            f"ذكاء السرب not corrected: {out_singular!r}")
+
+    # Adjectival form: الذكاء السربي should NOT produce broken المجموعةي
+    out_adj = run_humanize(
+        "الذكاء السربي في الطبيعة مذهل.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T28c.adjectival_form_not_broken",
+            "المجموعةي" not in out_adj,
+            f"adjectival السربي got broken substitution: {out_adj!r}")
+
+    print()
+    print("=" * 60)
     print(f"  Total: {r.passed + r.failed}  |  PASS: {r.passed}  |  FAIL: {r.failed}")
     print("=" * 60)
     sys.exit(0 if r.failed == 0 else 1)

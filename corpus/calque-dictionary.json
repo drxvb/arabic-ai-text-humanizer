@@ -6,11 +6,12 @@
     "codex",
     "claude"
   ],
-  "$n_entries": 338,
+  "$n_entries": 340,
   "$by_confidence": {
     "medium": 142,
     "medium_consensus": 151,
-    "high": 45
+    "high": 45,
+    "high_user_attested": 2
   },
   "$by_domain": {
     "business": 43,
@@ -18,7 +19,7 @@
     "healthcare": 11,
     "news-journalism": 44,
     "politics": 4,
-    "tech-ai-agents": 35,
+    "tech-ai-agents": 37,
     "tech-ai-ml": 9,
     "tech-consumer": 29,
     "tech-crypto": 15,
@@ -2640,6 +2641,29 @@
       "consensus_strength": 2
     },
     {
+      "en": "approach",
+      "ai_default_calque": "سلوكا",
+      "natural_arabic": "أسلوبا",
+      "alternatives": [
+        "منهج",
+        "طريقة"
+      ],
+      "domain": "tech-ai-agents",
+      "confidence": "high_user_attested",
+      "corpus_hits": 0,
+      "partial_hits": null,
+      "llm_votes": {
+        "manual_user_review": {
+          "natural": "أسلوب",
+          "naive": "سلوك"
+        }
+      },
+      "n_llms": 0,
+      "consensus_strength": 0,
+      "added_in": "v2.4.5_user_review",
+      "user_note": "Per native-speaker correction: AI translators sometimes render 'approach' / 'method' / 'manner' as سلوكاً (mansoob behavior-sense). Conservative: only the mansoob form (سلوكا, post-tashkeel) is matched to avoid false positives on legitimate behavior-sense uses of bare سلوك in psychology/zoology contexts. News/opinion register only."
+    },
+    {
       "en": "autonomous agent",
       "ai_default_calque": "عميل مستقل",
       "natural_arabic": "وكيل ذكي",
@@ -3078,8 +3102,10 @@
     {
       "en": "swarm intelligence",
       "ai_default_calque": "ذكاء السرب",
-      "natural_arabic": "ذكاء الأسراب",
+      "natural_arabic": "ذكاء المجموعة",
       "alternatives": [
+        "الذكاء الجماعي",
+        "ذكاء الأسراب",
         "ذكاء السرب"
       ],
       "domain": "tech-ai-agents",
@@ -3097,7 +3123,30 @@
         }
       },
       "n_llms": 2,
-      "consensus_strength": 1
+      "consensus_strength": 1,
+      "user_correction_v2.4.5": "Per native-speaker review: ذكاء الأسراب (biological swarms) replaced with مجموعة (group) — neutral technical term."
+    },
+    {
+      "en": "swarm intelligence (plural form)",
+      "ai_default_calque": "ذكاء الأسراب",
+      "natural_arabic": "ذكاء المجموعة",
+      "alternatives": [
+        "الذكاء الجماعي"
+      ],
+      "domain": "tech-ai-agents",
+      "confidence": "high_user_attested",
+      "corpus_hits": 0,
+      "partial_hits": null,
+      "llm_votes": {
+        "manual_user_review": {
+          "natural": "ذكاء المجموعة",
+          "naive": "ذكاء الأسراب"
+        }
+      },
+      "n_llms": 0,
+      "consensus_strength": 0,
+      "added_in": "v2.4.5_user_review",
+      "user_note": "Per native-speaker correction: AI translators sometimes use the plural form ذكاء الأسراب for 'swarm intelligence' — biologically accurate (swarms of birds/insects) but a calque in CS context. Modern Arabic CS literature prefers ذكاء المجموعة (group intelligence) or الذكاء الجماعي (collective intelligence)."
     },
     {
       "en": "system prompt",

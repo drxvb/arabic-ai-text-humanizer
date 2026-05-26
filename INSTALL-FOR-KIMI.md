@@ -431,7 +431,8 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 | Version | What changed |
 |---|---|
-| **v2.4.4** | **List-`و` insertion + register-gated guillemets.** Itwadi rule: insert `و` before list items 2..n when 3+ single-word Arabic tokens are comma-separated. Short-clause commas not treated as lists. Register-gated quotation: ASCII `"..."` → `«...»` ONLY in classical register. T25+T26 added (5 sub-checks). Fragility now **61/61**. |
+| **v2.4.5** | **User-reviewed corrections + word-boundary fix.** Native-speaker review caught two dictionary issues: (1) `swarm intelligence` natural form `ذكاء الأسراب` (biological swarms) → `ذكاء المجموعة` (group — neutral CS term); plural form `ذكاء الأسراب` added as separate calque key. (2) New entry `سلوكا` → `أسلوبا` (mansoob accusative form only) for AI-translated 'approach' / 'method' where the LLM picked behavior-sense; conservative key avoids false positives on bare سلوك in psychology contexts. **Critical underlying fix:** `lex_apply_calque_dictionary` substitution engine now uses word-boundary lookahead `(?![؀-ۿ])` to prevent the calque key from matching INSIDE a longer Arabic word. Example: `ذكاء السرب` no longer falsely matches inside `الذكاء السربي` (adjectival form). This protects every dictionary entry from substring-substitution bugs. T27+T28 added (5 sub-checks). Fragility now **66/66**. |
+| v2.4.4 | **List-`و` insertion + register-gated guillemets.** Itwadi rule: insert `و` before list items 2..n when 3+ single-word Arabic tokens are comma-separated. Short-clause commas not treated as lists. Register-gated quotation: ASCII `"..."` → `«...»` ONLY in classical register. T25+T26 added (5 sub-checks). Fragility now **61/61**. |
 | v2.4.3 | **Parenthesis interior-spacing normalization.** Researched 4 more Arabic style guides (Albuthi, Alukah academic, proof-reading-service, Kaplan International — 13 total now). The new rule from Kaplan + proof-reading-service: "no spacing between brackets and content". `typography_paren_interior_spacing()` (1) strips space immediately after `(` when followed by Arabic letter, (2) strips space before `)` when preceded by Arabic letter, (3) strips space between `)` and following punctuation. Example: `هذه جملة ( مع تعليق ) ، ثم آخر` → `هذه جملة (مع تعليق)، ثم آخر`. Preserves existing Latin-content paren padding (for English-in-Arabic Bidi clarity). 5 new fragility sub-checks (T23–T24). Fragility now **56/56**. |
 | v2.4.2 | **Authoritative-source-based punctuation rules.** Researched 9 Arabic style guides (Al Jazeera Learning, Drasah, Loghate ×2, Mawdoo3, Mobt3ath, KSU College of Humanities, Itwadi, Shoair School). Implemented: (1) **No space before Arabic punctuation** (`،`، `؛`، `؟`، `:`، `!`، `.`) — the universal rule from all sources ("ملاصقة للكلمة التي قبلها"). (2) **Comma → semicolon before unambiguous causal connectors** (`لأن`، `لأنّ`، `لذلك`، `لذا`، `ومن ثَمَّ`) — semicolon is the correct mark before causal clauses per multiple sources; ambiguous connectors (`إذ`، `حيث`) skipped to avoid false conversions ("when"/"where" vs "because"). (3) Made existing Latin→Arabic punctuation rules explicit via T19-T21 tests (formerly inherited from v1, now fragility-guarded). Deferred to v2.4.3: list-conjunction `و` between Arabic list items (requires multi-pass context detection), LRM-Bidi handling (render-time concern). Fragility suite now **51/51**. |
 | v2.4.1 | **Typography fixes** — two AI-Arabic tells that v2.2.0–v2.4.0 didn't catch: (1) **Kashida (Arabic tatweel `ـ`, U+0640) stripped** from output per modern editorial convention — kashida is for display typography (logos, posters, justified-text rendering at typeset time), NEVER for encoded body text; AI translators sometimes inject it to "look more Arabic" which is the exact opposite of professional Arabic typography. Stripping is UNIVERSAL (all registers), not register-gated. (2) **Em-dash `—` converted to Arabic comma `،`** when surrounded by Arabic letters (e.g., `النص — التعليق` → `النص، التعليق`); preserved in English-context (e.g., `OpenAI — مؤسسة` keeps em-dash because `I` is Latin). 4 new fragility test sub-checks (T15–T17). Fragility suite now **35/35**. |
@@ -5357,14 +5358,24 @@ def lex_apply_calque_dictionary(text: str, register: str = "news") -> str:
     def _apply(segment: str) -> str:
         for key in _CALQUE_KEYS:
             natural = _CALQUE_LOOKUP[key]["natural"]
-            # Double-ال fix: if input has "ال" + calque (with definite article)
-            # AND the natural form ALSO starts with "ال", substitute the
-            # ال+calque sequence with the natural form to avoid "الال..."
-            if natural.startswith("ال") and ("ال" + key) in segment:
-                segment = segment.replace("ال" + key, natural)
-                continue
-            if key in segment:
-                segment = segment.replace(key, natural)
+            # Word-boundary check (v2.4.5): the calque key must NOT be
+            # immediately followed by an Arabic letter — otherwise the
+            # substitution would break a longer word that just happens to
+            # contain the calque as a substring.
+            # Example: key='ذكاء السرب' should match `ذكاء السرب` but NOT
+            # match inside `ذكاء السربي` (adjectival form ending in ي).
+            key_re = re.compile(re.escape(key) + r'(?![؀-ۿ])')
+
+            # Double-ال fix: if input has "ال" + calque AND natural form
+            # ALSO starts with "ال", substitute the ال+calque sequence
+            # with the natural form to avoid "الال..."
+            if natural.startswith("ال"):
+                doubled_re = re.compile(r'ال' + re.escape(key) + r'(?![؀-ۿ])')
+                if doubled_re.search(segment):
+                    segment = doubled_re.sub(natural, segment)
+                    continue
+            if key_re.search(segment):
+                segment = key_re.sub(natural, segment)
         return segment
 
     return _apply_outside_quotes(text, _apply)
@@ -6471,6 +6482,58 @@ def main():
     r.check("T26b.news_preserves_ascii_quotes",
             '"العلم نور"' in out_news or '"' in out_news,
             f"news incorrectly converted to guillemets: {out_news!r}")
+
+    print()
+    print("=" * 60)
+    print("  T27 — user-reviewed corrections: سلوكاً → أسلوباً (v2.4.5)")
+    print("=" * 60)
+    out = run_humanize(
+        "اتخذ المهندس سلوكاً جديداً في حل المشكلة.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T27a.mansoob_suluk_corrected",
+            "أسلوبا" in out and "سلوكا" not in out,
+            f"سلوكاً not corrected to أسلوباً: {out!r}")
+
+    # Negative case: bare سلوك in psych context should NOT be touched
+    out_psych = run_humanize(
+        "سلوك الحيوانات في الغابة موضوع للبحث.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T27b.bare_suluk_preserved_in_psych_context",
+            "سلوك الحيوانات" in out_psych,
+            f"bare سلوك incorrectly substituted in psych context: {out_psych!r}")
+
+    print()
+    print("=" * 60)
+    print("  T28 — swarm intelligence: أسراب → مجموعة (v2.4.5)")
+    print("=" * 60)
+    # Plural form: ذكاء الأسراب → ذكاء المجموعة
+    out_plural = run_humanize(
+        "ذكاء الأسراب يستخدم في تصميم الروبوتات.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T28a.plural_swarm_corrected",
+            "ذكاء المجموعة" in out_plural,
+            f"ذكاء الأسراب not corrected: {out_plural!r}")
+
+    # Singular calque: ذكاء السرب → ذكاء المجموعة
+    out_singular = run_humanize(
+        "ذكاء السرب موضوع بحثي.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T28b.singular_swarm_corrected",
+            "ذكاء المجموعة" in out_singular,
+            f"ذكاء السرب not corrected: {out_singular!r}")
+
+    # Adjectival form: الذكاء السربي should NOT produce broken المجموعةي
+    out_adj = run_humanize(
+        "الذكاء السربي في الطبيعة مذهل.",
+        "--mode", "tighten", "--register", "news",
+    )
+    r.check("T28c.adjectival_form_not_broken",
+            "المجموعةي" not in out_adj,
+            f"adjectival السربي got broken substitution: {out_adj!r}")
 
     print()
     print("=" * 60)
