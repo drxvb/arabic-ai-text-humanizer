@@ -6,26 +6,63 @@ A multi-pass Arabic-text humanizer that reduces AI fingerprints across **16 dime
 
 The full specification, transformation protocol, dimension definitions, anti-patterns, and worked example all live in **[`SKILL.md`](SKILL.md)**. This README is a one-screen overview.
 
-## What's new in v2.4.3 (current)
+## What's new in v2.4.5 (current)
 
-**Parenthesis interior-spacing normalization.** Researched 4 more Arabic style guides (Albuthi, Alukah academic, proof-reading-service, Kaplan International) — **13 sources total** consulted across v2.4.x.
+**Native-speaker dictionary corrections + a substring-substitution bug fix that protects every dictionary entry.** Two terminology corrections came from native review, and chasing them surfaced a regex-boundary bug in the substitution engine itself.
 
-The new rule from Kaplan + proof-reading-service: *"no spacing between brackets and content"*. Implemented via `typography_paren_interior_spacing()`:
+### 1. `swarm intelligence` — natural form changed to `ذكاء المجموعة`
+
+The previous v2.4.0 rendering `ذكاء الأسراب` is *biologically* correct (swarms of birds, insects) but reads as a calque in Arabic CS writing. Native preference: **`ذكاء المجموعة`** (group intelligence). Both singular `ذكاء السرب` and plural `ذكاء الأسراب` now map to the same natural form via separate dictionary entries.
+
+### 2. New entry: `سلوكا` → `أسلوبا` (mansoob accusative only)
+
+AI translators sometimes render *"approach / method / manner"* as `سلوكاً` (the *behavior* sense, used in psychology / zoology) when `أسلوباً` (style, technique) is the intended sense. The key is **deliberately narrow** — keyed on the post-tashkeel mansoob form `سلوكا`, not bare `سلوك`, so legitimate `سلوك الحيوانات` ("animal behavior") is preserved untouched.
+
+### 3. Word-boundary lookahead — engine-level fix
+
+`lex_apply_calque_dictionary` previously used plain `str.replace`, which meant a calque key could match **inside** a longer Arabic word. Example: `ذكاء السرب` was a substring of `الذكاء السربي` (the adjectival form), so the old engine produced the malformed `الذكاء المجموعةي`. The new engine uses regex lookahead `(?![؀-ۿ])` so substitution only fires at a word boundary. This protects **all 340 dictionary entries** from similar bugs.
+
+| Input | Old (v2.4.4) | New (v2.4.5) |
+|---|---|---|
+| `الذكاء السربي مذهل` | `الذكاء المجموعةي مذهل` ❌ | `الذكاء السربي مذهل` ✓ (untouched) |
+
+Fragility suite: **66/66** (5 new T27–T28 sub-checks for the corrections + the boundary fix).
+
+## What's new in v2.4.4
+
+**Two previously-deferred rules from the 13-source Arabic-punctuation research, both implemented and register-gated.**
+
+### 1. Itwadi's rule: `و` before each Arabic list item
+
+Arabic lists retain `و` before each item *except the first* — opposite of English's "and only before the last item." Detection is conservative: only fires when 3+ comma-separated tokens are each a single Arabic word (≤20 chars), so short-clause commas like `كنت سعيداً، رأيت صديقاً` are correctly **not** treated as lists.
+
+| Input | Output |
+|---|---|
+| `العربي، الرياضيات، الكيمياء` | `العربي، والرياضيات، والكيمياء` |
+
+### 2. Register-gated ASCII→guillemets
+
+Sources split between formal `«»` (academic / classical) and modern `""` (news / opinion). v2.4.4 honors both via register-gating: ASCII quotes are converted to guillemets **only in `--register classical`**; news, opinion, and technical preserve ASCII quotes.
+
+| Register | Input | Output |
+|---|---|---|
+| classical | `قال "العلم نور"` | `قال «العلم نور»` |
+| news | `قال "العلم نور"` | `قال "العلم نور"` *(preserved)* |
+
+The typography stack inside `lex_dim15_typography` is now **14 passes** — see the [Typography pipeline](#workflow) note below.
+
+## What's new in v2.4.3
+
+**Parenthesis interior-spacing normalization** — researched 4 more Arabic style guides (Albuthi, Alukah academic, proof-reading-service, Kaplan International), bringing the total to **13 authoritative sources** consulted across v2.4.x.
+
+Implemented via `typography_paren_interior_spacing()` with three sub-rules: strip space *after* `(` when followed by Arabic letter; strip space *before* `)` when preceded by Arabic letter; strip space between `)` and following Arabic punctuation. Latin paren padding (`OpenAI (شركة)`) is preserved by the existing `typography_paren_spacing` pass.
 
 | Input | Output |
 |---|---|
 | `هذه جملة ( مع تعليق ) ثم نقطة` | `هذه جملة (مع تعليق) ثم نقطة` |
 | `النص (الإيضاح) .` | `النص (الإيضاح).` |
-| `كلمة (محتوى) ،` | `كلمة (محتوى)،` |
 
-Three sub-rules:
-1. Strip space *after* `(` when followed by Arabic letter
-2. Strip space *before* `)` when preceded by Arabic letter
-3. Strip space between `)` and following punctuation (`،` `؛` `؟` `:` `!` `.`)
-
-**Latin paren padding preserved** — when parens wrap English content inside Arabic (for Bidi clarity), the existing `typography_paren_spacing` adds appropriate Latin-content padding; v2.4.3 doesn't touch that.
-
-Fragility suite: **56/56** (5 new T23–T24 sub-checks).
+Fragility suite at v2.4.3: 56/56 (5 new T23–T24 sub-checks).
 
 ## What's new in v2.4.2
 
@@ -291,25 +328,35 @@ Both suites are dependency-free Python 3 stdlib — no `pip install` required.
 
 | Metric | Value |
 |---|---|
-| Total source lines | **7,138** (2,952 Python + 2,604 Markdown + 1,582 JSON) |
-| Files in the skill | **49** counting all .input/.output/.report fixtures (16 references + 6 scripts + 2 evals + 1 corpus stats + LICENSE + SKILL.md + .gitignore + config.example.json + README + README.ar.md + INSTALL-FOR-KIMI + 7 example narratives + 14 example fixtures) |
+| Total source lines | **15,041** (3,611 Python + 2,722 Markdown + 8,708 JSON) — JSON growth driven by the calque dictionary expansion (93 → 340 entries) |
+| Files in the skill | **53** — 16 references + 6 scripts + 2 evals + corpus + LICENSE + SKILL.md + .gitignore + config.example.json + README + README.ar.md + INSTALL-FOR-KIMI + 7 example narratives + 14 example fixtures |
 | 16-dimension framework documentation | 16 deep-dive reference files, ~2,000 lines of Arabic+English explanatory text |
 | Empirical corpus mining | **100,000 records sampled** → **1,310,649 sentences**, **71,278,688 tokens** across 4 register categories (Qur'an, classical/modern, news, lexicon). Mining time: **≈87 seconds**. Tracked: 50 connector types + 50 sentence-initial-token types. |
+| Calque-translation dictionary | **340 entries** across **13 domains** (business 43, climate 15, healthcare 11, news-journalism 44, politics 4, tech-ai-agents 37, tech-ai-ml 9, tech-consumer 29, tech-crypto 15, tech-data 22, tech-infra 36, tech-security 31, tech-software 44). Generated by a multi-LLM swarm (Claude Sonnet, Codex, Gemini, Moonshot) on seed terms, cross-validated against the 8,850-article AITNews corpus (2.88M tokens), then native-reviewed. |
+| Authoritative Arabic-style sources | **13 sources** consulted for the v2.4.x typography work (Al Jazeera Learning, Drasah, Loghate ×2, Mawdoo3, Mobt3ath, KSU College of Humanities, Itwadi, Shoair School, Albuthi, Alukah academic, proof-reading-service, Kaplan International) |
+| Typography passes (`lex_dim15_typography`) | **14 passes** — URL/code protection, Arabic-English spacing, Latin→Arabic punctuation, post-punctuation space, Latin-content paren padding, number normalization, kashida strip, em-dash → Arabic comma, pre-punct space removal, comma→semicolon before causal connectors, paren interior spacing, list-`و` insertion, register-gated guillemets, whitespace collapse |
 | Test runtime | Both suites finish in under 60 seconds total, Python 3 stdlib only, no `pip install` |
 | Cross-LLM critique iterations | **4 independent perspectives** (cognitive-structure, rhetorical decomposition, transitions/literary-art, historical/coherence) folded into the 16-dimension framework |
-| Worked examples shipped | **7 byte-deterministic examples** covering the four `register × mode` combinations, the read-only `analyze_deep` diagnostic, the read-only `preflight_check`, and (v2.2.0) the combined tashkeel-reduction + calque-substitution demonstration |
-| Regression coverage | 20 golden cases + **27 fragility sub-checks** = 47 deterministic assertions, all passing |
+| Worked examples shipped | **7 byte-deterministic examples** covering the four `register × mode` combinations, `analyze_deep` diagnostic, `preflight_check`, and the combined tashkeel-reduction + calque-substitution demonstration |
+| Regression coverage | 20 golden cases + **66 fragility sub-checks** = 86 deterministic assertions, all passing |
 | Distributable variants | **5 release assets** — 1 universal `.skill` bundle + 3 provider-tuned `.skill` bundles (Moonshot/Kimi, MiniMax, Anthropic-via-proxy) + 1 markdown installer for Kimi CLI |
 | Provider-agnostic | Any OpenAI-compatible chat-completions endpoint (OpenAI, Moonshot, MiniMax, Together, Groq, DeepSeek, local Ollama, …) |
 
-This is what shipped publicly at v2.2.0. Effort across multiple iterations spanning the lineage below (cognitive-framework design, cross-LLM critique synthesis, portability refactor, security audit, Arabic editorial polish, runtime tashkeel reducer).
+This is the v2.4.5 snapshot. Effort spans the lineage below: cognitive-framework design, cross-LLM critique synthesis, portability refactor, security audit, Arabic editorial polish, runtime tashkeel reducer, calque-dictionary swarm build, 13-source typography research, and native-reviewed terminology corrections.
 
 ## Version history
 
 | Tag | Highlight |
 |---|---|
-| **v2.2.0** | `lex_reduce_tashkeel()` added to the lex pipeline — hamza-safe + digit-safe, register-gated. Pipeline-calque `خط أنابيب` → `مسار عمل` substitution. Fragility tests T7–T11 (27 sub-checks total). |
-| v2.1.3 | Arabic editorial pass on documentation: pipeline-calque rename, ~96% tashkeel reduction in prose, classical-Arabic quotations preserved within bracket pairs. |
+| **v2.4.5** | Native-speaker dictionary corrections (`swarm intelligence` → `ذكاء المجموعة`; new `سلوكا` → `أسلوبا` mansoob entry) + word-boundary lookahead `(?![؀-ۿ])` in `lex_apply_calque_dictionary` fixing the substring-substitution bug that affected all 340 entries. Fragility 66/66 (T27–T28). |
+| v2.4.4 | Two rules from the 13-source research: list-`و` insertion (Itwadi) + register-gated ASCII→guillemets (classical only). Typography stack now 14 passes. Fragility 61/61 (T25–T26). |
+| v2.4.3 | Parenthesis interior-spacing normalization. 4 new style guides researched (Albuthi, Alukah, proof-reading-service, Kaplan) — 13 sources total. Fragility 56/56 (T23–T24). |
+| v2.4.2 | Authoritative-source-based punctuation rules: no space before Arabic punctuation; comma → semicolon before unambiguous causal connectors (`لأن`، `لذلك`، `لذا`، `ومن ثَمَّ`). 9-source research baseline. Fragility 51/51 (T18–T22). |
+| v2.4.1 | Kashida strip (universal); em-dash → Arabic comma (context-aware — only when Arabic letter precedes). Fragility 35/35 (T15–T17). |
+| v2.4.0 | Dictionary expansion 93 → 338 entries (3.6× growth). New modern-AI vocabulary: multi-agent, swarm, autonomous-agent. New domains: crypto/Web3, climate, healthcare, geopolitics. Fragility 31/31. |
+| v2.3.0 | Calque-translation dictionary introduced (`lex_apply_calque_dictionary`). 93 corpus-validated pairs from multi-LLM swarm + AITNews cross-validation (8,850 articles, 2.88M tokens). Fragility 31/31 (T12–T14). |
+| v2.2.0 | `lex_reduce_tashkeel()` added — hamza-safe + digit-safe, register-gated. Pipeline-calque `خط أنابيب` → `مسار عمل` substitution. Fragility 27/27 (T7–T11). |
+| v2.1.3 | Arabic editorial pass on documentation: pipeline-calque rename, ~96% tashkeel reduction in prose, classical quotations preserved within bracket pairs. |
 | v2.1.2 | `examples/` directory with 6 byte-deterministic worked examples. README localization. |
 | v2.1.1 | Corpus-stats refactor (replaced "8.5 GB" wording with lexicon stats). Multi-LLM CLI security audit. Hardcoded path leak in `empirical-patterns.json` redacted. |
 | v2.1.0 | Provider-agnostic refactor — `BACKENDS` collapsed to `api`/`local`, universal `LLM_*` env vars. INSTALL-FOR-KIMI.md markdown installer added. |
