@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/icon.svg" alt="Arabic AI-Text Humanizer" width="180" height="180"/>
+</p>
+
 # Arabic AI-Text Humanizer
 
 > 🇸🇦 [اقرأ بِالعَرَبية](README.ar.md) — Arabic README in native MSA phrasing, not literal translation.
@@ -217,47 +221,36 @@ Six transformation modes ranging from `lex-only` (deterministic, ~1s, no LLM) to
 
 ## Workflow
 
-```
-Input text (Arabic, MSA / classical-leaning)
-    │
-    ├── [optional] Pre-flight check (preflight_check.py)
-    │     └── flags unsourced stats, anonymous sources, hostile attribution verbs
-    │         (exit code 2 with --strict-preflight if HIGH-severity finding)
-    │
-    ▼
-[Stage 0] Diagnostic (analyze_deep.py) — 16-dimension scorecard, no transform
-    │
-    ▼
-[Stage 1] Lexical pass — DETERMINISTIC, no LLM, ~1s, register-aware
-    ├── (news/opinion only) Tashkeel reduction — strip non-disambiguating diacritics
-    ├── Phrase substitution    incl. pipeline-calque → workflow phrasing (v2.2.0)
-    ├── Connector swap         breaks the و-monoculture (Dim 16)
-    ├── Structural opener rewrites    skipped for technical register
-    ├── Quote-verb rotation    env-gated (HUMANIZER_ALLOW_QUOTE_ROTATION=1) only
-    ├── Intensifier de-stacking
-    ├── Dim 14 anti-redundancy (anti-tautology, anti-re-explanation, …)
-    ├── Pronoun diversification     opinion/classical only
-    ├── Sentence-length variance    classical/opinion + intensity > 0.3
-    ├── (news/opinion only) Tashkeel reduction — late-pass cleanup
-    └── Dim 15 typography hygiene — always last (Arabic-English spacing, etc.)
-    │
-    ▼
-[Stage 2] Cognitive pass — LLM, optional (dims 1–8: deduction, inference, …)
-    │
-    ▼
-[Stage 3] Rhetorical pass — LLM, optional (dims 9–13: literary art, historical, …)
-    │
-    ▼
-[Stage 4] Coherence pass — LLM, optional (final polish)
-    │
-    ▼
-[optional] Score (score_humanness.py) — before/after delta, dim-by-dim
-    │
-    ▼
-Output: humanized Arabic text  +  diagnostic report
+```mermaid
+flowchart TB
+    classDef llm fill:#1a4a55,stroke:#e8c170,color:#f5efe0,stroke-width:2px
+    classDef nollm fill:#0d4f5c,stroke:#cfe5ec,color:#f5efe0
+    classDef io fill:#e8c170,stroke:#062330,color:#062330,stroke-width:2px
+
+    INPUT([Input: Arabic MSA / classical-leaning text]):::io
+    PRE["Pre-flight check<br/>flags unsourced stats, anon sources, hostile verbs<br/><i>optional · no LLM</i>"]:::nollm
+    DIAG["Stage 0 — Diagnostic<br/>16-dimension scorecard · no transform<br/><i>no LLM</i>"]:::nollm
+    LEX["Stage 1 — Lexical pass<br/>tashkeel reduce · calque dict (340 entries · 13 domains)<br/>connector swap · Dim 14 anti-redundancy · Dim 15 typography (14 passes)<br/><i>deterministic · ~1s · register-aware · no LLM</i>"]:::nollm
+    COG["Stage 2 — Cognitive pass<br/>dims 1–8: deduction · inference · induction · graduated explanation<br/><i>LLM</i>"]:::llm
+    RHE["Stage 3 — Rhetorical pass<br/>dims 9–13: literary art · historical · figures · coherence<br/><i>LLM</i>"]:::llm
+    COH["Stage 4 — Coherence pass<br/>final polish across paragraph boundaries<br/><i>LLM</i>"]:::llm
+    SCO["Score humanness<br/>before/after delta · per-dimension<br/><i>optional · no LLM</i>"]:::nollm
+    OUTPUT([Output: humanized text + diagnostic report]):::io
+
+    INPUT --> PRE --> DIAG --> LEX
+    LEX -- "mode: lex-only / tighten / enrich" --> SCO
+    LEX -- "mode: +cognitive" --> COG
+    COG -- "mode: +rhetorical / full" --> RHE
+    RHE -- "mode: full" --> COH
+    COG --> SCO
+    RHE --> SCO
+    COH --> SCO
+    SCO --> OUTPUT
 ```
 
-Stages 0, the pre-flight check, and the lex stage need no API key. Stages 2–4 need `LLM_API_URL` / `LLM_API_KEY` / `LLM_MODEL` set.
+**No API key needed** for the pre-flight check, Stage 0 (diagnostic), Stage 1 (lex), or Score. **API key required** for Stages 2–4 (set `LLM_API_URL` / `LLM_API_KEY` / `LLM_MODEL` for any OpenAI-compatible endpoint).
+
+Four register policies (`classical / news / opinion / technical`) gate *which* transformations fire inside Stage 1 — e.g., ASCII→guillemets quote conversion only in `classical`, tashkeel reduction only in `news` / `opinion`, sentence-length variance only in `classical` / `opinion`.
 
 ## Installation
 

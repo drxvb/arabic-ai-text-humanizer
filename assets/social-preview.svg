@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-label="Arabic AI-Text Humanizer banner">
+  <title>Arabic AI-Text Humanizer — social preview</title>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e5263"/>
+      <stop offset="1" stop-color="#062330"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.25" cy="0.5" r="0.45">
+      <stop offset="0" stop-color="#e8c170" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#e8c170" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <rect width="1280" height="640" fill="url(#halo)"/>
+
+  <g transform="translate(320,320)" fill="#e8c170" aria-hidden="true">
+    <circle cx="0" cy="-220" r="9"/>
+    <circle cx="84.2" cy="-203.8" r="9"/>
+    <circle cx="155.6" cy="-155.6" r="9"/>
+    <circle cx="203.3" cy="-84.3" r="9"/>
+    <circle cx="220" cy="0" r="9"/>
+    <circle cx="203.3" cy="84.3" r="9"/>
+    <circle cx="155.6" cy="155.6" r="9"/>
+    <circle cx="84.2" cy="203.8" r="9"/>
+    <circle cx="0" cy="220" r="9"/>
+    <circle cx="-84.2" cy="203.8" r="9"/>
+    <circle cx="-155.6" cy="155.6" r="9"/>
+    <circle cx="-203.3" cy="84.3" r="9"/>
+    <circle cx="-220" cy="0" r="9"/>
+    <circle cx="-203.3" cy="-84.3" r="9"/>
+    <circle cx="-155.6" cy="-155.6" r="9"/>
+    <circle cx="-84.2" cy="-203.8" r="9"/>
+  </g>
+
+  <circle cx="320" cy="320" r="174" fill="none" stroke="#e8c170" stroke-width="2" stroke-opacity="0.35"/>
+
+  <text x="320" y="378"
+        font-family="'Amiri','Scheherazade New','Noto Naskh Arabic','Traditional Arabic',serif"
+        font-size="220" font-weight="700"
+        text-anchor="middle"
+        fill="#f5efe0"
+        direction="rtl">نَصّ</text>
+
+  <g transform="translate(640,170)">
+    <text x="0" y="0"
+          font-family="'Inter','Segoe UI','Helvetica Neue',sans-serif"
+          font-size="62" font-weight="700"
+          fill="#f5efe0">Arabic AI-Text</text>
+    <text x="0" y="76"
+          font-family="'Inter','Segoe UI','Helvetica Neue',sans-serif"
+          font-size="62" font-weight="700"
+          fill="#f5efe0">Humanizer</text>
+
+    <line x1="0" y1="120" x2="120" y2="120" stroke="#e8c170" stroke-width="3"/>
+
+    <text x="0" y="180"
+          font-family="'Inter','Segoe UI','Helvetica Neue',sans-serif"
+          font-size="26" font-weight="500"
+          fill="#cfe5ec">Reduce AI fingerprints across 16 cognitive,</text>
+    <text x="0" y="216"
+          font-family="'Inter','Segoe UI','Helvetica Neue',sans-serif"
+          font-size="26" font-weight="500"
+          fill="#cfe5ec">rhetorical &amp; typographic dimensions of Arabic prose.</text>
+
+    <g transform="translate(0,272)" font-family="'SF Mono','Consolas','Roboto Mono',monospace" font-size="22" fill="#e8c170">
+      <text x="0" y="0">340 calques</text>
+      <text x="170" y="0">·</text>
+      <text x="190" y="0">14 typo passes</text>
+      <text x="400" y="0">·</text>
+      <text x="420" y="0">66 fragility tests</text>
+    </g>
+
+    <g transform="translate(0,330)" font-family="'SF Mono','Consolas','Roboto Mono',monospace" font-size="22" fill="#cfe5ec" fill-opacity="0.75">
+      <text x="0" y="0">Agent Skills · provider-agnostic · MIT</text>
+    </g>
+  </g>
+
+  <text x="1240" y="612"
+        font-family="'SF Mono','Consolas','Roboto Mono',monospace"
+        font-size="20" font-weight="600"
+        text-anchor="end"
+        fill="#e8c170" fill-opacity="0.7">v2.4.5</text>
+</svg>

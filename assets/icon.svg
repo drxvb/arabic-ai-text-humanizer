@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Arabic AI-Text Humanizer">
+  <title>Arabic AI-Text Humanizer</title>
+  <desc>Deep teal rounded square with an Arabic glyph at center and a ring of sixteen markers representing the sixteen humanness dimensions.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0e5263"/>
+      <stop offset="1" stop-color="#0a3a47"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#e8c170" stop-opacity="0.18"/>
+      <stop offset="0.7" stop-color="#e8c170" stop-opacity="0.04"/>
+      <stop offset="1" stop-color="#e8c170" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1024" height="1024" rx="180" ry="180" fill="url(#bg)"/>
+  <circle cx="512" cy="512" r="420" fill="url(#halo)"/>
+
+  <g fill="#e8c170" aria-hidden="true">
+    <circle cx="512" cy="132" r="18"/>
+    <circle cx="657.4" cy="161" r="18"/>
+    <circle cx="780.7" cy="243.3" r="18"/>
+    <circle cx="863.1" cy="366.6" r="18"/>
+    <circle cx="892" cy="512" r="18"/>
+    <circle cx="863.1" cy="657.4" r="18"/>
+    <circle cx="780.7" cy="780.7" r="18"/>
+    <circle cx="657.4" cy="863.1" r="18"/>
+    <circle cx="512" cy="892" r="18"/>
+    <circle cx="366.6" cy="863.1" r="18"/>
+    <circle cx="243.3" cy="780.7" r="18"/>
+    <circle cx="160.9" cy="657.4" r="18"/>
+    <circle cx="132" cy="512" r="18"/>
+    <circle cx="160.9" cy="366.6" r="18"/>
+    <circle cx="243.3" cy="243.3" r="18"/>
+    <circle cx="366.6" cy="160.9" r="18"/>
+  </g>
+
+  <circle cx="512" cy="512" r="300" fill="none" stroke="#e8c170" stroke-width="3" stroke-opacity="0.35"/>
+
+  <text x="512" y="610"
+        font-family="'Amiri','Scheherazade New','Noto Naskh Arabic','Traditional Arabic',serif"
+        font-size="380" font-weight="700"
+        text-anchor="middle"
+        fill="#f5efe0"
+        direction="rtl">نَصّ</text>
+
+  <text x="512" y="780"
+        font-family="'SF Mono','Consolas','Roboto Mono',monospace"
+        font-size="56" font-weight="600" letter-spacing="6"
+        text-anchor="middle"
+        fill="#e8c170" fill-opacity="0.85">16 DIM · AR</text>
+</svg>
