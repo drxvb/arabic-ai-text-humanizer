@@ -1267,6 +1267,87 @@ def _load_calque_dictionary_OLD_VENDORED_PATH_ONLY() -> tuple[list[str], dict]:
 _CALQUE_KEYS, _CALQUE_LOOKUP = _load_calque_dictionary()
 
 
+# ── v2.7.1: Asset C cutover to arabic-corpus-toolkit ──
+# When the toolkit is available, override the six lexical tables defined at
+# the top of this file (AI_PHRASES_AR, CONNECTORS_AR, REPETITIVE_STARTERS_AR,
+# STRUCTURAL_OPENERS_AR, QUOTE_VERBS_ROTATION, INTENSIFIER_DESTACK) with the
+# canonical values from arabic-corpus-toolkit/corpus/lexical-tables.json.
+# The in-code literals (lines 51-209) remain as the fallback.
+#
+# Toolkit asset v1.1.0 is humanizer-parity confirmed; see
+# arabic-corpus-toolkit/references/05-asset-c-migration-audit.md for the
+# v0.7.1 reconciliation work that made this cutover safe.
+#
+# Major-version refuse: if the toolkit asset has $schema_version >= 2.x,
+# refuse to load (this humanizer version can't promise compatibility).
+def _try_load_lexical_tables_from_toolkit():
+    """Returns dict of projected tables or None on any failure (file missing,
+    parse error, schema-major mismatch, or shape mismatch).
+    """
+    import os
+    override = os.environ.get("ARABIC_CORPUS_TOOLKIT_ROOT")
+    candidate_roots: list[Path] = []
+    if override:
+        candidate_roots.append(Path(override))
+    candidate_roots.append(_TOOLKIT_DEFAULT_PATH)
+    for root in candidate_roots:
+        p = root / "corpus" / "lexical-tables.json"
+        if not p.exists():
+            continue
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        schema_major = data.get("$schema_version", "0.0.0").split(".")[0]
+        if schema_major != "1":
+            continue  # incompatible major version
+        try:
+            return _project_toolkit_lexical_tables(data["tables"])
+        except (KeyError, TypeError):
+            continue
+    return None
+
+
+def _project_toolkit_lexical_tables(tables: dict) -> dict:
+    """Project the toolkit's list-of-objects representation into the
+    humanizer's in-memory shapes (dict, list-of-tuples, list-of-strings)
+    so downstream functions see EXACTLY the same shapes as the inline literals.
+    """
+    return {
+        "ai_phrases": {
+            e["input"]: list(e["alternatives"])
+            for e in tables["ai_phrases"]["entries"]
+        },
+        "connectors": [
+            (e["input"], e["replacement"])
+            for e in tables["connectors"]["entries"]
+        ],
+        "repetitive_starters": list(tables["repetitive_starters"]["detectors"]),
+        "structural_openers": [
+            (e["pattern"], list(e["replacements"]))
+            for e in tables["structural_openers"]["entries"]
+        ],
+        "quote_verbs": {
+            e["input"]: list(e["rotation_pool"])
+            for e in tables["quote_verbs"]["entries"]
+        },
+        "intensifier_destack": [
+            (e["pattern"], e["replacement"])
+            for e in tables["intensifier_destack"]["entries"]
+        ],
+    }
+
+
+_toolkit_lexical = _try_load_lexical_tables_from_toolkit()
+if _toolkit_lexical is not None:
+    AI_PHRASES_AR          = _toolkit_lexical["ai_phrases"]
+    CONNECTORS_AR          = _toolkit_lexical["connectors"]
+    REPETITIVE_STARTERS_AR = _toolkit_lexical["repetitive_starters"]
+    STRUCTURAL_OPENERS_AR  = _toolkit_lexical["structural_openers"]
+    QUOTE_VERBS_ROTATION   = _toolkit_lexical["quote_verbs"]
+    INTENSIFIER_DESTACK    = _toolkit_lexical["intensifier_destack"]
+
+
 def lex_apply_calque_dictionary(text: str, register: str = "news") -> str:
     """Replace English-calque Arabic phrases with their natural-Arabic
     equivalents, per the calque-dictionary at corpus/calque-dictionary.json.
