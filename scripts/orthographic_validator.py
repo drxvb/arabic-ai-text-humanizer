@@ -92,26 +92,29 @@ FORM_X_VERBAL_NOUNS = {
     "إستحقاق": "استحقاق",
 }
 
-# Compiled patterns for speed.
-_COMPILED = [
-    (re.compile(r"\b" + re.escape(wrong) + r"\b"), correct)
-    for wrong, correct in FORM_X_VERBAL_NOUNS.items()
-]
-
-
 def fix_hamzat_alwasl(text: str) -> Tuple[str, List[str]]:
     """
     Apply form-X verbal-noun corrections. Returns (corrected_text, applied_list).
     Each applied entry is `"إستخدام -> استخدام"` for the report.
+
+    v2.6.2: uses str.replace instead of regex \b word boundaries. The form-X
+    verbal nouns are unique enough strings that substring substitution is
+    safe AND automatically handles:
+      - Proclitics: لإستقرار -> لاستقرار, بإستراتيجية -> باستراتيجية
+      - Definite article: الإستخدام -> الاستخدام
+      - Inflections: إستخداماته -> استخداماته (plural / possessive)
+      - Multi-proclitic combinations: وبإستثمار -> وباستثمار
+
+    There is no known Arabic word that coincidentally contains the letter
+    sequence `إست + <form-X stem>` where the substitution would be wrong —
+    the form-X masdar shape is morphologically distinctive.
     """
     out = text
     applied: List[str] = []
-    for pat, correct in _COMPILED:
-        new = pat.sub(correct, out)
-        if new != out:
-            wrong = next(w for w, c in FORM_X_VERBAL_NOUNS.items() if c == correct)
+    for wrong, correct in FORM_X_VERBAL_NOUNS.items():
+        if wrong in out:
+            out = out.replace(wrong, correct)
             applied.append(f"{wrong} -> {correct}")
-        out = new
     return out, applied
 
 

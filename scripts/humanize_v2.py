@@ -33,6 +33,10 @@ from analyze_deep import analyze, render_report
 # v2.6.1: Sacred-text guard — masks Quranic verses, hadith citations, and
 # the basmala from every transformation pass; restored verbatim on return.
 from sacred_text_guard import mask_sacred_spans, restore_sacred_spans
+# v2.6.2: Orthographic hygiene — fix hamzat al-waṣl vs hamzat al-qaṭʿ on
+# form-X verbal nouns (Agent A's #1 visible AI-Arabic tell after connectors).
+# إستخدام -> استخدام, إستراتيجية -> استراتيجية, etc.
+from orthographic_validator import fix_hamzat_alwasl
 
 # Import the LLM wrapper lazily (only when --mode > lex-only)
 
@@ -931,6 +935,14 @@ def lex_pass(text: str, intensity: float, register: str = "news",
       - lex-only: full lex but no LLM-augmented passes downstream
       - full: lex + (downstream LLM passes if available)
     """
+    # v2.6.2: Hamzat al-waṣl/qaṭʿ orthographic hygiene — runs in ALL registers
+    # and ALL modes (form-X verbal nouns take hamzat al-waṣl regardless of
+    # register; the AI-tell is universal). Safe substring substitution; ~50
+    # forms covered. Auto-handles proclitics (لإستقرار -> لاستقرار), definite
+    # article (الإستخدام -> الاستخدام), inflections (إستخداماته -> استخداماته).
+    # Runs FIRST so downstream phrase-matching sees corrected forms.
+    text, _hamza_applied = fix_hamzat_alwasl(text)
+
     # ── Enrich mode: lex pass + targeted marker insertion for low-scoring dims
     # Caps at 3 insertions per text. Targets dims 1, 4, 5, 6, 7, 8, 13.
     # Dims 10, 11, 12 (historical/imagination/rhetoric) need LLM — skipped here.
