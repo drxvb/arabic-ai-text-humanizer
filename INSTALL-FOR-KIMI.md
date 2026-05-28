@@ -5,8 +5,10 @@ or any agent CLI that reads markdown and writes files. Kimi does not import
 `.skill` archives — this file is the equivalent: read the instructions below
 and recreate the skill directory tree on disk.
 
-**Version:** v2.1.1 (provider-agnostic universal release)
+**Version:** v2.6.0 (bilingual: Arabic 16-dim + English 5-axis, dictionary triage, sacred-text guard)
 **Skill name:** `arabic-ai-text-humanizer` (Arabic AI-text humanizer)
+
+> The version-history table embedded below this point was last fully synced at v2.4.4. The authoritative changelog (including v2.5.0 English support, v2.5.1 multi-agent review hotfix, and v2.6.0 dictionary triage + sacred-text guard) lives in [`SKILL.md`](SKILL.md). The install instructions in this document continue to work for v2.6.0 — the provider-agnostic `LLM_API_URL` pattern is unchanged since v2.1.0, and the directory tree below now includes `scripts/humanize_english.py` (v2.5.0+) and `scripts/sacred_text_guard.py` (v2.6.0+).
 
 ## Quick instructions for Kimi
 
