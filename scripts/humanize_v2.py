@@ -1150,11 +1150,33 @@ def lex_reduce_tashkeel(text: str, register: str = "news") -> str:
 _TOOLKIT_DEFAULT_PATH = Path(__file__).resolve().parent.parent.parent / "arabic-corpus-toolkit"
 
 
+def _toolkit_disabled() -> bool:
+    """v2.7.2: explicit override to force the inline-fallback code paths.
+
+    Set ARABIC_CORPUS_TOOLKIT_DISABLE=1 to skip toolkit loading entirely.
+    Useful for:
+      - Testing that the in-code fallback literals still work (the v2.8.0
+        cleanup will remove the literals; regression testing needs to be
+        able to isolate the two code paths beforehand).
+      - Diagnosing whether a behavioral change is caused by toolkit content
+        vs in-code logic.
+      - Isolating from a broken toolkit install without uninstalling.
+
+    Semantics: ONLY the literal string '1' disables. Other values (including
+    'true', 'yes', '0', or unset) attempt the toolkit. This matches the
+    DEBUG=1 convention from many CLI tools.
+    """
+    import os
+    return os.environ.get("ARABIC_CORPUS_TOOLKIT_DISABLE") == "1"
+
+
 def _load_from_toolkit() -> tuple[list[str], dict] | None:
     """Try to load the dictionary from arabic-corpus-toolkit.
-    Returns (keys, lookup) on success, None if the toolkit isn't available
-    or fails to load. Caller falls back to vendored copy on None.
+    Returns (keys, lookup) on success, None if the toolkit isn't available,
+    is disabled, or fails to load. Caller falls back to vendored copy on None.
     """
+    if _toolkit_disabled():
+        return None
     import os
     override = os.environ.get("ARABIC_CORPUS_TOOLKIT_ROOT")
     candidate_roots: list[Path] = []
@@ -1281,9 +1303,11 @@ _CALQUE_KEYS, _CALQUE_LOOKUP = _load_calque_dictionary()
 # Major-version refuse: if the toolkit asset has $schema_version >= 2.x,
 # refuse to load (this humanizer version can't promise compatibility).
 def _try_load_lexical_tables_from_toolkit():
-    """Returns dict of projected tables or None on any failure (file missing,
-    parse error, schema-major mismatch, or shape mismatch).
+    """Returns dict of projected tables or None on any failure (toolkit disabled
+    via env, file missing, parse error, schema-major mismatch, or shape mismatch).
     """
+    if _toolkit_disabled():
+        return None
     import os
     override = os.environ.get("ARABIC_CORPUS_TOOLKIT_ROOT")
     candidate_roots: list[Path] = []
