@@ -575,6 +575,89 @@ def main():
 
     print()
     print("=" * 60)
+    print("  T29 — topic-guarded calque entries (v2.6.3)")
+    print("=" * 60)
+    # CRITICAL NEGATIVE: رؤية 2030 must NEVER be substituted.
+    # This is the v2.4.0-era class disaster the topic guard prevents.
+    out_vision = run_humanize(
+        "نسعى لتحقيق رؤية 2030 من خلال تطوير الاقتصاد السعودي.",
+        "--mode", "lex-only", "--register", "opinion",
+    )
+    r.check("T29a.vision_2030_preserved",
+            "رؤية 2030" in out_vision and "مشاهدة" not in out_vision,
+            f"رؤية 2030 was wrongly substituted: {out_vision!r}")
+
+    # POSITIVE: tech context (SQL + جدول + قاعدة البيانات) should fire رؤية → عرض.
+    out_sql = run_humanize(
+        "استخدمنا قاعدة البيانات لإنشاء رؤية SQL جديدة من الجدول.",
+        "--mode", "lex-only", "--register", "opinion",
+    )
+    r.check("T29b.tech_context_fires_view_substitution",
+            "عرض" in out_sql,
+            f"tech context didn't fire رؤية → عرض: {out_sql!r}")
+
+    # LOAD-BEARING MIXED: رؤية 2030 in same doc as SQL keywords. The
+    # exclude_if_pattern (رؤية\s+\d{4}) must win over Layer 1 positive gate.
+    out_mixed = run_humanize(
+        "تتطلب رؤية 2030 تطوير قاعدة البيانات الحكومية وإنشاء جدول SQL للمعاملات.",
+        "--mode", "lex-only", "--register", "opinion",
+    )
+    r.check("T29c.mixed_context_exclusion_wins",
+            "رؤية 2030" in out_mixed,
+            f"mixed-context exclusion failed (رؤية 2030 corrupted): {out_mixed!r}")
+
+    # WORKER NEGATIVE: حقوق العمال must NEVER be substituted (labor-rights context).
+    out_labor = run_humanize(
+        "نناقش اليوم حقوق العمال في القطاع الخاص.",
+        "--mode", "lex-only", "--register", "opinion",
+    )
+    r.check("T29d.worker_labor_context_preserved",
+            "حقوق العمال" in out_labor,
+            f"حقوق العمال wrongly substituted: {out_labor!r}")
+
+    print()
+    print("=" * 60)
+    print("  T30 — verb-subject agreement (v2.6.4)")
+    print("=" * 60)
+    # Direct error: fem-pl noun + masc-pl verb should correct to sing-fem verb.
+    out_va1 = run_humanize(
+        "الحكومات أعلنوا عن خطة جديدة لتطوير الاقتصاد.",
+        "--mode", "lex-only", "--register", "news",
+    )
+    r.check("T30a.govt_announced_corrected",
+            "أعلنت" in out_va1 and "أعلنوا" not in out_va1,
+            f"الحكومات أعلنوا not corrected: {out_va1!r}")
+
+    # With intervening particle (قد) — should still fire.
+    out_va2 = run_humanize(
+        "المعلمات قد أكدوا على أهمية التعليم في المجتمع.",
+        "--mode", "lex-only", "--register", "news",
+    )
+    r.check("T30b.with_particle_qad_corrected",
+            "أكدت" in out_va2,
+            f"verb-agreement missed with intervening قد: {out_va2!r}")
+
+    # Distant subject (different noun after comma) — should NOT fire.
+    # المعلمات + ... + والآباء أكدوا → أكدوا refers to الآباء, not المعلمات.
+    out_va3 = run_humanize(
+        "المعلمات في المدارس الحكومية، والآباء أكدوا على ذلك.",
+        "--mode", "lex-only", "--register", "news",
+    )
+    r.check("T30c.distant_subject_not_corrected",
+            "أكدوا" in out_va3,
+            f"distant subject wrongly corrected: {out_va3!r}")
+
+    # Correct usage — should be unchanged.
+    out_va4 = run_humanize(
+        "الشركات أعلنت عن نتائجها المالية للربع الأخير.",
+        "--mode", "lex-only", "--register", "news",
+    )
+    r.check("T30d.correct_usage_unchanged",
+            "أعلنت" in out_va4 and "أعلنوا" not in out_va4,
+            f"correct usage was mangled: {out_va4!r}")
+
+    print()
+    print("=" * 60)
     print(f"  Total: {r.passed + r.failed}  |  PASS: {r.passed}  |  FAIL: {r.failed}")
     print("=" * 60)
     sys.exit(0 if r.failed == 0 else 1)

@@ -37,6 +37,11 @@ from sacred_text_guard import mask_sacred_spans, restore_sacred_spans
 # form-X verbal nouns (Agent A's #1 visible AI-Arabic tell after connectors).
 # إستخدام -> استخدام, إستراتيجية -> استراتيجية, etc.
 from orthographic_validator import fix_hamzat_alwasl
+# v2.6.4: Verb-subject agreement (Agent A's #2 missing-feature). Catches
+# الحكومات أعلنوا -> الحكومات أعلنت (fem-pl noun + wrongly-masc-pl verb).
+# Conservative: only fires on noun + verb within ~30 chars, allowing one
+# intervening particle (قد, لم, لا, لن, ما).
+from verb_agreement_validator import fix_verb_agreement
 
 # Import the LLM wrapper lazily (only when --mode > lex-only)
 
@@ -942,6 +947,13 @@ def lex_pass(text: str, intensity: float, register: str = "news",
     # article (الإستخدام -> الاستخدام), inflections (إستخداماته -> استخداماته).
     # Runs FIRST so downstream phrase-matching sees corrected forms.
     text, _hamza_applied = fix_hamzat_alwasl(text)
+
+    # v2.6.4: Verb-subject agreement — fix fem-pl noun + wrongly-masc-pl verb.
+    # الحكومات أعلنوا -> الحكومات أعلنت. Conservative: verb must be within ~30
+    # chars of the noun, allowing at most one intervening particle. Runs in
+    # ALL registers because the rule (jumu' mu'annath salim takes sing-fem
+    # verb for non-human plurals; never masc-pl) is invariant across registers.
+    text, _vagree_applied = fix_verb_agreement(text)
 
     # ── Enrich mode: lex pass + targeted marker insertion for low-scoring dims
     # Caps at 3 insertions per text. Targets dims 1, 4, 5, 6, 7, 8, 13.
