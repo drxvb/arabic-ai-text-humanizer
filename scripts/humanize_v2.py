@@ -1179,6 +1179,27 @@ def lex_reduce_tashkeel(text: str, register: str = "news") -> str:
 _TOOLKIT_DEFAULT_PATH = Path(__file__).resolve().parent.parent.parent / "arabic-corpus-toolkit"
 
 
+# ── v2.15.0: forward-declared registry helper for module-init use ──
+# Sonnet's third-audit killer finding: `_registry_is_compatible` was defined
+# at line 1729+ but had zero call sites because the module-init loader at
+# line 1334 ran before the definition. v2.15.0 promotes the helper to be
+# defined HERE (immediately after _TOOLKIT_DEFAULT_PATH) so the loader can
+# actually call it. The duplicate definition at line 1729+ becomes a re-export.
+def _registry_is_compatible(asset_id: str, observed_version: str) -> bool:
+    """Route compatibility check through toolkit's asset_registry (v1.6.0+).
+    Falls back to legacy major-version check on registry import failure.
+    Defined at module-init time so loaders below can call it without
+    forward-reference issues."""
+    try:
+        scripts_dir = _TOOLKIT_DEFAULT_PATH / "scripts"
+        if str(scripts_dir) not in sys.path:
+            sys.path.insert(0, str(scripts_dir))
+        from asset_registry import is_compatible  # type: ignore
+        return is_compatible(asset_id, observed_version)
+    except Exception:
+        return observed_version.split(".")[0] == "1"
+
+
 def _toolkit_disabled() -> bool:
     """v2.7.2: explicit override to force the inline-fallback code paths.
 
@@ -1351,14 +1372,10 @@ def _try_load_lexical_tables_from_toolkit():
             data = json.loads(p.read_text(encoding="utf-8"))
         except Exception:
             continue
-        schema_major = data.get("$schema_version", "0.0.0").split(".")[0]
-        if schema_major != "1":
-            # NOTE (v2.14.0): this loader runs at module init (line 1396 below)
-            # which is BEFORE _registry_is_compatible is defined in the source
-            # order. The legacy major-only check stays here. Other consumer
-            # code paths (score_text downstream) use the registry-aware
-            # _registry_is_compatible helper for Gap G2 adoption.
-            continue  # incompatible major version
+        # v2.15.0: now routes through registry (G2 — paper adoption → runtime adoption)
+        observed = data.get("$schema_version", "0.0.0")
+        if not _registry_is_compatible("C", observed):
+            continue  # incompatible per asset_registry (or legacy fallback)
         try:
             return _project_toolkit_lexical_tables(data["tables"])
         except (KeyError, TypeError):
@@ -1629,7 +1646,8 @@ def _next_rotation_proxy() -> str:
 
 
 def score_text_deep(text_ar: str, register: str = "news",
-                    proxy_name: str | None = None) -> dict:
+                    proxy_name: str | None = None,
+                    emit_trace: bool = False) -> dict:
     """LLM-backed score on the 4-dimension cognitive rubric.
 
     Returns:
@@ -1646,15 +1664,26 @@ def score_text_deep(text_ar: str, register: str = "news",
     if not text_ar:
         return {"available": True, "score": 100, "per_dimension": {},
                 "reasoning": "empty input", "backend": "trivial",
-                "register": register}
+                "register": register, "fallback_used": False}
     # v2.13.0: rotation when caller doesn't pin a proxy
     if proxy_name is None:
         proxy_name = _next_rotation_proxy()
+    # v2.15.0: optional influence trace + explicit fallback_used flag (Sonnet
+    # third-audit finding: consumers couldn't tell whether the score came
+    # from a real LLM or the heuristic fallback. v2.15.0 makes that visible.)
+    trace = _new_humanizer_trace() if emit_trace else None
     import urllib.request, urllib.error  # local to keep module-level imports clean
     p = _DEEP_PROXIES.get(proxy_name)
     if p is None:
         fallback = score_text(text_ar, register=register)
         fallback["backend"] = "heuristic_fallback (unknown proxy)"
+        fallback["fallback_used"] = True
+        if trace is not None:
+            trace.record(asset_id="humanizer", asset_version="2.15.0",
+                         trigger="language_check_failed",  # closest standard trigger
+                         evidence={"reason": "unknown_proxy", "proxy_name": proxy_name},
+                         stage="score_text_deep")
+            fallback["influence_trace"] = trace.as_json()
         return fallback
 
     system_prompt = (
@@ -1695,6 +1724,12 @@ def score_text_deep(text_ar: str, register: str = "news",
     except Exception as e:
         fallback = score_text(text_ar, register=register)
         fallback["backend"] = f"heuristic_fallback (proxy error: {e})"
+        fallback["fallback_used"] = True  # v2.15.0 explicit flag
+        if trace is not None:
+            trace.record(asset_id="humanizer", asset_version="2.15.0",
+                         trigger="other", evidence={"proxy_error": str(e)[:200], "proxy_name": proxy_name},
+                         stage="score_text_deep")
+            fallback["influence_trace"] = trace.as_json()
         return fallback
 
     parsed = None
@@ -1710,6 +1745,12 @@ def score_text_deep(text_ar: str, register: str = "news",
     if not isinstance(parsed, dict):
         fallback = score_text(text_ar, register=register)
         fallback["backend"] = "heuristic_fallback (LLM returned non-JSON)"
+        fallback["fallback_used"] = True  # v2.15.0 explicit flag
+        if trace is not None:
+            trace.record(asset_id="humanizer", asset_version="2.15.0",
+                         trigger="other", evidence={"reason": "non_json_response"},
+                         stage="score_text_deep")
+            fallback["influence_trace"] = trace.as_json()
         return fallback
 
     dims = {
@@ -1719,33 +1760,33 @@ def score_text_deep(text_ar: str, register: str = "news",
         "factual_anchor": min(25, max(0, int(parsed.get("factual_anchor", 0) or 0))),
     }
     total = sum(dims.values())
-    return {
+    result = {
         "available": True,
         "score": total,
         "per_dimension": dims,
         "reasoning": str(parsed.get("reasoning", ""))[:500],
         "backend": f"llm_proxy.{proxy_name}",
         "register": register,
+        "fallback_used": False,  # v2.15.0: real LLM scored this
     }
+    if trace is not None:
+        trace.record(asset_id="humanizer", asset_version="2.15.0",
+                     trigger="humanizer_gate_decision",
+                     evidence={"score": total, "proxy": proxy_name,
+                               "per_dimension": dims},
+                     stage="score_text_deep")
+        result["influence_trace"] = trace.as_json()
+    return result
 
 
 # ── v2.14.0: cross-contract adoption (Gaps G1/G2/G3 first-class consumers) ──
 # Re-audit consensus (Sonnet 77, Codex 76, Gemini 78) — all three flagged
 # humanizer as having adopted 0 of 4 toolkit contracts. v2.14.0 closes that.
 
-def _registry_is_compatible(asset_id: str, observed_version: str) -> bool:
-    """Route compatibility check through toolkit's asset_registry (v1.6.0+).
-    Falls back to legacy major-version check on registry import failure."""
-    try:
-        # Toolkit scripts on path via the existing _TOOLKIT_DEFAULT_PATH
-        scripts_dir = _TOOLKIT_DEFAULT_PATH / "scripts"
-        if str(scripts_dir) not in sys.path:
-            sys.path.insert(0, str(scripts_dir))
-        from asset_registry import is_compatible  # type: ignore
-        return is_compatible(asset_id, observed_version)
-    except Exception:
-        # Legacy major-version fallback (pre-v1.6.0 toolkit)
-        return observed_version.split(".")[0] == "1"
+# NOTE: _registry_is_compatible() is now defined at module-init time
+# (just after _TOOLKIT_DEFAULT_PATH) so the lexical-tables loader can call
+# it. This block previously duplicated the definition; v2.15.0 removed
+# the duplicate. The forward-declared version is canonical.
 
 
 def _arabic_normalize_via_toolkit(text: str, level: str = "light") -> str:
