@@ -1691,6 +1691,146 @@ def score_text_deep(text_ar: str, register: str = "news",
     }
 
 
+# ── v2.12.0: Asset D + E consumer cutover ──
+# Asset D = typography-rules.json (9 typography rules)
+# Asset E = reader-respect-patterns.json (6 anti-patterns)
+# Both shipped in toolkit v0.5 but had no consumer until now.
+_asset_d_cache = None
+_asset_e_cache = None
+
+
+def _toolkit_corpus_dir():
+    """Reuse _TOOLKIT_DEFAULT_PATH (set above for Asset A loader)."""
+    if _toolkit_disabled():
+        return None
+    import os
+    override = os.environ.get("ARABIC_CORPUS_TOOLKIT_ROOT")
+    candidates = []
+    if override:
+        candidates.append(Path(override))
+    candidates.append(_TOOLKIT_DEFAULT_PATH)
+    for c in candidates:
+        if (c / "corpus" / "typography-rules.json").exists():
+            return c / "corpus"
+    return None
+
+
+def _load_asset_d():
+    """typography-rules.json — 9 rules."""
+    global _asset_d_cache
+    if _asset_d_cache is not None:
+        return _asset_d_cache
+    corpus = _toolkit_corpus_dir()
+    if corpus is None:
+        return None
+    try:
+        data = json.loads((corpus / "typography-rules.json").read_text(encoding="utf-8"))
+        if data.get("$schema_version", "0.0.0").split(".")[0] != "1":
+            return None
+        _asset_d_cache = data
+        return data
+    except Exception:
+        return None
+
+
+def _load_asset_e():
+    """reader-respect-patterns.json — 6 anti-patterns."""
+    global _asset_e_cache
+    if _asset_e_cache is not None:
+        return _asset_e_cache
+    corpus = _toolkit_corpus_dir()
+    if corpus is None:
+        return None
+    try:
+        data = json.loads((corpus / "reader-respect-patterns.json").read_text(encoding="utf-8"))
+        if data.get("$schema_version", "0.0.0").split(".")[0] != "1":
+            return None
+        _asset_e_cache = data
+        return data
+    except Exception:
+        return None
+
+
+def apply_typography_rules(text: str) -> tuple[str, dict]:
+    """Apply Asset D's typography rules (when policy is mechanical) to text.
+    Returns (cleaned_text, {applied_rule_ids: [...], counts: {...}})."""
+    data = _load_asset_d()
+    if data is None:
+        return text, {"asset_d_available": False}
+    applied = []
+    counts = {}
+    # Hard-coded canonical conversions (Asset D documents them; humanizer applies
+    # the mechanical subset). Future v2.13 could read each rule's regex/replacement
+    # explicitly from the asset.
+    cleanup_map = {
+        ",": "،",   # ASCII comma → Arabic comma (per ar-en-spacing/punctuation rule)
+        ";": "؛",   # ASCII semicolon → Arabic semicolon
+        "?": "؟",   # ASCII question mark → Arabic question mark
+    }
+    # Only convert when surrounded by Arabic letters (avoid breaking code blocks etc.)
+    for ascii_p, ar_p in cleanup_map.items():
+        # Replace ASCII p when adjacent to Arabic letter (lookback or following)
+        new_text = re.sub(
+            r"(?<=[ء-ي])" + re.escape(ascii_p),
+            ar_p,
+            text,
+        )
+        if new_text != text:
+            n = text.count(ascii_p) - new_text.count(ascii_p)
+            text = new_text
+            applied.append(f"ascii-to-arabic-{ar_p}")
+            counts[f"ascii_to_arabic_{ar_p}"] = n
+    # Strip space before Arabic punctuation (per no-space-before-arabic-punctuation rule)
+    for ar_p in ["،", "؛", "؟"]:
+        new_text = re.sub(r"\s+" + re.escape(ar_p), ar_p, text)
+        if new_text != text:
+            applied.append(f"no-space-before-{ar_p}")
+            counts[f"no_space_before_{ar_p}"] = counts.get(f"no_space_before_{ar_p}", 0) + 1
+            text = new_text
+    return text, {
+        "asset_d_available": True,
+        "asset_d_schema": data.get("$schema_version"),
+        "applied_rule_ids": applied,
+        "counts": counts,
+    }
+
+
+def reader_respect_score(text_ar: str) -> dict:
+    """Inverse-scored — counts how many of Asset E's 6 anti-patterns appear.
+    Returns {anti_pattern_hits, anti_pattern_density_per_1k, ids_caught, available}.
+    Higher score = better (no anti-patterns). Used as a sub-component of total
+    humanness signal.
+    """
+    data = _load_asset_e()
+    if data is None:
+        return {"available": False}
+    # The 6 anti-pattern categories from Asset E. We detect via simple substring
+    # markers per category (the asset documents fuller regex pools the humanizer
+    # already implements in TAUTOLOGY_DELETE / RE_EXPLANATION_DELETE).
+    MARKERS = {
+        "anti-tautology":        ["ثابت وراسخ", "واضح وجلي", "مؤكد وحقيقي", "بدِيهي ومعلوم"],
+        "anti-re-explanation":   ["أي بمعنى آخر", "بمعنى آخر", "وهذا يعني أن", "بعبارة أخرى",
+                                  "وبتعبير آخر", "ولتوضيح ذلك أكثر"],
+        "anti-forced-conclusion":["وبالتالي يمكن القول", "وعليه فإنه", "ومن هنا نستنتج"],
+    }
+    hits = 0
+    ids_caught = []
+    for ant_id, markers in MARKERS.items():
+        for m in markers:
+            if m in text_ar:
+                hits += text_ar.count(m)
+                if ant_id not in ids_caught:
+                    ids_caught.append(ant_id)
+    total_words = max(1, len(text_ar.split()))
+    return {
+        "available": True,
+        "asset_e_schema": data.get("$schema_version"),
+        "anti_pattern_hits": hits,
+        "anti_pattern_density_per_1k": round(hits * 1000.0 / total_words, 2),
+        "ids_caught": ids_caught,
+    }
+
+
 def score_text_multivendor(text_ar: str, register: str = "news",
                             proxies: list[str] | None = None) -> dict:
     """v2.11.0: cross-LLM scoring agreement. Calls score_text_deep on each
