@@ -443,8 +443,12 @@
     {
       "en": "fundraising",
       "ai_default_calque": "جمع الأموال",
-      "natural_arabic": "جمع التبرعات",
-      "alternatives": [],
+      "natural_arabic": "جمع التمويل",
+      "alternatives": [
+        "جولة تمويل",
+        "جمع رأس مال",
+        "جمع التبرعات"
+      ],
       "domain": "business",
       "confidence": "medium_consensus",
       "corpus_hits": 0,
@@ -460,7 +464,13 @@
         }
       },
       "n_llms": 2,
-      "consensus_strength": 2
+      "consensus_strength": 2,
+      "disambiguation_warning": "جمع التبرعات = charity donations (NGO sense). For startup/VC fundraising use جمع التمويل or جولة تمويل. Original entry conflated both.",
+      "applies_only_in_domain": [
+        "business",
+        "tech-software"
+      ],
+      "v2_6_triage_note": "Original mapping to جمع التبرعات was wrong-sense (charity, not VC). Native MSA business writing uses جمع التمويل."
     },
     {
       "en": "go to market",
@@ -906,8 +916,11 @@
     {
       "en": "venture capital",
       "ai_default_calque": "رأس مال المجازفة",
-      "natural_arabic": "رأس المال المغامر",
-      "alternatives": [],
+      "natural_arabic": "رأس المال المخاطر",
+      "alternatives": [
+        "رأس المال الاستثماري",
+        "رأس مال المخاطرة"
+      ],
       "domain": "business",
       "confidence": "medium",
       "corpus_hits": 0,
@@ -918,7 +931,8 @@
           "naive": "رأس مال المجازفة"
         }
       },
-      "safety": "safe"
+      "safety": "safe",
+      "v2_6_triage_note": "رأس المال المغامر was a single-LLM-vote calque. Corpus-attested MSA: رأس المال المخاطر or رأس المال الاستثماري (UN/IMF Arabic)."
     },
     {
       "en": "biodiversity",
@@ -1123,7 +1137,7 @@
     {
       "en": "global warming",
       "ai_default_calque": "الاحترار العالمي",
-      "natural_arabic": "الاحتباس الحراري",
+      "natural_arabic": "الاحترار العالمي",
       "alternatives": [],
       "domain": "climate",
       "confidence": "medium_consensus",
@@ -1140,7 +1154,10 @@
         }
       },
       "n_llms": 2,
-      "consensus_strength": 2
+      "consensus_strength": 2,
+      "disambiguation_warning": "الاحترار العالمي = global warming (temperature trend). الاحتباس الحراري = greenhouse effect (the mechanism). UN/IPCC Arabic keeps these distinct; do NOT collapse.",
+      "disambiguation_pair_id": "climate-warming-vs-greenhouse",
+      "v2_6_triage_note": "Original collapsed both to الاحتباس الحراري, destroying a real climate-science distinction. Keep them separate per UN/IPCC."
     },
     {
       "en": "reforestation",
@@ -1766,7 +1783,11 @@
         }
       },
       "n_llms": 2,
-      "consensus_strength": 2
+      "consensus_strength": 2,
+      "disambiguation_pair_id": "refugee-vs-displaced-person",
+      "disambiguation_warning": "نازح = internally displaced person (IDP). Distinct from لاجئ (cross-border refugee). Do NOT swap in Gaza / Sudan / Syria reporting.",
+      "political_sensitivity": "high",
+      "v2_6_triage_note": "Pair-partner of refugee entry; see disambiguation_pair_id."
     },
     {
       "en": "echo chamber",
@@ -1848,10 +1869,11 @@
     },
     {
       "en": "fake news",
-      "ai_default_calque": "الأخبار المزيفة",
-      "natural_arabic": "الأخبار الزائفة",
+      "ai_default_calque": "الأخبار الزائفة",
+      "natural_arabic": "الأخبار الكاذبة",
       "alternatives": [
-        "أخبار مزيفة"
+        "الأخبار المفبركة",
+        "الأخبار الملفقة"
       ],
       "domain": "news-journalism",
       "confidence": "medium",
@@ -1868,7 +1890,8 @@
         }
       },
       "n_llms": 2,
-      "consensus_strength": 1
+      "consensus_strength": 1,
+      "v2_6_triage_note": "Sign-flip bug — Claude's LLM-vote marked الأخبار الكاذبة as the calque when it's actually the corpus-attested natural form (Aljazeera/BBC Arabic)."
     },
     {
       "en": "filter bubble",
@@ -1936,8 +1959,10 @@
     {
       "en": "grassroots movement",
       "ai_default_calque": "حركة جذور العشب",
-      "natural_arabic": "حركة شعبية",
-      "alternatives": [],
+      "natural_arabic": "حركة قاعدية",
+      "alternatives": [
+        "حركة شعبية"
+      ],
       "domain": "news-journalism",
       "confidence": "medium",
       "corpus_hits": 0,
@@ -1948,7 +1973,11 @@
           "naive": "حركة جذور العشب"
         }
       },
-      "safety": "safe"
+      "safety": "safe",
+      "regional_sensitivity": "levant",
+      "political_sensitivity": "medium",
+      "disambiguation_warning": "حركة شعبية has Hamas/PFLP resonance in Levant/Egypt; pan-Arab MSA neutral is حركة قاعدية.",
+      "v2_6_triage_note": "حركة شعبية carries Islamist-populist political coloring in non-Gulf usage. حركة قاعدية is the neutral pan-Arab MSA option."
     },
     {
       "en": "hard power",
@@ -2199,7 +2228,11 @@
         }
       },
       "n_llms": 2,
-      "consensus_strength": 2
+      "consensus_strength": 2,
+      "disambiguation_pair_id": "refugee-vs-displaced-person",
+      "disambiguation_warning": "لاجئ = 1951 Convention refugee (cross-border). Distinct from نازح (IDP, internal). Do NOT swap in Gaza / Sudan / Syria reporting.",
+      "political_sensitivity": "high",
+      "v2_6_triage_note": "Legal distinction matters; flagging pairs prevents downstream LLM cognitive pass from swapping them."
     },
     {
       "en": "regime change",
@@ -3672,9 +3705,11 @@
     },
     {
       "en": "personalization",
-      "ai_default_calque": "الشخصنة",
-      "natural_arabic": "التخصيص",
-      "alternatives": [],
+      "ai_default_calque": "التخصيص",
+      "natural_arabic": "الشخصنة",
+      "alternatives": [
+        "تخصيص للمستخدم"
+      ],
       "domain": "tech-consumer",
       "confidence": "medium_consensus",
       "corpus_hits": 0,
@@ -3690,7 +3725,11 @@
         }
       },
       "n_llms": 2,
-      "consensus_strength": 2
+      "consensus_strength": 2,
+      "regional_sensitivity": "gulf",
+      "political_sensitivity": "high",
+      "disambiguation_warning": "In Saudi context, التخصيص is the official term for the privatization program (Vision 2030). Use الشخصنة for software UX personalization.",
+      "v2_6_triage_note": "v2.4.0 had the direction REVERSED. Agent A: الشخصنة is the modern attested term in Wamda/AlJazeera Net post-2015; التخصيص in Saudi context = privatization (برنامج التخصيص)."
     },
     {
       "en": "podcast",
@@ -4621,24 +4660,6 @@
       "consensus_strength": 1
     },
     {
-      "en": "partition",
-      "ai_default_calque": "تقسيم",
-      "natural_arabic": "قسم",
-      "alternatives": [],
-      "domain": "tech-data",
-      "confidence": "high",
-      "corpus_hits": 444,
-      "partial_hits": null,
-      "llm_votes": {
-        "codex": {
-          "natural": "قسم",
-          "naive": "تقسيم"
-        }
-      },
-      "n_llms": 1,
-      "consensus_strength": 1
-    },
-    {
       "en": "primary key",
       "ai_default_calque": "المفتاح الأولي",
       "natural_arabic": "المفتاح الرئيسي",
@@ -4736,42 +4757,6 @@
         }
       },
       "safety": "safe"
-    },
-    {
-      "en": "trigger",
-      "ai_default_calque": "زناد",
-      "natural_arabic": "مشغل",
-      "alternatives": [],
-      "domain": "tech-data",
-      "confidence": "high",
-      "corpus_hits": 277,
-      "partial_hits": null,
-      "llm_votes": {
-        "codex": {
-          "natural": "مشغل",
-          "naive": "زناد"
-        }
-      },
-      "n_llms": 1,
-      "consensus_strength": 1
-    },
-    {
-      "en": "view",
-      "ai_default_calque": "رؤية",
-      "natural_arabic": "مشاهدة",
-      "alternatives": [],
-      "domain": "tech-data",
-      "confidence": "high",
-      "corpus_hits": 610,
-      "partial_hits": null,
-      "llm_votes": {
-        "codex": {
-          "natural": "مشاهدة",
-          "naive": "رؤية"
-        }
-      },
-      "n_llms": 1,
-      "consensus_strength": 1
     },
     {
       "en": "GitOps",
@@ -6668,28 +6653,6 @@
       "consensus_strength": 1
     },
     {
-      "en": "process",
-      "ai_default_calque": "بروسيس",
-      "natural_arabic": "عملية",
-      "alternatives": [],
-      "domain": "tech-software",
-      "confidence": "high",
-      "corpus_hits": 1512,
-      "partial_hits": null,
-      "llm_votes": {
-        "codex": {
-          "natural": "عملية",
-          "naive": "عملية"
-        },
-        "claude": {
-          "natural": "عملية",
-          "naive": "بروسيس"
-        }
-      },
-      "n_llms": 2,
-      "consensus_strength": 2
-    },
-    {
       "en": "race condition",
       "ai_default_calque": "شرط السباق",
       "natural_arabic": "حالة التسابق",
@@ -6930,28 +6893,6 @@
       "consensus_strength": 2
     },
     {
-      "en": "task",
-      "ai_default_calque": "تاسك",
-      "natural_arabic": "مهمة",
-      "alternatives": [],
-      "domain": "tech-software",
-      "confidence": "high",
-      "corpus_hits": 305,
-      "partial_hits": null,
-      "llm_votes": {
-        "codex": {
-          "natural": "مهمة",
-          "naive": "مهمة"
-        },
-        "claude": {
-          "natural": "مهمة",
-          "naive": "تاسك"
-        }
-      },
-      "n_llms": 2,
-      "consensus_strength": 2
-    },
-    {
       "en": "technical debt",
       "ai_default_calque": "الدين الفني",
       "natural_arabic": "الدين التقني",
@@ -7083,28 +7024,6 @@
       },
       "n_llms": 2,
       "consensus_strength": 1
-    },
-    {
-      "en": "worker",
-      "ai_default_calque": "عمال",
-      "natural_arabic": "عامل",
-      "alternatives": [],
-      "domain": "tech-software",
-      "confidence": "high",
-      "corpus_hits": 76,
-      "partial_hits": null,
-      "llm_votes": {
-        "codex": {
-          "natural": "عامل",
-          "naive": "عامل"
-        },
-        "claude": {
-          "natural": "عامل",
-          "naive": "عمال"
-        }
-      },
-      "n_llms": 2,
-      "consensus_strength": 2
     },
     {
       "en": "workflow",
