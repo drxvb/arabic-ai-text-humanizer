@@ -46,9 +46,38 @@ from verb_agreement_validator import fix_verb_agreement
 # Import the LLM wrapper lazily (only when --mode > lex-only)
 
 
-# ── Inherited lexical patterns (Arabic only — see reference 13) ─────────────
+# ── v2.8.0: Vendored lexical literals REMOVED. Toolkit is now a HARD dependency.
+# ──
+# The six tables (AI_PHRASES_AR, CONNECTORS_AR, REPETITIVE_STARTERS_AR,
+# STRUCTURAL_OPENERS_AR, QUOTE_VERBS_ROTATION, INTENSIFIER_DESTACK) are populated
+# at module load time from arabic-corpus-toolkit/corpus/lexical-tables.json.
+# If the toolkit is unavailable, module load FAILS with an explicit error
+# pointing at the install instructions.
+#
+# ARABIC_CORPUS_TOOLKIT_DISABLE=1 now installs empty stubs (lex-pass becomes
+# a no-op) — useful for isolation testing of the LLM cognitive layers but the
+# normal runtime path requires the toolkit.
+#
+# Migration trajectory completed:
+#   v2.6.x  -- vendored literals only
+#   v2.7.0  -- toolkit as preferred, vendored as fallback (Asset A)
+#   v2.7.1  -- toolkit as preferred, vendored as fallback (Asset C)
+#   v2.7.2  -- DISABLE flag added for isolation testing
+#   v2.8.0  -- vendored literals DELETED. Toolkit hard-dependency. ← THIS RELEASE
+#
+# History of the vendored definitions lives in the git history at tag v2.7.2.
 
-AI_PHRASES_AR = {
+# Empty stubs — populated by the cutover block below, or left empty under
+# ARABIC_CORPUS_TOOLKIT_DISABLE=1.
+AI_PHRASES_AR: dict = {}
+CONNECTORS_AR: list = []
+REPETITIVE_STARTERS_AR: list = []
+STRUCTURAL_OPENERS_AR: list = []
+QUOTE_VERBS_ROTATION: dict = {}
+INTENSIFIER_DESTACK: list = []
+
+# Inline literal AI_PHRASES_AR removed — historical reference inert.
+_REMOVED_INLINE_AI_PHRASES_AR_AT_V2_8_0 = {
     # ── PRO-DROP / DELETE-DON'T-SUBSTITUTE entries (per cross-LLM
     # critique) ──
     # Arabic prefers implicit subjects (الضمير المُستتر). For "fluff verbs"
@@ -139,7 +168,7 @@ AI_PHRASES_AR = {
     "تجدر الإشارة كذلك":    ["كذلك", "يُضاف"],
 }
 
-CONNECTORS_AR = [
+_REMOVED_INLINE_CONNECTORS_AR_AT_V2_8_0 = [
     ("وعلاوة على ذلك،", "كما أن،"),
     ("ومع ذلك،", "لكن،"),
     ("وبالتالي،", "لذلك،"),
@@ -165,7 +194,7 @@ CONNECTORS_AR = [
     ("تبعاً لذلك،",         "لذلك،"),
 ]
 
-REPETITIVE_STARTERS_AR = [
+_REMOVED_INLINE_REPETITIVE_STARTERS_AR_AT_V2_8_0 = [
     "تعتبر", "تُعتبر", "يُعتبر", "تعد", "يُعد", "تُعد",
     "يمكن", "تستطيع", "نستطيع", "يعتبر", "يعد",
 ]
@@ -174,7 +203,7 @@ REPETITIVE_STARTERS_AR = [
 # Fix #5/bug-1 (comp-linguist): `\S+` doesn't span two-word compounds like
 # "الذكاء الاصطناعي". Switched to `([ء-ي\s]{1,40}?)` — Arabic-letters-or-spaces,
 # bounded length, lazy match, so "يلعب الذكاء الاصطناعي دوراً" now matches.
-STRUCTURAL_OPENERS_AR = [
+_REMOVED_INLINE_STRUCTURAL_OPENERS_AR_AT_V2_8_0 = [
     (r"يلعب ([ء-ي\s]{1,40}?) دوراً",       ["{0} يحدّد", "{0} يُشكّل", "{0} يَصنع"]),
     (r"يشكّل ([ء-ي\s]{1,40}?) عاملاً",     ["{0} هو السبب الرئيسي", "{0} يُحدِّد"]),
     (r"يمثّل ([ء-ي\s]{1,40}?) جزءاً",      ["{0} هو", "{0} يُعدّ"]),
@@ -188,7 +217,7 @@ STRUCTURAL_OPENERS_AR = [
 ]
 
 # ── Gap D (from references/13): news-register quote-verb rotation ──
-QUOTE_VERBS_ROTATION = {
+_REMOVED_INLINE_QUOTE_VERBS_ROTATION_AT_V2_8_0 = {
     "قال":   ["أكّد", "أشار", "أوضح", "أضاف", "صرّح", "ذكر", "نوّه", "لفت"],
     "يقول":  ["يَرى", "يَعتقد", "يَزعم", "يُقرّر", "يُؤكّد"],
     "ذكر أن": ["أفاد بأنّ", "أشار إلى أنّ", "لفت إلى أنّ", "كشف أنّ"],
@@ -196,7 +225,7 @@ QUOTE_VERBS_ROTATION = {
 }
 
 # ── Gap G (from references/13): redundant intensifier stacks ──
-INTENSIFIER_DESTACK = [
+_REMOVED_INLINE_INTENSIFIER_DESTACK_AT_V2_8_0 = [
     # (pattern_regex, replacement)
     (r"في غاية الأهمية البالغة(?:\s+جداً)?",  "بالغ الأهمية"),
     (r"بشكل كبير جداً",                       "كثيراً"),
@@ -1370,6 +1399,17 @@ if _toolkit_lexical is not None:
     STRUCTURAL_OPENERS_AR  = _toolkit_lexical["structural_openers"]
     QUOTE_VERBS_ROTATION   = _toolkit_lexical["quote_verbs"]
     INTENSIFIER_DESTACK    = _toolkit_lexical["intensifier_destack"]
+elif not _toolkit_disabled():
+    # v2.8.0: toolkit is a HARD dependency. Failure to load is fatal unless
+    # ARABIC_CORPUS_TOOLKIT_DISABLE=1 was explicitly set (testing-only mode).
+    raise ImportError(
+        "arabic-corpus-toolkit is required (v2.8.0+ removed the vendored "
+        "lexical tables). Install it as a sibling repo at "
+        "../arabic-corpus-toolkit, or set ARABIC_CORPUS_TOOLKIT_ROOT to its "
+        "location. To run with empty stubs (lex-pass becomes a no-op) for "
+        "isolation testing, set ARABIC_CORPUS_TOOLKIT_DISABLE=1."
+    )
+# (else: DISABLE=1, stubs stay empty — explicit testing-only mode)
 
 
 def lex_apply_calque_dictionary(text: str, register: str = "news") -> str:
