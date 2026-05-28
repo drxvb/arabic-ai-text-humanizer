@@ -1691,6 +1691,59 @@ def score_text_deep(text_ar: str, register: str = "news",
     }
 
 
+def score_text_multivendor(text_ar: str, register: str = "news",
+                            proxies: list[str] | None = None) -> dict:
+    """v2.11.0: cross-LLM scoring agreement. Calls score_text_deep on each
+    requested proxy and returns aggregate signal.
+
+    Returns:
+      {available, mean_score, min_score, max_score, std_dev,
+       per_proxy: {proxy_name: dim_dict}, agreement: 'strong|moderate|weak'}
+
+    Agreement bands (based on max - min):
+      strong   : range <=10  (vendors converged)
+      moderate : range 11-25 (typical variance)
+      weak     : range >25   (vendor disagreement — flag for review)
+    """
+    if proxies is None:
+        proxies = ["gemini", "minimax"]
+    per_proxy = {}
+    for prx in proxies:
+        result = score_text_deep(text_ar, register=register, proxy_name=prx)
+        per_proxy[prx] = {
+            "score": result.get("score"),
+            "per_dimension": result.get("per_dimension", {}),
+            "backend": result.get("backend"),
+        }
+    valid_scores = [v["score"] for v in per_proxy.values() if isinstance(v["score"], int)]
+    if not valid_scores:
+        return {"available": False, "per_proxy": per_proxy,
+                "reason": "no valid scores returned by any proxy"}
+    mean = sum(valid_scores) / len(valid_scores)
+    score_range = max(valid_scores) - min(valid_scores)
+    if score_range <= 10:
+        agreement = "strong"
+    elif score_range <= 25:
+        agreement = "moderate"
+    else:
+        agreement = "weak"
+    # Std dev (population)
+    variance = sum((s - mean) ** 2 for s in valid_scores) / len(valid_scores)
+    std = variance ** 0.5
+    return {
+        "available": True,
+        "mean_score": round(mean, 1),
+        "min_score": min(valid_scores),
+        "max_score": max(valid_scores),
+        "score_range": score_range,
+        "std_dev": round(std, 2),
+        "agreement": agreement,
+        "n_proxies": len(valid_scores),
+        "per_proxy": per_proxy,
+        "register": register,
+    }
+
+
 # ── Pipeline ────────────────────────────────────────────────────────────────
 
 def run_pipeline(text: str, mode: str, backend: str, intensity: float,
