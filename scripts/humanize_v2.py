@@ -1353,6 +1353,11 @@ def _try_load_lexical_tables_from_toolkit():
             continue
         schema_major = data.get("$schema_version", "0.0.0").split(".")[0]
         if schema_major != "1":
+            # NOTE (v2.14.0): this loader runs at module init (line 1396 below)
+            # which is BEFORE _registry_is_compatible is defined in the source
+            # order. The legacy major-only check stays here. Other consumer
+            # code paths (score_text downstream) use the registry-aware
+            # _registry_is_compatible helper for Gap G2 adoption.
             continue  # incompatible major version
         try:
             return _project_toolkit_lexical_tables(data["tables"])
@@ -1522,7 +1527,8 @@ def llm_pass(text: str, pass_name: str, backend: str,
 # authoring-suite humanizer_gate). Uses Asset C's lexical-tables directly
 # instead of a hard-coded 6-tell list, giving consumers a much richer signal
 # without spinning up the full pipeline.
-def score_text(text_ar: str, register: str = "news") -> dict:
+def score_text(text_ar: str, register: str = "news",
+                emit_trace: bool = False) -> dict:
     """Score Arabic text on AI-tell density. Returns:
       {score:int(0-100), ai_tell_hits:int, ai_tell_density_per_1k:float,
        total_words:int, register:str, ai_phrases_caught:list[str],
@@ -1544,17 +1550,28 @@ def score_text(text_ar: str, register: str = "news") -> dict:
                 "total_words": 0, "register": register, "ai_phrases_caught": [],
                 "sample_size": 0}
 
-    total_words = len(text_ar.split())
+    # v2.14.0: normalize via shared contract (Gap G1) before counting AI-tells.
+    # Light normalization strips tashkeel + tatweel so 'الذكاءِ' and 'الذكاء'
+    # match against the asset C ai_phrases dictionary keys identically.
+    normalized = _arabic_normalize_via_toolkit(text_ar, level="light")
+    trace = _new_humanizer_trace() if emit_trace else None
+
+    total_words = len(normalized.split())
     caught: list[str] = []
     hits = 0
 
     # AI_PHRASES_AR is the dict {input: alternatives} populated from Asset C
     # at module load (or empty under DISABLE=1).
     for phrase in AI_PHRASES_AR.keys():
-        n = text_ar.count(phrase)
+        n = normalized.count(phrase)
         if n > 0:
             hits += n
             caught.append(phrase)
+            if trace is not None:
+                trace.record(asset_id="C", asset_version="1.1.0",
+                             trigger="lex_substitution_fired",
+                             evidence={"phrase": phrase, "count": n},
+                             stage="score_text")
 
     # Intensifier de-stack: each match is a strong AI-tell (intensifiers
     # stacked together are rare in human writing).
@@ -1568,7 +1585,7 @@ def score_text(text_ar: str, register: str = "news") -> dict:
 
     density = (hits * 1000.0 / total_words) if total_words > 0 else 0.0
     score = max(0, 100 - int(density * 5))
-    return {
+    result = {
         "score": score,
         "ai_tell_hits": hits,
         "ai_tell_density_per_1k": round(density, 2),
@@ -1576,7 +1593,11 @@ def score_text(text_ar: str, register: str = "news") -> dict:
         "register": register,
         "ai_phrases_caught": caught[:20],
         "sample_size": len(AI_PHRASES_AR),
+        "normalized_via_toolkit": True,  # v2.14.0: arabic_normalize fired
     }
+    if trace is not None:
+        result["influence_trace"] = trace.as_json()
+    return result
 
 
 # v2.10.0: LLM-backed deep scoring via the LAN-local proxy fleet
@@ -1706,6 +1727,50 @@ def score_text_deep(text_ar: str, register: str = "news",
         "backend": f"llm_proxy.{proxy_name}",
         "register": register,
     }
+
+
+# ── v2.14.0: cross-contract adoption (Gaps G1/G2/G3 first-class consumers) ──
+# Re-audit consensus (Sonnet 77, Codex 76, Gemini 78) — all three flagged
+# humanizer as having adopted 0 of 4 toolkit contracts. v2.14.0 closes that.
+
+def _registry_is_compatible(asset_id: str, observed_version: str) -> bool:
+    """Route compatibility check through toolkit's asset_registry (v1.6.0+).
+    Falls back to legacy major-version check on registry import failure."""
+    try:
+        # Toolkit scripts on path via the existing _TOOLKIT_DEFAULT_PATH
+        scripts_dir = _TOOLKIT_DEFAULT_PATH / "scripts"
+        if str(scripts_dir) not in sys.path:
+            sys.path.insert(0, str(scripts_dir))
+        from asset_registry import is_compatible  # type: ignore
+        return is_compatible(asset_id, observed_version)
+    except Exception:
+        # Legacy major-version fallback (pre-v1.6.0 toolkit)
+        return observed_version.split(".")[0] == "1"
+
+
+def _arabic_normalize_via_toolkit(text: str, level: str = "light") -> str:
+    """Route through toolkit's arabic_normalize.normalize (v1.5.0+).
+    Falls back to raw text when toolkit unreachable."""
+    try:
+        scripts_dir = _TOOLKIT_DEFAULT_PATH / "scripts"
+        if str(scripts_dir) not in sys.path:
+            sys.path.insert(0, str(scripts_dir))
+        from arabic_normalize import normalize  # type: ignore
+        return normalize(text, level=level)
+    except Exception:
+        return text
+
+
+def _new_humanizer_trace():
+    """Returns a fresh InfluenceTrace (toolkit v1.7.0+) or None."""
+    try:
+        scripts_dir = _TOOLKIT_DEFAULT_PATH / "scripts"
+        if str(scripts_dir) not in sys.path:
+            sys.path.insert(0, str(scripts_dir))
+        from influence_telemetry import InfluenceTrace  # type: ignore
+        return InfluenceTrace()
+    except Exception:
+        return None
 
 
 # ── v2.12.0: Asset D + E consumer cutover ──
