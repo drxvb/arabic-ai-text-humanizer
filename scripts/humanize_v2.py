@@ -1518,6 +1518,67 @@ def llm_pass(text: str, pass_name: str, backend: str,
                      model=model, backend_url=backend_url)
 
 
+# ── v2.9.0: importable score_text() for consumer use (translator Stage E,
+# authoring-suite humanizer_gate). Uses Asset C's lexical-tables directly
+# instead of a hard-coded 6-tell list, giving consumers a much richer signal
+# without spinning up the full pipeline.
+def score_text(text_ar: str, register: str = "news") -> dict:
+    """Score Arabic text on AI-tell density. Returns:
+      {score:int(0-100), ai_tell_hits:int, ai_tell_density_per_1k:float,
+       total_words:int, register:str, ai_phrases_caught:list[str],
+       sample_size:int}
+
+    Score formula: max(0, 100 - density_per_1k * 5). Empirically calibrated
+    so a clean text scores 100, a draft with one AI-tell per 50 words scores
+    ~75, and AI-tell-saturated text scores 0.
+
+    Uses Asset C's full ai_phrases list (~67 entries in v1.1.0) and the
+    intensifier_destack patterns. Skips entries whose policy_notes mark them
+    as pro-drop (those entries have empty-string alternatives and represent
+    optional deletions, not strong AI-tells).
+
+    Importable: `from humanize_v2 import score_text`.
+    """
+    if not text_ar:
+        return {"score": 100, "ai_tell_hits": 0, "ai_tell_density_per_1k": 0.0,
+                "total_words": 0, "register": register, "ai_phrases_caught": [],
+                "sample_size": 0}
+
+    total_words = len(text_ar.split())
+    caught: list[str] = []
+    hits = 0
+
+    # AI_PHRASES_AR is the dict {input: alternatives} populated from Asset C
+    # at module load (or empty under DISABLE=1).
+    for phrase in AI_PHRASES_AR.keys():
+        n = text_ar.count(phrase)
+        if n > 0:
+            hits += n
+            caught.append(phrase)
+
+    # Intensifier de-stack: each match is a strong AI-tell (intensifiers
+    # stacked together are rare in human writing).
+    for pattern, _replacement in INTENSIFIER_DESTACK:
+        try:
+            n = len(re.findall(pattern, text_ar))
+            if n > 0:
+                hits += n
+        except re.error:
+            continue
+
+    density = (hits * 1000.0 / total_words) if total_words > 0 else 0.0
+    score = max(0, 100 - int(density * 5))
+    return {
+        "score": score,
+        "ai_tell_hits": hits,
+        "ai_tell_density_per_1k": round(density, 2),
+        "total_words": total_words,
+        "register": register,
+        "ai_phrases_caught": caught[:20],
+        "sample_size": len(AI_PHRASES_AR),
+    }
+
+
 # ── Pipeline ────────────────────────────────────────────────────────────────
 
 def run_pipeline(text: str, mode: str, backend: str, intensity: float,
