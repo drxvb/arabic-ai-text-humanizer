@@ -1132,22 +1132,104 @@ def lex_reduce_tashkeel(text: str, register: str = "news") -> str:
     return cleaned
 
 
-# ── Calque-translation dictionary (v2.3.0) ──────────────────────────────────
+# ── Calque-translation dictionary (v2.3.0 — toolkit-backed since v2.7.0) ────
+
+# v2.7.0: optional integration with arabic-corpus-toolkit (shared peer skill).
+# When the toolkit is on PYTHONPATH, the humanizer reads from
+# arabic-corpus-toolkit/corpus/calque-dictionary.json as the canonical source.
+# Otherwise it falls back to the local vendored copy (v2.5.x and earlier
+# behavior). The vendored copy will be removed in v2.8.0 once toolkit is a
+# hard dependency.
+#
+# Override the toolkit search path via env var:
+#   ARABIC_CORPUS_TOOLKIT_ROOT=/path/to/arabic-corpus-toolkit
+#
+# The internal lookup shape ({"natural": ..., "alternatives": ..., ...}) is
+# UNCHANGED from v2.6.4, so downstream lex_apply_calque_dictionary and
+# _matches_topic don't need to change. Only the loader switches sources.
+_TOOLKIT_DEFAULT_PATH = Path(__file__).resolve().parent.parent.parent / "arabic-corpus-toolkit"
+
+
+def _load_from_toolkit() -> tuple[list[str], dict] | None:
+    """Try to load the dictionary from arabic-corpus-toolkit.
+    Returns (keys, lookup) on success, None if the toolkit isn't available
+    or fails to load. Caller falls back to vendored copy on None.
+    """
+    import os
+    override = os.environ.get("ARABIC_CORPUS_TOOLKIT_ROOT")
+    candidate_roots: list[Path] = []
+    if override:
+        candidate_roots.append(Path(override))
+    candidate_roots.append(_TOOLKIT_DEFAULT_PATH)
+
+    for root in candidate_roots:
+        toolkit_dict_path = root / "corpus" / "calque-dictionary.json"
+        if not toolkit_dict_path.exists():
+            continue
+        try:
+            data = json.loads(toolkit_dict_path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        entries = data.get("entries", []) if isinstance(data, dict) else data
+        if not entries:
+            continue
+        return _build_lookup_from_entries(entries)
+    return None
+
+
+def _build_lookup_from_entries(entries: list) -> tuple[list[str], dict]:
+    """Convert a list of dictionary entries into (sorted_keys, lookup_by_calque).
+    Shared by both toolkit-backed and vendored-copy code paths.
+    """
+    lookup: dict[str, dict] = {}
+    keys: list[str] = []
+    for e in entries:
+        calque = e.get("ai_default_calque", "").strip()
+        natural = e.get("natural_arabic", "").strip()
+        if not calque or not natural or calque == natural:
+            continue
+        lookup[calque] = {
+            "natural": natural,
+            "alternatives": e.get("alternatives", []),
+            "domain": e.get("domain", "general"),
+            "confidence": e.get("confidence", "medium"),
+            "context_keywords_arabic": e.get("context_keywords_arabic", []),
+            "context_keywords_english": e.get("context_keywords_english", []),
+            "context_keywords_required_count": e.get("context_keywords_required_count", 1),
+            "exclude_if_pattern": e.get("exclude_if_pattern", []),
+        }
+        keys.append(calque)
+    keys.sort(key=len, reverse=True)
+    return keys, lookup
+
 
 def _load_calque_dictionary() -> tuple[list[str], dict]:
-    """Load corpus/calque-dictionary.json at module init.
-
-    The dictionary captures English-calque -> natural-Arabic translation
-    pairs validated against the AITNews corpus (and multi-LLM swarm).
-    Source-of-truth lives in the JSON file so it can be audited/extended
-    without touching code.
+    """Load calque dictionary. v2.7.0 prefers arabic-corpus-toolkit; falls
+    back to the local vendored copy if the toolkit isn't available.
 
     Returns: (sorted_calque_keys, lookup_dict)
       - sorted_calque_keys: list of calque strings, sorted by length desc
-        (longer phrases match first to avoid partial overlaps)
-      - lookup_dict: {calque: {"natural": str, "alternatives": list,
-                               "domain": str, "confidence": str}}
+      - lookup_dict: {calque: {"natural": str, "alternatives": list, ...}}
     """
+    # Preferred: shared toolkit (v2.7.0+)
+    result = _load_from_toolkit()
+    if result is not None:
+        return result
+
+    # Fallback: vendored copy (removed in v2.8.0)
+    p = Path(__file__).resolve().parent.parent / "corpus" / "calque-dictionary.json"
+    if not p.exists():
+        return [], {}
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return [], {}
+    return _build_lookup_from_entries(data.get("entries", []) if isinstance(data, dict) else data)
+
+
+def _load_calque_dictionary_OLD_VENDORED_PATH_ONLY() -> tuple[list[str], dict]:
+    """Pre-v2.7.0 loader. Kept as reference for the v2.8.0 cleanup; the
+    function is no longer called by the runtime. Will be deleted in v2.8.0."""
     p = Path(__file__).resolve().parent.parent / "corpus" / "calque-dictionary.json"
     if not p.exists():
         return [], {}
