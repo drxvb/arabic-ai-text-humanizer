@@ -1593,8 +1593,22 @@ _DEEP_PROXIES = {
 }
 
 
+# v2.13.0: rotating-vendor state for score_text_deep. Each call advances the
+# rotation; consumers that want a specific vendor pass proxy_name="..." and
+# bypass rotation. Both minimax #1 and codex #5 in the multi-agent roadmap.
+_ROTATION = ["gemini", "minimax", "codex"]
+_rotation_idx = 0
+
+
+def _next_rotation_proxy() -> str:
+    global _rotation_idx
+    proxy = _ROTATION[_rotation_idx % len(_ROTATION)]
+    _rotation_idx += 1
+    return proxy
+
+
 def score_text_deep(text_ar: str, register: str = "news",
-                    proxy_name: str = "gemini") -> dict:
+                    proxy_name: str | None = None) -> dict:
     """LLM-backed score on the 4-dimension cognitive rubric.
 
     Returns:
@@ -1612,6 +1626,9 @@ def score_text_deep(text_ar: str, register: str = "news",
         return {"available": True, "score": 100, "per_dimension": {},
                 "reasoning": "empty input", "backend": "trivial",
                 "register": register}
+    # v2.13.0: rotation when caller doesn't pin a proxy
+    if proxy_name is None:
+        proxy_name = _next_rotation_proxy()
     import urllib.request, urllib.error  # local to keep module-level imports clean
     p = _DEEP_PROXIES.get(proxy_name)
     if p is None:
