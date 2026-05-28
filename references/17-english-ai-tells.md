@@ -97,17 +97,36 @@ Output formats: `--report` (markdown), `--json` (structured), or default (markdo
 
 ## Worked example
 
-**Input (stop-slop Example 3, business jargon stack):**
+**Input** (stop-slop Example 1, throat-clearing + emphasis crutches):
 
-> "In today's fast-paced landscape, we need to lean into discomfort and navigate uncertainty with clarity. This matters because your competition isn't waiting."
+> "Here's the thing: building products is hard. Not because the technology is complex. Because people are complex. Let that sink in."
 
-**Output of `--mode lex`:**
+**Output of `--mode lex`** (v2.5.1):
 
-> ", we need to accept discomfort and handle uncertainty with clarity. your competition isn't waiting."
+> "building products is hard. Not because the technology is complex. Because people are complex."
 
-The leading comma is residue from deleting "In today's fast-paced landscape," — current behavior; cleaning the residue is on the v2.5.1 list. The substitutions ("lean into" → "accept", "navigate" → "handle") and the deletion of "This matters because" all fired correctly.
+The throat-clearing opener (`Here's the thing:`) and emphasis crutch (`Let that sink in.`) are auto-deleted; the binary contrast (`Not because… Because`) is **flagged but NOT auto-deleted** because the correct rewrite ("Technology is manageable. People aren't.") requires human judgment.
 
-**Score delta:** Directness +6, Density +4. Total uplift +10.
+**Score delta:** Directness 1 → 10 (+9), Total 38 → 47.
+
+### Why some patterns delete while others only flag
+
+| Pattern type | Action | Reason |
+|---|---|---|
+| Throat-clearing opener (`Here's the thing:`) | delete | Always removable; sentence stands without it. |
+| Emphasis crutch (`Let that sink in.`) | delete | Adds zero meaning. |
+| Business jargon (`navigate` → `handle`) | substitute (case-preserved) | One-for-one lookup, register-safe. |
+| Em-dash | substitute (→ comma) | Mechanical typography. |
+| Binary contrast (`Not because X. Because Y.`) | **flag** | Auto-rewriting changes argument structure. |
+| False agency (`the decision emerges`) | **flag** | Needs the actor named, can't guess. |
+| Vague declarative (`The implications are significant`) | **flag** | Needs the specific implication filled in. |
+
+### v2.5.1 behavior notes (read before relying on output)
+
+- **Code blocks are protected.** Fenced ` ``` ` and inline `code` are extracted before transformation and restored verbatim. `def navigate()` inside a code fence stays as `def navigate()`; the prose around it gets normal treatment.
+- **Filler adverbs preserve load-bearing context.** `literally on fire` keeps `literally`; `Actually, the data...` deletes `Actually`. The skip-list (`literally on fire`, `literally true`, `actually false`) is matched against the actual ±2-word input window, not against the pattern itself (v2.5.0 had the latter and was effectively a no-op on adverbs).
+- **Case is preserved.** `Navigate` → `Handle`, `NAVIGATE` → `HANDLE`, `navigate` → `handle`.
+- **Arabic input is refused.** Even with `--force-language en`, the script exits 2 if `detect_language()` reports `ar` — to prevent silent no-ops on Arabic prose (v2.5.0 silently produced unchanged output, which was arguably worse than the documented "corruption" warning).
 
 ## Composing with stop-slop directly
 
