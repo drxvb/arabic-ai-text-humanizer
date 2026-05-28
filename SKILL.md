@@ -5,6 +5,8 @@ description: Bilingual AI-text humanizer. Arabic primary (16 dimensions, classic
 
 # Arabic AI-Text Humanizer — Cognitive + Rhetorical + Reader-Respect Layer
 
+**Status:** **v2.15.1 — STABLE.** Closes Codex+Gemini A4 #2 finding: "humanizer SKILL.md lacks a clear top-level current-status banner; versions are buried in a large table." v2.15.1 surfaces current state at-a-glance. The toolkit is a hard dependency (v2.8.0+); all four foundational contracts (arabic_normalize G1 / asset_registry G2 / influence_telemetry G3 / install_family G4) are adopted at runtime call sites. `score_text(emit_trace=True)` returns Asset C influence records per AI-tell match; `score_text_deep(emit_trace=True)` returns humanizer_gate_decision records on every code path with `fallback_used: bool` distinguishing LLM-backed scores from heuristic-fallback. Vendor rotation across {gemini, minimax, codex} for `score_text_deep` per call. `score_text_multivendor` returns cross-LLM agreement bands. Asset D + E consumer cutover complete (typography normalization + reader-respect anti-pattern detection). 107/107 regression green. Version history table below.
+
 ## Languages supported
 
 | Language | Status |
