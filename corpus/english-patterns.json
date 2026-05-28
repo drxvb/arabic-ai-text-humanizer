@@ -1,0 +1,320 @@
+{
+  "version": "1.0.0",
+  "schema_version": 1,
+  "source": "https://github.com/hardikpandya/stop-slop",
+  "source_license": "MIT",
+  "source_author": "Hardik Pandya (https://hvpandya.com)",
+  "attribution_note": "Lexical, structural, and sentence-level patterns adapted from hardikpandya/stop-slop. The 5-axis scoring rubric (Directness, Rhythm, Trust, Authenticity, Density) and the banned-phrase catalogues originate there. This file restructures the catalogue as machine-readable data for the deterministic English lex pass in scripts/humanize_english.py and adds register/safety annotations consistent with the humanizer's MSA architecture. Both projects are MIT-licensed.",
+  "lexical": {
+    "throat_clearing_openers": {
+      "action": "delete",
+      "note": "Strip from sentence starts. State the content directly.",
+      "patterns": [
+        "Here's the thing:",
+        "Here's the thing,",
+        "Here's what you need to know:",
+        "Here's what's interesting:",
+        "Here's why:",
+        "Here's why that matters:",
+        "Here's the problem:",
+        "Here's the problem though:",
+        "Here's what I find interesting:",
+        "Here's what I mean:",
+        "The uncomfortable truth is",
+        "The uncomfortable truth is that",
+        "It turns out that",
+        "It turns out,",
+        "The real question is",
+        "Let me be clear:",
+        "Let me be clear,",
+        "The truth is,",
+        "The truth is that",
+        "I'll say it again:",
+        "I'm going to be honest:",
+        "I'm going to be honest,",
+        "Can we talk about",
+        "Look,"
+      ]
+    },
+    "emphasis_crutches": {
+      "action": "delete",
+      "note": "Add no meaning. Delete entirely.",
+      "patterns": [
+        "Full stop.",
+        "Period.",
+        "Let that sink in.",
+        "This matters because",
+        "Make no mistake,",
+        "Make no mistake:",
+        "Here's why that matters:",
+        "Trust me on this.",
+        "Believe me when I say"
+      ]
+    },
+    "business_jargon": {
+      "action": "substitute",
+      "note": "Replace with plain language. Substitutions are conservative — only swap when the jargon sense is dominant.",
+      "substitutions": {
+        "navigate": "handle",
+        "navigating": "handling",
+        "navigated": "handled",
+        "unpack": "explain",
+        "unpacking": "explaining",
+        "unpacked": "explained",
+        "lean into": "accept",
+        "leaning into": "accepting",
+        "leaned into": "accepted",
+        "landscape": "field",
+        "game-changer": "significant",
+        "game changer": "significant",
+        "double down": "commit",
+        "doubling down": "committing",
+        "doubled down": "committed",
+        "deep dive": "analysis",
+        "take a step back": "reconsider",
+        "moving forward": "next",
+        "going forward": "next",
+        "circle back": "return to",
+        "circling back": "returning to",
+        "on the same page": "aligned",
+        "reach out": "contact",
+        "reached out": "contacted",
+        "reaching out": "contacting",
+        "ping": "message",
+        "synergy": "fit",
+        "synergies": "alignments",
+        "low-hanging fruit": "easy wins",
+        "boil the ocean": "solve everything"
+      }
+    },
+    "filler_adverbs": {
+      "action": "delete",
+      "note": "Empty intensifiers. Most read as throat-clearing rather than meaning. Conservative: strip only when used as sentence-initial or post-comma filler; keep when load-bearing (e.g., 'literally' meaning 'not figuratively').",
+      "patterns": [
+        "really",
+        "just",
+        "literally",
+        "genuinely",
+        "honestly",
+        "simply",
+        "actually",
+        "deeply",
+        "truly",
+        "fundamentally",
+        "inherently",
+        "inevitably",
+        "interestingly",
+        "importantly",
+        "crucially",
+        "essentially",
+        "basically",
+        "obviously",
+        "clearly",
+        "definitely",
+        "absolutely",
+        "completely"
+      ],
+      "skip_when_context": [
+        "literally on fire",
+        "literally true",
+        "actually false"
+      ]
+    },
+    "filler_phrases": {
+      "action": "delete",
+      "note": "Filler that adds no information.",
+      "patterns": [
+        "At its core,",
+        "At its core",
+        "In today's fast-paced",
+        "In today's world",
+        "In today's landscape",
+        "It's worth noting that",
+        "It's worth noting,",
+        "At the end of the day,",
+        "At the end of the day",
+        "When it comes to",
+        "In a world where",
+        "The reality is that",
+        "The reality is,",
+        "What's important is that",
+        "Needless to say,"
+      ]
+    },
+    "meta_commentary": {
+      "action": "delete",
+      "note": "Self-referential asides. The essay should move, not announce its own structure.",
+      "patterns": [
+        "Hint:",
+        "Plot twist:",
+        "Spoiler:",
+        "Spoiler alert:",
+        "You already know this, but",
+        "But that's another post.",
+        "But that's another article.",
+        "The rest of this essay explains",
+        "The rest of this post explains",
+        "Let me walk you through",
+        "In this section, we'll",
+        "In this article, we'll",
+        "In this post, we'll",
+        "As we'll see,",
+        "As we'll see later,",
+        "I want to explore",
+        "What I'm trying to say is"
+      ]
+    },
+    "vague_declaratives": {
+      "action": "flag",
+      "note": "Cannot be auto-deleted — they need rewriting with specifics. Flag only.",
+      "patterns": [
+        "The reasons are structural",
+        "The implications are significant",
+        "The implications are profound",
+        "This is the deepest problem",
+        "The stakes are high",
+        "The consequences are real",
+        "The impact is meaningful",
+        "The truth runs deeper"
+      ]
+    }
+  },
+  "structural": {
+    "binary_contrasts": {
+      "action": "flag",
+      "note": "Setup-then-pivot constructions. Auto-deletion is unsafe; needs human rewrite.",
+      "regex_patterns": [
+        "\\bnot because [^.]+\\. because\\b",
+        "\\bisn't the (problem|issue|question)\\.\\s+[A-Z]",
+        "\\bThe answer isn't [^.]+\\. It's\\b",
+        "\\bIt feels like [^.]+\\. It's actually\\b",
+        "\\bThe question isn't [^.]+\\. It's\\b",
+        "\\bnot just [^,]+ but also\\b",
+        "\\bstops being [^,]+ and starts being\\b",
+        "\\bdoesn't mean [^,]+, but actually\\b",
+        "\\bis about [^,]+ but not\\b"
+      ]
+    },
+    "negative_listings": {
+      "action": "flag",
+      "note": "'Not a X. Not a Y. A Z.' — rhetorical striptease.",
+      "regex_patterns": [
+        "\\bNot a [^.]+\\. Not a [^.]+\\. A\\b",
+        "\\bIt wasn't [^.]+\\. It wasn't [^.]+\\. It was\\b"
+      ]
+    },
+    "dramatic_fragmentation": {
+      "action": "flag",
+      "note": "Sentence fragments for manufactured profundity.",
+      "regex_patterns": [
+        "\\b[A-Z][^.]{0,20}\\. That's it\\. That's the\\b",
+        "\\b\\. And [A-Z][^.]{0,30}\\. And [A-Z]\\b"
+      ]
+    },
+    "rhetorical_setups": {
+      "action": "flag",
+      "note": "Announces insight rather than delivering it.",
+      "patterns": [
+        "What if I told you",
+        "What if",
+        "Think about it.",
+        "Think about it:",
+        "And that's okay.",
+        "And that's fine.",
+        "Here's the kicker:",
+        "Here's the twist:"
+      ]
+    },
+    "false_agency": {
+      "action": "flag",
+      "note": "Inanimate things doing human verbs. Name the actor. Auto-substitution is unsafe — needs human judgment.",
+      "regex_patterns": [
+        "\\b(complaint|complaints) (become|becomes|became) (a|an) (fix|fixes|solution)\\b",
+        "\\b(bet|bets) (live|lives|lived) or (die|dies|died)\\b",
+        "\\b(decision|decisions) (emerge|emerges|emerged)\\b",
+        "\\b(the culture|cultures?) shift(s|ed)?\\b",
+        "\\bthe conversation moves toward\\b",
+        "\\bthe data tells us\\b",
+        "\\bthe market rewards\\b"
+      ]
+    },
+    "narrator_from_a_distance": {
+      "action": "flag",
+      "note": "Floating above the scene. Restructure to put the reader in the room.",
+      "patterns": [
+        "Nobody designed this.",
+        "Nobody planned this.",
+        "This happens because",
+        "This is why",
+        "People tend to"
+      ]
+    }
+  },
+  "sentence_level": {
+    "wh_starters": {
+      "action": "flag",
+      "note": "Wh- sentence starters are AI crutches. Restructure to lead with subject or verb.",
+      "starter_words": ["What", "When", "Where", "Which", "Who", "Why", "How"]
+    },
+    "paragraph_starter_blacklist": {
+      "action": "flag",
+      "note": "Paragraphs that start with these are AI tells.",
+      "starter_words": ["So,", "So ", "Look,"]
+    },
+    "lazy_extremes": {
+      "action": "flag",
+      "note": "Sweeping claims that erode trust. Replace with specifics.",
+      "patterns": [
+        "every",
+        "always",
+        "never",
+        "everyone",
+        "everybody",
+        "nobody",
+        "anyone",
+        "anybody",
+        "all the time",
+        "no one"
+      ]
+    },
+    "em_dashes": {
+      "action": "substitute",
+      "note": "Em-dashes — and en-dashes – read as AI emphasis. Replace with comma or period.",
+      "substitutions": {
+        " — ": ", ",
+        " – ": ", ",
+        "—": ", ",
+        "–": ", "
+      }
+    }
+  },
+  "scoring_rubric_5_axis": {
+    "directness": {
+      "weight_per_axis": 10,
+      "what_it_measures": "Statements vs announcements. Directness drops when text uses throat-clearing, emphasis crutches, vague declaratives, meta-commentary.",
+      "scoring_function": "10 - min(9, (count(throat_clearing) + count(emphasis_crutches) + count(vague_declaratives) + count(meta_commentary)) * (10 / max(1, sentence_count)))"
+    },
+    "rhythm": {
+      "weight_per_axis": 10,
+      "what_it_measures": "Varied vs metronomic sentence rhythm. Drops when sentences cluster around a single length or when staccato fragments stack.",
+      "scoring_function": "10 - min(9, runs_of_3_or_more_same_length + (1 if sentence_length_stdev < 4 else 0) * 3 + count(dramatic_fragmentation_regex) * 2)"
+    },
+    "trust": {
+      "weight_per_axis": 10,
+      "what_it_measures": "Respects reader intelligence. Drops when text hedges, softens, justifies, hand-holds, or lists negatives before the point.",
+      "scoring_function": "10 - min(9, count(meta_commentary) * 2 + count(rhetorical_setups) * 1 + count(negative_listings) * 2 + count(filler_phrases))"
+    },
+    "authenticity": {
+      "weight_per_axis": 10,
+      "what_it_measures": "Sounds human. Drops on business jargon, false agency (inanimate verbs), narrator-from-distance voice, passive voice.",
+      "scoring_function": "10 - min(9, count(business_jargon) + count(false_agency) * 2 + count(narrator_from_a_distance) + count(passive_voice_signals))"
+    },
+    "density": {
+      "weight_per_axis": 10,
+      "what_it_measures": "Anything cuttable. Drops on filler adverbs, filler phrases, lazy extremes, em-dashes.",
+      "scoring_function": "10 - min(9, count(filler_adverbs) // 2 + count(filler_phrases) + count(lazy_extremes) + count(em_dashes))"
+    },
+    "threshold_revise_below": 35,
+    "max_total": 50
+  }
+}

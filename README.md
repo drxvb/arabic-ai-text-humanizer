@@ -6,11 +6,53 @@
 
 > 🇸🇦 [اقرأ بِالعَرَبية](README.ar.md) — Arabic README in native MSA phrasing, not literal translation.
 
-A multi-pass Arabic-text humanizer that reduces AI fingerprints across **16 dimensions** of cognitive structure, rhetorical figures, reader-respect, typography hygiene, and connector-entropy. Built as an [Agent Skills](https://agentskills.io) skill — drop into Claude Code, Codex, Kimi, MiniMax, Gemini, or any compatible host.
+A **bilingual** AI-text humanizer that reduces AI fingerprints in **Arabic** (16 dimensions: cognitive structure, rhetorical figures, reader-respect, typography hygiene, connector-entropy) and **English** (5-axis Directness/Rhythm/Trust/Authenticity/Density rubric; deterministic lex pass; pattern catalogue adapted from [`hardikpandya/stop-slop`](https://github.com/hardikpandya/stop-slop) MIT). Built as an [Agent Skills](https://agentskills.io) skill — drop into Claude Code, Codex, Kimi, MiniMax, Gemini, or any compatible host.
 
-The full specification, transformation protocol, dimension definitions, anti-patterns, and worked example all live in **[`SKILL.md`](SKILL.md)**. This README is a one-screen overview.
+The full specification, transformation protocol, dimension definitions, anti-patterns, and worked examples all live in **[`SKILL.md`](SKILL.md)**. This README is a one-screen overview.
 
-## What's new in v2.4.5 (current)
+## What's new in v2.5.0 (current) — English support
+
+The humanizer is now **bilingual**. Arabic remains primary (16-dimension pipeline via `scripts/humanize_v2.py` — unchanged); English is the new secondary language via a separate, deterministic path.
+
+### What ships with English support
+
+- **`scripts/humanize_english.py`** — deterministic lex pass + 5-axis scorer; no LLM required. Three modes: `analyze` (flag only), `lex` (transform), `both` (transform + score before/after).
+- **`corpus/english-patterns.json`** — machine-readable pattern catalogue. 7 lexical categories (throat-clearing openers, emphasis crutches, business jargon, filler adverbs, filler phrases, meta-commentary, vague declaratives), 6 structural categories (binary contrasts, negative listings, dramatic fragmentation, rhetorical setups, false agency, narrator-from-distance), 4 sentence-level categories (Wh- starters, paragraph-starter blacklist, lazy extremes, em-dashes).
+- **`references/17-english-ai-tells.md`** — narrative reference with the 5-axis rubric definitions, the score → action ladder, and composition guidance for stop-slop + this script.
+- **Language gate** — `detect_language()` refuses Arabic input on the English path and vice-versa (escape hatch: `--force-language en|ar`).
+
+### 5-axis scoring (max 50; revise below 35)
+
+| Axis | What it measures |
+|---|---|
+| **Directness** | Statements vs announcements. Drops on throat-clearing, emphasis crutches, vague declaratives. |
+| **Rhythm** | Varied vs metronomic. Drops on consecutive same-length sentences, low sentence-length variance, staccato fragmentation. |
+| **Trust** | Respects reader. Drops on meta-commentary, rhetorical setups, negative listings, filler phrases. |
+| **Authenticity** | Sounds human. Drops on business jargon, false agency, narrator-from-distance. |
+| **Density** | Anything cuttable. Drops on filler adverbs, filler phrases, lazy extremes, em-dashes. |
+
+### Quick start
+
+```bash
+# Analyze English text (flag patterns, score; no transformation)
+python scripts/humanize_english.py --text "Here's the thing: ..." --mode analyze --report
+
+# Lex pass — safe deletions + jargon substitutions + em-dash normalization
+python scripts/humanize_english.py --input draft.md --mode lex --output cleaned.md
+
+# Both — transform AND score before/after, side by side
+python scripts/humanize_english.py --input draft.md --mode both --report
+```
+
+### Why a separate path
+
+The 16-dimension Arabic framework is built around features that don't transfer to English: classical-rhetorical figures (جناس / طباق / سجع), connector entropy specific to Arabic's coordinator-heavy syntax, tashkeel and kashida normalization, Arabic-specific typography. A 16-dim English path would be ⅔ inapplicable. Stop-slop's 5-axis rubric is tuned for English and ports cleanly. The two paths share the same skill identity but have separate scripts, separate evaluation suites (66/66 Arabic + 21/21 English), and explicit language gates.
+
+### Attribution
+
+Lexical / structural / sentence-level catalogue and the 5-axis rubric originate in [`hardikpandya/stop-slop`](https://github.com/hardikpandya/stop-slop) (MIT). Both `corpus/english-patterns.json` and `references/17-english-ai-tells.md` carry the attribution. Both projects are MIT-licensed.
+
+## What was in v2.4.5
 
 **Native-speaker dictionary corrections + a substring-substitution bug fix that protects every dictionary entry.** Two terminology corrections came from native review, and chasing them surfaced a regex-boundary bug in the substitution engine itself.
 

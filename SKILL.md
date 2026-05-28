@@ -1,6 +1,6 @@
 ---
 name: arabic-ai-text-humanizer
-description: Arabic-text humanizer scoring along 16 dimensions — cognitive structure, rhetorical figures, reader-respect, typography hygiene, and connector entropy. Six modes and four register policies gate which transformations fire; a pre-flight safety check flags factual/ethical/sourcing hazards. Scope is humanization, NOT localization — BCP47, ICU, SSML are out of scope. Provider-agnostic; works with any OpenAI-compatible LLM. Use when the user wants Arabic AI text rewritten with cognitive depth and classical-rhetoric awareness; also triggers on "humanize deep", "humanize cognitively", "humanizer v2", or "تحويل النص إلى أسلوب بشري عميق". Do NOT use for technical specs, code documentation, legal text, dialect-heavy/colloquial content, already-human text (run analyze-only instead), or English (Arabic-only).
+description: Bilingual AI-text humanizer. Arabic primary (16 dimensions, classical-rhetoric + cognitive-structure + typography hygiene + connector entropy; 4 register policies; 6 modes; pre-flight safety). English secondary (5-axis Directness/Rhythm/Trust/Authenticity/Density rubric + deterministic lex pass; lexical/structural/sentence-level pattern catalogue adapted from hardikpandya/stop-slop MIT). Scope is humanization, NOT localization — BCP47, ICU, SSML are out of scope. Provider-agnostic; works with any OpenAI-compatible LLM. Triggers on "humanize deep", "humanize cognitively", "humanizer v2", "تحويل النص إلى أسلوب بشري عميق", "stop slop", "remove AI slop", "detect AI tells", "humanize English", "humanize prose". Do NOT use for technical specs, code documentation, legal text, dialect-heavy/colloquial Arabic content, already-human text (run analyze-only instead), or languages outside Arabic/English.
 ---
 
 # Arabic AI-Text Humanizer — Cognitive + Rhetorical + Reader-Respect Layer
@@ -9,12 +9,13 @@ description: Arabic-text humanizer scoring along 16 dimensions — cognitive str
 
 | Language | Status |
 |---|---|
-| **Modern Standard Arabic (MSA), classical-leaning** | ✅ Primary target — all 16 dimensions calibrated for this register |
+| **Modern Standard Arabic (MSA), classical-leaning** | ✅ Primary target — all 16 dimensions calibrated for this register; use `scripts/humanize_v2.py` |
+| **English (modern, direct register)** | ✅ Secondary (v2.5.0+) — 5-axis rubric, deterministic lex pass; use `scripts/humanize_english.py`. See `references/17-english-ai-tells.md` |
 | Arabic dialects (Egyptian, Levantine, Khaleeji, Maghrebi, etc.) | ❌ Not supported — lexical tables and dimensions assume MSA |
-| Code-switched Arabic + English | ❌ Untested — English spans may be misprocessed |
-| English | ❌ Out of scope — use a separate English-targeted humanizer |
+| Code-switched Arabic + English | ⚠️ Pick the path that matches the dominant script; mixed spans may be misprocessed |
 | Right-to-left + left-to-right Bidi-mixed text | ⚠️ Plain text only; Bidi marks not preserved |
 | Quranic recitation marks (U+06D6–U+06ED) | ⚠️ Preserved verbatim but not generated |
+| Other languages (French, Spanish, Mandarin, Hindi, …) | ❌ Out of scope — use a language-specific humanizer |
 
 ## Scope: Humanizer ≠ Localizer (per cross-LLM critique)
 
@@ -268,7 +269,7 @@ If you also have access to a lighter lexical-only Arabic humanizer (or use this 
 | **This skill → sibling** | Sibling's lex pass flattens cognitive/rhetorical structure | ❌ DO NOT — undoes the cognitive work |
 | **`--mode tighten`** | Inverse-scored dims 14+15 only — newsroom subediting | ✅ Recommended for news copy |
 
-Arabic only — for English text use a separate English-targeted humanizer.
+For English text, route to `scripts/humanize_english.py` (5-axis rubric, deterministic lex pass — see `references/17-english-ai-tells.md`). For other languages, use a language-specific humanizer.
 
 ## Pipeline composition
 
@@ -306,7 +307,8 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 
 | Version | What changed |
 |---|---|
-| **v2.4.5** | **User-reviewed corrections + word-boundary fix.** Native-speaker review caught two dictionary issues: (1) `swarm intelligence` natural form `ذكاء الأسراب` (biological swarms) → `ذكاء المجموعة` (group — neutral CS term); plural form `ذكاء الأسراب` added as separate calque key. (2) New entry `سلوكا` → `أسلوبا` (mansoob accusative form only) for AI-translated 'approach' / 'method' where the LLM picked behavior-sense; conservative key avoids false positives on bare سلوك in psychology contexts. **Critical underlying fix:** `lex_apply_calque_dictionary` substitution engine now uses word-boundary lookahead `(?![؀-ۿ])` to prevent the calque key from matching INSIDE a longer Arabic word. Example: `ذكاء السرب` no longer falsely matches inside `الذكاء السربي` (adjectival form). This protects every dictionary entry from substring-substitution bugs. T27+T28 added (5 sub-checks). Fragility now **66/66**. |
+| **v2.5.0** | **English support added (secondary language).** New `scripts/humanize_english.py` — deterministic lex pass + 5-axis Directness/Rhythm/Trust/Authenticity/Density rubric (max 50; revise below 35). New `corpus/english-patterns.json` machine-readable pattern catalogue (throat-clearing openers, emphasis crutches, business jargon substitutions, filler adverbs, filler phrases, meta-commentary, binary contrasts, negative listings, dramatic fragmentation, rhetorical setups, false agency, narrator-from-distance, Wh- starters, lazy extremes, em-dash normalization). New `references/17-english-ai-tells.md` narrative reference. Lexical/structural/sentence-level catalogue and the 5-axis rubric adapted from [`hardikpandya/stop-slop`](https://github.com/hardikpandya/stop-slop) (MIT) with attribution preserved in both the JSON catalogue and the reference doc. Three operating modes (`analyze`, `lex`, `both`). Language gate: `detect_language()` counts Arabic-block vs ASCII letters; refuses to process Arabic input. Arabic 16-dimension pipeline (`humanize_v2.py`) unchanged. No regression — Arabic fragility suite still 66/66. |
+| v2.4.5 | **User-reviewed corrections + word-boundary fix.** Native-speaker review caught two dictionary issues: (1) `swarm intelligence` natural form `ذكاء الأسراب` (biological swarms) → `ذكاء المجموعة` (group — neutral CS term); plural form `ذكاء الأسراب` added as separate calque key. (2) New entry `سلوكا` → `أسلوبا` (mansoob accusative form only) for AI-translated 'approach' / 'method' where the LLM picked behavior-sense; conservative key avoids false positives on bare سلوك in psychology contexts. **Critical underlying fix:** `lex_apply_calque_dictionary` substitution engine now uses word-boundary lookahead `(?![؀-ۿ])` to prevent the calque key from matching INSIDE a longer Arabic word. Example: `ذكاء السرب` no longer falsely matches inside `الذكاء السربي` (adjectival form). This protects every dictionary entry from substring-substitution bugs. T27+T28 added (5 sub-checks). Fragility now **66/66**. |
 | v2.4.4 | **List-`و` insertion + register-gated guillemets.** Itwadi rule: insert `و` before list items 2..n when 3+ single-word Arabic tokens are comma-separated. Short-clause commas not treated as lists. Register-gated quotation: ASCII `"..."` → `«...»` ONLY in classical register. T25+T26 added (5 sub-checks). Fragility now **61/61**. |
 | v2.4.3 | **Parenthesis interior-spacing normalization.** Researched 4 more Arabic style guides (Albuthi, Alukah academic, proof-reading-service, Kaplan International — 13 total now). The new rule from Kaplan + proof-reading-service: "no spacing between brackets and content". `typography_paren_interior_spacing()` (1) strips space immediately after `(` when followed by Arabic letter, (2) strips space before `)` when preceded by Arabic letter, (3) strips space between `)` and following punctuation. Example: `هذه جملة ( مع تعليق ) ، ثم آخر` → `هذه جملة (مع تعليق)، ثم آخر`. Preserves existing Latin-content paren padding (for English-in-Arabic Bidi clarity). 5 new fragility sub-checks (T23–T24). Fragility now **56/56**. |
 | v2.4.2 | **Authoritative-source-based punctuation rules.** Researched 9 Arabic style guides (Al Jazeera Learning, Drasah, Loghate ×2, Mawdoo3, Mobt3ath, KSU College of Humanities, Itwadi, Shoair School). Implemented: (1) **No space before Arabic punctuation** (`،`، `؛`، `؟`، `:`، `!`، `.`) — the universal rule from all sources ("ملاصقة للكلمة التي قبلها"). (2) **Comma → semicolon before unambiguous causal connectors** (`لأن`، `لأنّ`، `لذلك`، `لذا`، `ومن ثَمَّ`) — semicolon is the correct mark before causal clauses per multiple sources; ambiguous connectors (`إذ`، `حيث`) skipped to avoid false conversions ("when"/"where" vs "because"). (3) Made existing Latin→Arabic punctuation rules explicit via T19-T21 tests (formerly inherited from v1, now fragility-guarded). Deferred to v2.4.3: list-conjunction `و` between Arabic list items (requires multi-pass context detection), LRM-Bidi handling (render-time concern). Fragility suite now **51/51**. |
@@ -328,7 +330,8 @@ Within this skill, run-order matters. The DEFAULT pipeline is:
 - NEVER bypass `--seed` reproducibility when running in production — same input must produce same output
 - NEVER feed dialect/colloquial Arabic into this skill — it targets MSA / classical-leaning register only
 - NEVER use the rhetorical-figure injector without consulting `references/08-rhetorical-figures.md` for the "when NOT to use جناس/طباق" warnings
-- NEVER call this skill for English text — this skill is Arabic-only; use an English-targeted humanizer for English
+- NEVER call `humanize_v2.py` (the Arabic pipeline) on English text — it will produce garbage; route English through `humanize_english.py` instead
+- NEVER call `humanize_english.py` on Arabic text — the language-detection gate will refuse, but explicit `--force-language en` would corrupt Arabic prose
 - NEVER trust the humanness score as ground truth — it's a heuristic that approximates a human reader, not a perfect detector
 - NEVER overwrite the input file without `--inplace --confirm` — default is write to `--output` path
 - NEVER include PII in test runs — the LLM-augmented modes send content to whichever cloud endpoint `LLM_API_URL` points at; route sensitive content through `--llm-backend local` (or stay in `--mode lex-only`/`tighten`) instead
