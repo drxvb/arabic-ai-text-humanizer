@@ -7041,6 +7041,300 @@
         }
       },
       "safety": "safe"
+    },
+    {
+      "en": "view (database)",
+      "ai_default_calque": "رؤية",
+      "natural_arabic": "عرض",
+      "alternatives": [
+        "لقطة عرض",
+        "العرض"
+      ],
+      "domain": "tech-data",
+      "confidence": "topic-guarded",
+      "corpus_hits": null,
+      "partial_hits": null,
+      "llm_votes": {},
+      "n_llms": 0,
+      "consensus_strength": 0,
+      "regional_sensitivity": null,
+      "political_sensitivity": "high",
+      "disambiguation_warning": "BARE-STEM ENTRY — re-added in v2.6.3 with mandatory topic guard. Without context_keywords gating, this would corrupt رؤية 2030 (Saudi national vision) into عرض 2030. The exclude_if_pattern for رؤية + year is the safety belt; tech-keyword gating is the seatbelt.",
+      "applies_only_in_domain": [
+        "tech-data"
+      ],
+      "context_keywords_arabic": [
+        "قاعدة البيانات",
+        "جدول",
+        "استعلام",
+        "فهرس",
+        "صفوف",
+        "أعمدة",
+        "مخطط",
+        "البيانات الجدولية",
+        "SQL"
+      ],
+      "context_keywords_english": [
+        "SQL",
+        "SELECT",
+        "JOIN",
+        "WHERE",
+        "FROM",
+        "TABLE",
+        "DATABASE",
+        "INDEX",
+        "schema",
+        "query",
+        "MySQL",
+        "PostgreSQL",
+        "SQLite",
+        "Oracle"
+      ],
+      "context_keywords_required_count": 1,
+      "exclude_if_pattern": [
+        "رؤية\\s+\\d{4}",
+        "الرؤية\\s+\\d{4}",
+        "رؤية\\s+المملكة"
+      ],
+      "v2_6_triage_note": "v2.6.0: deleted bare-stem. v2.6.3: re-added with topic guard."
+    },
+    {
+      "en": "partition (database)",
+      "ai_default_calque": "تقسيم",
+      "natural_arabic": "قسم",
+      "alternatives": [
+        "تقسيم البيانات"
+      ],
+      "domain": "tech-data",
+      "confidence": "topic-guarded",
+      "corpus_hits": null,
+      "partial_hits": null,
+      "llm_votes": {},
+      "n_llms": 0,
+      "consensus_strength": 0,
+      "regional_sensitivity": null,
+      "political_sensitivity": "medium",
+      "disambiguation_warning": "BARE-STEM ENTRY — re-added in v2.6.3 with topic guard. Without gating, would corrupt تقسيم العمل (division of labor) into قسم العمل. Tech-database keywords required.",
+      "applies_only_in_domain": [
+        "tech-data"
+      ],
+      "context_keywords_arabic": [
+        "قاعدة البيانات",
+        "جدول",
+        "فهرس",
+        "البيانات الكبيرة",
+        "الخادم"
+      ],
+      "context_keywords_english": [
+        "SQL",
+        "partition",
+        "sharding",
+        "PARTITION",
+        "TABLESPACE",
+        "database",
+        "MySQL",
+        "PostgreSQL"
+      ],
+      "context_keywords_required_count": 1,
+      "exclude_if_pattern": [
+        "تقسيم\\s+العمل",
+        "تقسيم\\s+الإدارة",
+        "تقسيم\\s+الموارد"
+      ],
+      "v2_6_triage_note": "v2.6.0: deleted bare-stem. v2.6.3: re-added with topic guard."
+    },
+    {
+      "en": "trigger (database)",
+      "ai_default_calque": "مشغل",
+      "natural_arabic": "مُطلِق",
+      "alternatives": [
+        "مُحفِّز",
+        "مشغل قاعدة بيانات"
+      ],
+      "domain": "tech-data",
+      "confidence": "topic-guarded",
+      "corpus_hits": null,
+      "partial_hits": null,
+      "llm_votes": {},
+      "n_llms": 0,
+      "consensus_strength": 0,
+      "regional_sensitivity": null,
+      "political_sensitivity": "low",
+      "disambiguation_warning": "BARE-STEM ENTRY — re-added in v2.6.3 with topic guard. DB-trigger sense vs psychological-trigger vs verb 'to trigger'. Only fires when database/event-system context is detected.",
+      "applies_only_in_domain": [
+        "tech-data"
+      ],
+      "context_keywords_arabic": [
+        "قاعدة البيانات",
+        "جدول",
+        "حدث",
+        "إجراء مخزن",
+        "صف"
+      ],
+      "context_keywords_english": [
+        "SQL",
+        "TRIGGER",
+        "AFTER INSERT",
+        "BEFORE UPDATE",
+        "FOR EACH ROW",
+        "stored procedure",
+        "PL/SQL",
+        "PostgreSQL",
+        "MySQL",
+        "Oracle"
+      ],
+      "context_keywords_required_count": 1,
+      "exclude_if_pattern": [
+        "مشغل\\s+الصدمة",
+        "مشغل\\s+نفسي"
+      ],
+      "v2_6_triage_note": "v2.6.0: deleted bare-stem. v2.6.3: re-added with topic guard."
+    },
+    {
+      "en": "process (OS / system)",
+      "ai_default_calque": "عملية",
+      "natural_arabic": "العملية",
+      "alternatives": [
+        "العملية الحاسوبية",
+        "البرنامج النشط"
+      ],
+      "domain": "tech-software",
+      "confidence": "topic-guarded",
+      "corpus_hits": null,
+      "partial_hits": null,
+      "llm_votes": {},
+      "n_llms": 0,
+      "consensus_strength": 0,
+      "regional_sensitivity": null,
+      "political_sensitivity": "medium",
+      "disambiguation_warning": "BARE-STEM ENTRY — re-added in v2.6.3 with topic guard. OS-process sense vs business-process vs legal-process. Only fires with OS / threading / scheduling context.",
+      "applies_only_in_domain": [
+        "tech-software"
+      ],
+      "context_keywords_arabic": [
+        "نظام التشغيل",
+        "خيط",
+        "المعالج",
+        "الذاكرة",
+        "النواة",
+        "PID"
+      ],
+      "context_keywords_english": [
+        "OS",
+        "kernel",
+        "thread",
+        "PID",
+        "fork",
+        "spawn",
+        "daemon",
+        "Linux",
+        "Unix",
+        "Windows",
+        "scheduler",
+        "CPU"
+      ],
+      "context_keywords_required_count": 1,
+      "exclude_if_pattern": [
+        "العملية\\s+التشريعية",
+        "العملية\\s+السياسية",
+        "العملية\\s+التعليمية"
+      ],
+      "v2_6_triage_note": "v2.6.0: deleted bare-stem. v2.6.3: re-added with topic guard."
+    },
+    {
+      "en": "task (scheduler / threading)",
+      "ai_default_calque": "المهمة",
+      "natural_arabic": "المهمّة",
+      "alternatives": [
+        "وحدة العمل",
+        "العمل المجدول"
+      ],
+      "domain": "tech-software",
+      "confidence": "topic-guarded",
+      "corpus_hits": null,
+      "partial_hits": null,
+      "llm_votes": {},
+      "n_llms": 0,
+      "consensus_strength": 0,
+      "regional_sensitivity": null,
+      "political_sensitivity": "low",
+      "disambiguation_warning": "BARE-STEM ENTRY — re-added in v2.6.3 with topic guard. Software-task vs household-task vs project-task. Only fires with async/scheduler context.",
+      "applies_only_in_domain": [
+        "tech-software"
+      ],
+      "context_keywords_arabic": [
+        "غير متزامن",
+        "المجدول",
+        "الخلفية",
+        "الخيط",
+        "قائمة الانتظار"
+      ],
+      "context_keywords_english": [
+        "async",
+        "scheduler",
+        "Celery",
+        "cron",
+        "queue",
+        "background task",
+        "asyncio",
+        "task runner",
+        "worker pool"
+      ],
+      "context_keywords_required_count": 1,
+      "exclude_if_pattern": [],
+      "v2_6_triage_note": "v2.6.0: deleted bare-stem. v2.6.3: re-added with topic guard."
+    },
+    {
+      "en": "worker (background process)",
+      "ai_default_calque": "عامل",
+      "natural_arabic": "العامِل البرمجي",
+      "alternatives": [
+        "خادم خلفي",
+        "العملية العاملة"
+      ],
+      "domain": "tech-software",
+      "confidence": "topic-guarded",
+      "corpus_hits": null,
+      "partial_hits": null,
+      "llm_votes": {},
+      "n_llms": 0,
+      "consensus_strength": 0,
+      "regional_sensitivity": null,
+      "political_sensitivity": "high",
+      "disambiguation_warning": "BARE-STEM ENTRY — re-added in v2.6.3 with topic guard. Software-worker corrupts حقوق العمال (labor rights) and similar labor-context Arabic without gating. Only fires with explicit async/background-process tech context.",
+      "applies_only_in_domain": [
+        "tech-software"
+      ],
+      "context_keywords_arabic": [
+        "غير متزامن",
+        "الخلفية",
+        "الخيط",
+        "قائمة الانتظار",
+        "متعدد المعالجة"
+      ],
+      "context_keywords_english": [
+        "worker",
+        "async",
+        "Celery",
+        "background",
+        "queue",
+        "RQ",
+        "Sidekiq",
+        "Resque",
+        "Kubernetes",
+        "pod",
+        "multiprocessing"
+      ],
+      "context_keywords_required_count": 1,
+      "exclude_if_pattern": [
+        "حقوق\\s+العمال",
+        "العامِل\\s+الإنشائي",
+        "عامل\\s+النظافة"
+      ],
+      "v2_6_triage_note": "v2.6.0: deleted bare-stem. v2.6.3: re-added with topic guard."
     }
-  ]
+  ],
+  "metadata": {
+    "version": "v2.6.3-topic-guarded"
+  }
 }

@@ -1155,6 +1155,14 @@ def _load_calque_dictionary() -> tuple[list[str], dict]:
             "alternatives": e.get("alternatives", []),
             "domain": e.get("domain", "general"),
             "confidence": e.get("confidence", "medium"),
+            # v2.6.3: topic-guard fields (optional). Entries with these
+            # only fire when surrounding context matches; bare-stem
+            # ambiguous entries (view, process, worker, etc.) use these
+            # to avoid corrupting non-technical text like `رؤية 2030`.
+            "context_keywords_arabic": e.get("context_keywords_arabic", []),
+            "context_keywords_english": e.get("context_keywords_english", []),
+            "context_keywords_required_count": e.get("context_keywords_required_count", 1),
+            "exclude_if_pattern": e.get("exclude_if_pattern", []),
         }
         keys.append(calque)
     # Longer keys first so multi-word phrases match before single-word
@@ -1184,25 +1192,75 @@ def lex_apply_calque_dictionary(text: str, register: str = "news") -> str:
     if not _CALQUE_KEYS:
         return text  # dictionary file missing or empty
 
+    def _matches_topic(segment: str, match: re.Match, entry: dict) -> bool:
+        """v2.6.3: Topic-guard check.
+
+        Returns True if (a) entry has no topic guard (always fires), OR
+        (b) the ±100-char window around the match contains at least
+        `context_keywords_required_count` keywords AND no exclusion
+        pattern matches the immediate ±20-char trailing context.
+        """
+        kw_ar = entry.get("context_keywords_arabic", [])
+        kw_en = entry.get("context_keywords_english", [])
+        if not kw_ar and not kw_en:
+            return True  # No topic guard — preserve original v2.3.0+ behavior
+
+        required = entry.get("context_keywords_required_count", 1)
+        ws_start = max(0, match.start() - 100)
+        ws_end = min(len(segment), match.end() + 100)
+        window = segment[ws_start:ws_end]
+        window_lower = window.lower()
+        hits = sum(1 for kw in kw_ar if kw in window)
+        hits += sum(1 for kw in kw_en if kw.lower() in window_lower)
+        if hits < required:
+            return False
+
+        # Exclusion patterns — e.g., `رؤية\s+\d{4}` to preserve "رؤية 2030"
+        # even when surrounding text has tech vocabulary.
+        for pat in entry.get("exclude_if_pattern", []):
+            try:
+                local_start = max(0, match.start() - 10)
+                local_end = min(len(segment), match.end() + 30)
+                local = segment[local_start:local_end]
+                if re.search(pat, local):
+                    return False
+            except re.error:
+                continue
+        return True
+
     def _apply(segment: str) -> str:
         for key in _CALQUE_KEYS:
-            natural = _CALQUE_LOOKUP[key]["natural"]
+            entry = _CALQUE_LOOKUP[key]
+            natural = entry["natural"]
+            kw_ar = entry.get("context_keywords_arabic", [])
+            kw_en = entry.get("context_keywords_english", [])
+            topic_guarded = bool(kw_ar or kw_en)
+
             # Word-boundary check (v2.4.5): the calque key must NOT be
             # immediately followed by an Arabic letter — otherwise the
             # substitution would break a longer word that just happens to
             # contain the calque as a substring.
-            # Example: key='ذكاء السرب' should match `ذكاء السرب` but NOT
-            # match inside `ذكاء السربي` (adjectival form ending in ي).
             key_re = re.compile(re.escape(key) + r'(?![؀-ۿ])')
-
-            # Double-ال fix: if input has "ال" + calque AND natural form
-            # ALSO starts with "ال", substitute the ال+calque sequence
-            # with the natural form to avoid "الال..."
+            doubled_re = None
             if natural.startswith("ال"):
                 doubled_re = re.compile(r'ال' + re.escape(key) + r'(?![؀-ۿ])')
-                if doubled_re.search(segment):
-                    segment = doubled_re.sub(natural, segment)
-                    continue
+
+            if topic_guarded:
+                # v2.6.3: per-match topic check. Walk right-to-left so
+                # deletions don't shift earlier offsets.
+                for re_obj in [doubled_re, key_re]:
+                    if re_obj is None:
+                        continue
+                    matches = list(re_obj.finditer(segment))
+                    for m in reversed(matches):
+                        if _matches_topic(segment, m, entry):
+                            segment = segment[:m.start()] + natural + segment[m.end():]
+                continue
+
+            # Original (v2.3.0+) unconditional behavior for non-guarded entries.
+            if doubled_re is not None and doubled_re.search(segment):
+                segment = doubled_re.sub(natural, segment)
+                continue
             if key_re.search(segment):
                 segment = key_re.sub(natural, segment)
         return segment
