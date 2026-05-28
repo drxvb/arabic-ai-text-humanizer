@@ -1579,6 +1579,118 @@ def score_text(text_ar: str, register: str = "news") -> dict:
     }
 
 
+# v2.10.0: LLM-backed deep scoring via the LAN-local proxy fleet
+# (`M:\Main\DevTools\AI\config\llm-proxies.md`). score_text (v2.9.0) is the
+# fast heuristic; score_text_deep adds richer semantic scoring on a 0-100
+# scale using cognitive-rubric dimensions: directness, naturalness, register
+# coherence, factual grounding. Heuristic remains the default for callers
+# that don't pay the LLM round-trip.
+_DEEP_PROXIES = {
+    "kimi":    {"url": "http://192.168.80.107:11435", "key": "U6hI7j57HpRpz9QaafTJLsJw5PlTXtxBM4pVNTknohE", "model": "kimi-cli"},
+    "codex":   {"url": "http://192.168.80.107:11436", "key": "VJyi6yQDhEGNDE999FkHTqBAG21KdzmW",     "model": "gpt-5.5"},
+    "gemini":  {"url": "http://192.168.80.107:11437", "key": "6fjc4jGwIhXQn7NejizvFVKR7Ps1SXES",     "model": "gemini-2.5-flash"},
+    "minimax": {"url": "http://192.168.80.107:11438", "key": "xL5jUNR9A2lhN5HfLt1ulp9gE2CnBKf4",     "model": "MiniMax-M2.7"},
+}
+
+
+def score_text_deep(text_ar: str, register: str = "news",
+                    proxy_name: str = "gemini") -> dict:
+    """LLM-backed score on the 4-dimension cognitive rubric.
+
+    Returns:
+      {available: bool, score: int (0-100), per_dimension: dict, reasoning: str}
+
+    Dimensions (each 0-25, summed for total 0-100):
+      - directness     : sentences make claims; not buried under hedges
+      - naturalness    : reads like human Arabic, not LLM Arabic
+      - register_match : matches the requested register
+      - factual_anchor : claims tied to specifics rather than abstract platitudes
+
+    Falls back to heuristic score_text() result if the LLM call fails.
+    """
+    if not text_ar:
+        return {"available": True, "score": 100, "per_dimension": {},
+                "reasoning": "empty input", "backend": "trivial",
+                "register": register}
+    import urllib.request, urllib.error  # local to keep module-level imports clean
+    p = _DEEP_PROXIES.get(proxy_name)
+    if p is None:
+        fallback = score_text(text_ar, register=register)
+        fallback["backend"] = "heuristic_fallback (unknown proxy)"
+        return fallback
+
+    system_prompt = (
+        "You are an Arabic prose-quality reviewer. Score the given Arabic text on a "
+        "4-dimension rubric, each 0-25 (max total 100). Output ONLY JSON: "
+        '{"directness":N,"naturalness":N,"register_match":N,"factual_anchor":N,"reasoning":"..."}. '
+        "Dimensions: directness (claims made cleanly, no hedge stacking), naturalness "
+        "(reads like human Arabic, not LLM Arabic — no مكوّن من المهم ملاحظة، علاوة على ذلك), "
+        "register_match (matches the requested register), factual_anchor "
+        "(claims tied to specifics, not abstract platitudes)."
+    )
+    user_prompt = (
+        f"# Requested register\n{register}\n\n"
+        f"# Arabic text\n{text_ar[:3000]}\n\n"
+        f"Score on the rubric. Output JSON only."
+    )
+    body = json.dumps({
+        "model": p["model"],
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user",   "content": user_prompt},
+        ],
+        "temperature": 0,
+    }, ensure_ascii=False).encode("utf-8")
+    req = urllib.request.Request(
+        url=p["url"] + "/v1/chat/completions",
+        data=body,
+        method="POST",
+        headers={
+            "Authorization": f"Bearer {p['key']}",
+            "Content-Type":  "application/json; charset=utf-8",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        content = data["choices"][0]["message"]["content"]
+    except Exception as e:
+        fallback = score_text(text_ar, register=register)
+        fallback["backend"] = f"heuristic_fallback (proxy error: {e})"
+        return fallback
+
+    parsed = None
+    try:
+        parsed = json.loads(content)
+    except json.JSONDecodeError:
+        m = re.search(r"\{.*\}", content, re.DOTALL)
+        if m:
+            try:
+                parsed = json.loads(m.group(0))
+            except json.JSONDecodeError:
+                pass
+    if not isinstance(parsed, dict):
+        fallback = score_text(text_ar, register=register)
+        fallback["backend"] = "heuristic_fallback (LLM returned non-JSON)"
+        return fallback
+
+    dims = {
+        "directness":     min(25, max(0, int(parsed.get("directness", 0) or 0))),
+        "naturalness":    min(25, max(0, int(parsed.get("naturalness", 0) or 0))),
+        "register_match": min(25, max(0, int(parsed.get("register_match", 0) or 0))),
+        "factual_anchor": min(25, max(0, int(parsed.get("factual_anchor", 0) or 0))),
+    }
+    total = sum(dims.values())
+    return {
+        "available": True,
+        "score": total,
+        "per_dimension": dims,
+        "reasoning": str(parsed.get("reasoning", ""))[:500],
+        "backend": f"llm_proxy.{proxy_name}",
+        "register": register,
+    }
+
+
 # ── Pipeline ────────────────────────────────────────────────────────────────
 
 def run_pipeline(text: str, mode: str, backend: str, intensity: float,
