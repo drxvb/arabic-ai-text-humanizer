@@ -30,6 +30,9 @@ if hasattr(sys.stdout, "reconfigure"):
 
 sys.path.insert(0, str(Path(__file__).parent))
 from analyze_deep import analyze, render_report
+# v2.6.1: Sacred-text guard — masks Quranic verses, hadith citations, and
+# the basmala from every transformation pass; restored verbatim on return.
+from sacred_text_guard import mask_sacred_spans, restore_sacred_spans
 
 # Import the LLM wrapper lazily (only when --mode > lex-only)
 
@@ -1212,7 +1215,26 @@ def run_pipeline(text: str, mode: str, backend: str, intensity: float,
                  auth_token: str | None = None, register: str = "news",
                  model: str | None = None, backend_url: str | None = None) -> dict:
     log = []
-    out = text
+
+    # v2.6.1: Sacred-text guard. Mask Quranic verses + hadith citations
+    # + basmala BEFORE any transformation; restore verbatim on every
+    # return path. See references/18-sacred-text-guard.md. Per Agent A's
+    # v2.6.0 review, this is the load-bearing protection for religious-
+    # publication deployments — quote-verb rotation on `قال رسول الله ﷺ`
+    # is catastrophically irreverent if not preempted.
+    masked, sacred_masks = mask_sacred_spans(text)
+    if sacred_masks:
+        log.append({"stage": "sacred_guard",
+                    "spans_locked": len(sacred_masks),
+                    "reasons": list({r for _, _, r, _ in sacred_masks})})
+
+    out = masked
+
+    def _finalize(result_dict: dict) -> dict:
+        """Restore sacred spans in the output before returning."""
+        if sacred_masks:
+            result_dict["output"] = restore_sacred_spans(result_dict["output"], sacred_masks)
+        return result_dict
 
     # Stage 1: lexical (register-aware)
     t0 = time.time()
@@ -1224,7 +1246,7 @@ def run_pipeline(text: str, mode: str, backend: str, intensity: float,
     # In "tighten" mode, lex pass is the complete pipeline.
     # No LLM-augmented passes — newsroom subediting wants deterministic + safe.
     if mode in ("lex-only", "tighten"):
-        return {"output": out, "stages": log, "mode": mode, "register": register}
+        return _finalize({"output": out, "stages": log, "mode": mode, "register": register})
 
     # Stage 2: cognitive
     t0 = time.time()
@@ -1235,7 +1257,7 @@ def run_pipeline(text: str, mode: str, backend: str, intensity: float,
     if info.get("ok"):
         out = new
     if mode == "+cognitive":
-        return {"output": out, "stages": log, "mode": mode}
+        return _finalize({"output": out, "stages": log, "mode": mode})
 
     # Stage 3: rhetorical
     t0 = time.time()
@@ -1245,7 +1267,7 @@ def run_pipeline(text: str, mode: str, backend: str, intensity: float,
     if info.get("ok"):
         out = new
     if mode == "+rhetorical":
-        return {"output": out, "stages": log, "mode": mode}
+        return _finalize({"output": out, "stages": log, "mode": mode})
 
     # Stage 4: coherence (final pass — only in full mode)
     new, info = llm_pass(out, "coherence", backend, auth_token, model, backend_url)
@@ -1253,7 +1275,7 @@ def run_pipeline(text: str, mode: str, backend: str, intensity: float,
                 "ok": info.get("ok"), "error": info.get("error")})
     if info.get("ok"):
         out = new
-    return {"output": out, "stages": log, "mode": mode}
+    return _finalize({"output": out, "stages": log, "mode": mode})
 
 
 def main():
