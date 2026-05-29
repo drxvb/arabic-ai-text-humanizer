@@ -10,7 +10,15 @@ A **bilingual** AI-text humanizer that reduces AI fingerprints in **Arabic** (16
 
 The full specification, transformation protocol, dimension definitions, anti-patterns, and worked examples all live in **[`SKILL.md`](SKILL.md)**. This README is a one-screen overview.
 
-## What's new in v2.6.0 (current) — Linguistic emergency triage + sacred-text guard
+## Status: **v2.16.0 — stable**
+
+All four foundational `arabic-corpus-toolkit` contracts are adopted at runtime call sites: G1 (`arabic_normalize` before every AI-tell count), G2 (`asset_registry.is_compatible` for every Asset C/D/E load), G3 (`InfluenceTrace` emitted by `score_text` and `score_text_deep` on all paths including LLM fallback), G4 (n/a — toolkit ships the installer). Vendor rotation across {gemini, minimax, codex} for `score_text_deep`. Cross-LLM agreement via `score_text_multivendor`. Asset D + E consumer cutover complete.
+
+**v2.16.0 ships** `evals/test_g1_normalize_regression.py` — 16 targeted before/after assertions that codify the G1 normalize-before-AI-tell-count contract. Closes Codex A3 carry-over (deferred 3+ releases) plus Kimi A5 #3 leverage action. The killer fixture (E) heavily-mutates input with tashkeel injection and verifies `score_text` still finds the same dictionary keys — the single most important regression gate against future contributors silently removing the G1 normalization call. 16/16 PASS plus the existing Arabic fragility 74/74 plus English fragility 33/33.
+
+See `SKILL.md` Version history table for per-release detail v2.0 → v2.16.0.
+
+## Historical: what shipped in v2.6.0 — Linguistic emergency triage + sacred-text guard
 
 Acting on a multi-agent native-MSA-tier linguistic review (Arabic linguistics + translation architecture + scope critic + adversarial red-team + Kimi-style + Codex-style lenses), v2.6.0 surgically fixes **14 calque dictionary entries** that were actively damaging output and ships the **highest-severity missing feature** identified by the review: a sacred-text preservation guard.
 
