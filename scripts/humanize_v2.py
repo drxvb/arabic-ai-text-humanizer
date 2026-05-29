@@ -1544,6 +1544,48 @@ def llm_pass(text: str, pass_name: str, backend: str,
 # authoring-suite humanizer_gate). Uses Asset C's lexical-tables directly
 # instead of a hard-coded 6-tell list, giving consumers a much richer signal
 # without spinning up the full pipeline.
+# v2.17.0: input validation constants (3-of-4 A7 vendor convergent must-have).
+# Without these guards, None / non-string / pathologically-long inputs would
+# either crash the pipeline (None.split → AttributeError) or timeout/cost-explode
+# at the LLM layer (50K+ chars).
+MAX_INPUT_CHARS_HEURISTIC = 200_000   # heuristic scoring is local, generous limit
+MAX_INPUT_CHARS_LLM = 25_000          # LLM scoring is API-bound, conservative limit
+
+
+def _validate_input_text(text: object, max_chars: int) -> dict:
+    """v2.17.0: structured input validation. Returns {ok, error_class, error_detail}.
+
+    Returns {"ok": True} on pass; structured failure envelope otherwise.
+    Caller checks .get("ok") and short-circuits with the envelope on failure.
+    """
+    if text is None:
+        return {"ok": False, "error_class": "null_input",
+                "error_detail": "text is None — pass a string"}
+    if not isinstance(text, str):
+        return {"ok": False, "error_class": "wrong_type",
+                "error_detail": f"text must be str; got {type(text).__name__}"}
+    if len(text) > max_chars:
+        return {"ok": False, "error_class": "input_too_long",
+                "error_detail": (
+                    f"text length {len(text)} > max {max_chars}; "
+                    "chunk the input before calling"
+                )}
+    return {"ok": True}
+
+
+def _toolkit_safe_llm_call():
+    """v2.17.0: lazy-import toolkit's safe_llm_call (v1.13.0+). Returns the
+    function or None if toolkit pre-v1.13.0 / unavailable."""
+    try:
+        toolkit_scripts = _TOOLKIT_DEFAULT_PATH / "scripts"
+        if str(toolkit_scripts) not in sys.path:
+            sys.path.insert(0, str(toolkit_scripts))
+        from safe_llm_call import safe_llm_call  # type: ignore
+        return safe_llm_call
+    except Exception:
+        return None
+
+
 def score_text(text_ar: str, register: str = "news",
                 emit_trace: bool = False) -> dict:
     """Score Arabic text on AI-tell density. Returns:
@@ -1562,6 +1604,13 @@ def score_text(text_ar: str, register: str = "news",
 
     Importable: `from humanize_v2 import score_text`.
     """
+    # v2.17.0: structured input validation (3-of-4 A7 vendor must-have)
+    _v = _validate_input_text(text_ar, MAX_INPUT_CHARS_HEURISTIC)
+    if not _v["ok"]:
+        return {"ok": False, "score": None, "ai_tell_hits": 0,
+                "ai_tell_density_per_1k": 0.0, "total_words": 0,
+                "register": register, "ai_phrases_caught": [], "sample_size": 0,
+                "input_validation": _v}
     if not text_ar:
         return {"score": 100, "ai_tell_hits": 0, "ai_tell_density_per_1k": 0.0,
                 "total_words": 0, "register": register, "ai_phrases_caught": [],
@@ -1717,20 +1766,56 @@ def score_text_deep(text_ar: str, register: str = "news",
             "Content-Type":  "application/json; charset=utf-8",
         },
     )
-    try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-        content = data["choices"][0]["message"]["content"]
-    except Exception as e:
-        fallback = score_text(text_ar, register=register)
-        fallback["backend"] = f"heuristic_fallback (proxy error: {e})"
-        fallback["fallback_used"] = True  # v2.15.0 explicit flag
-        if trace is not None:
-            trace.record(asset_id="humanizer", asset_version="2.15.0",
-                         trigger="other", evidence={"proxy_error": str(e)[:200], "proxy_name": proxy_name},
-                         stage="score_text_deep")
-            fallback["influence_trace"] = trace.as_json()
-        return fallback
+    # v2.17.0: route through toolkit safe_llm_call when available (cross-cutting
+    # A7 vendor must-have: retries + circuit breaker + structured error_class).
+    # Falls back to inline urlopen path if toolkit pre-v1.13.0 / unavailable.
+    _safe = _toolkit_safe_llm_call()
+    if _safe is not None:
+        body_dict = {
+            "model": p["model"],
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user",   "content": user_prompt},
+            ],
+            "temperature": 0,
+        }
+        result = _safe(p["url"], p["key"], body_dict, timeout=60.0, max_retries=2,
+                       retry_backoff_s=1.0)
+        if not result.ok:
+            fallback = score_text(text_ar, register=register)
+            fallback["backend"] = (
+                f"heuristic_fallback (error_class={result.error_class}; "
+                f"detail={result.error_detail!r}; circuit_open={result.circuit_open})"
+            )
+            fallback["fallback_used"] = True
+            fallback["llm_error_class"] = result.error_class
+            fallback["circuit_open"] = result.circuit_open
+            if trace is not None:
+                trace.record(asset_id="humanizer", asset_version="2.17.0",
+                             trigger="other",
+                             evidence={"proxy_error_class": result.error_class,
+                                       "circuit_open": result.circuit_open,
+                                       "proxy_name": proxy_name},
+                             stage="score_text_deep")
+                fallback["influence_trace"] = trace.as_json()
+            return fallback
+        content = result.payload or ""
+    else:
+        # Legacy fallback (toolkit pre-v1.13.0)
+        try:
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            content = data["choices"][0]["message"]["content"]
+        except Exception as e:
+            fallback = score_text(text_ar, register=register)
+            fallback["backend"] = f"heuristic_fallback (proxy error: {e})"
+            fallback["fallback_used"] = True
+            if trace is not None:
+                trace.record(asset_id="humanizer", asset_version="2.15.0",
+                             trigger="other", evidence={"proxy_error": str(e)[:200], "proxy_name": proxy_name},
+                             stage="score_text_deep")
+                fallback["influence_trace"] = trace.as_json()
+            return fallback
 
     parsed = None
     try:
