@@ -1,7 +1,7 @@
 # Changelog
 
 Bilingual AI-text humanizer (Arabic primary, English secondary). Versions track the SKILL.md status banner;
-this file is the auditable history (extracted from the inline banner during the A8 audit, 2026-05-29).
+this file is the auditable per-version history.
 Hard dependency: `arabic-corpus-toolkit` ≥ v2.8.0-era contracts (G1-G4 adopted at runtime call sites;
 `safe_llm_call` adopted in `score_text_deep` as of v2.17.0).
 
